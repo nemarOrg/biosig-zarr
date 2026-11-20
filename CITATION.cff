@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+title: "biosig-zarr specification"
+message: "If you use this specification, please cite it using the metadata in this file, and name the release tag."
+authors:
+  - family-names: "Shirazi"
+    given-names: "Seyed Yahya"
+repository-code: "https://github.com/nemarOrg/biosig-zarr"
+abstract: "A Zarr version 3 layout for one biosignal recording, and its single-file form .bzx: normative text, JSON Schemas, and conformance vectors."
+keywords:
+  - biosignal
+  - Zarr
+  - specification
+  - electrophysiology
