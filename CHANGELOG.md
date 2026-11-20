@@ -51,6 +51,11 @@ Changes after the first review (round 1), all proposed:
 - New open-for-comment markers: RFC-0001 questions 36 (reader safety), 37 (recording timeline), 38 (onset rule), 39 (an explicit bit-depth attribute), 40 (sub-sample gaps), and question 28 on the `time` array's vocabulary.
 - The BDF channel example uses `scale` 0.061037 and `offset` 0.0, matching RFC-0001.
 
+Changes after the second review (round 2), proposed:
+
+- A store with no `format_version` is called a version 1 store only historically, and a reader of this document refuses it as unsupported.
+- The exact-copy rule about a source code equal to the missing value now says that such a code lies outside the declared digital range and cannot arise when the source keeps to that range.
+
 Editorial corrections:
 
 - The status section said "Three parts" run ahead of any implementation and listed four; the count now matches the list, which gains the new `zarr_conventions` attribute as a fifth.

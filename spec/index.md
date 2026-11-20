@@ -166,7 +166,7 @@ A writer that implements this document MUST write `format_version` 3 on every st
   `recording_metadata` is a string holding JavaScript Object Notation (JSON) text, where version 2 holds a JSON object.
   This document no longer covers version 1 stores.
 - Version 2 differs from version 3 in everything [Reading earlier versions](#reading-earlier-versions) lists.
-- A store with no `format_version` attribute is a version 1 store.
+- A store with no `format_version` attribute is, historically, a version 1 store; a reader of this document MUST refuse it as unsupported.
 - A reader SHOULD accept a number with an integral value, such as `3.0`, as that integer.
 - A reader MUST refuse a store whose `format_version` is greater than the highest version it implements.
   It MUST NOT attempt to read such a store on the assumption that the layout is unchanged.
@@ -778,7 +778,7 @@ When a channel is not resampled, not unit-converted, and the storage type holds 
 In an exact copy, `digital` equals the source code, `scale` equals `source_step`, `offset` equals `source_offset`, and `derivation` is empty.
 An EDF file at or below the rate cap can then be reproduced bit for bit.
 When the channel's `source_digital_range` includes the type's most negative code, or is `null`, the array declares `missing_value` `null`.
-Otherwise it declares the missing value, and a writer that finds a source code equal to it MUST NOT make an exact copy of that channel with it declared.
+Otherwise it declares the missing value, and a writer that finds a source code equal to it, outside the declared range, MUST NOT make an exact copy of that channel with it declared (a source that keeps to its declared digital range never has such a code).
 
 Whether a writer makes exact copies is the writer's choice and a profile's.
 
