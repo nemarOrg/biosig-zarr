@@ -1,7 +1,6 @@
 # Licenses
 
-This repository has three license parts, by kind of file, as NEMAR decided on 2026-11-18 and confirmed on 2026-11-20.
-NEMAR is the Neuroelectromagnetic Data Archive and Tools Resource.
+The Neuroelectromagnetic Data Archive and Tools Resource (NEMAR) decided on 2026-11-18, and confirmed on 2026-11-20, that this repository has three license parts, by kind of file.
 The full license texts are in [`LICENSES/`](LICENSES/).
 
 ## 1. Specification text

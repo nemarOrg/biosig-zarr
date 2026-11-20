@@ -49,7 +49,7 @@ Run them locally first:
 ```bash
 uvx typos .        # spelling
 bun install
-bun run lint       # Biome over the JSON files
+bun run lint       # Biome over the JavaScript Object Notation (JSON) files
 ```
 
 The third check is link checking with lychee, which runs in continuous integration.

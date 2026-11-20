@@ -1,7 +1,7 @@
 # biosig-zarr
 
 biosig-zarr is a Zarr version 3 layout for one biosignal recording, and `.bzx` is its single-file form.
-This repository holds the specification: the normative text, the JSON Schemas, and the conformance vectors.
+This repository holds the specification: the normative text, the JavaScript Object Notation (JSON) Schemas, and the conformance vectors.
 It holds no reader or writer library, so the text stays the definition and no program becomes it.
 
 The format is developed by the Neuroelectromagnetic Data Archive and Tools Resource (NEMAR), whose archive serves its stores today as `format_version` 2.

@@ -12,7 +12,7 @@ The format gets an organization of its own only when a second institution co-mai
 ## Two kinds of change
 
 A **normative** change alters what a conforming writer MUST, SHOULD, or MAY write, or what a conforming reader MUST accept or refuse.
-Any change to a JSON Schema is normative.
+Any change to a JavaScript Object Notation (JSON) Schema is normative.
 An **editorial** change does not alter what conforms: spelling, links, formatting, and clarifications that leave the meaning unchanged.
 When the editor and a proposer disagree, or when it is unclear, the change is normative.
 
@@ -32,7 +32,7 @@ The tag is `<major>.<minor>.<patch>`:
 
 | Part | Meaning |
 | --- | --- |
-| Major | Equals `format_version`, the integer stored in every store; it rises only when a conforming reader would return wrong data or none |
+| Major | Equals `format_version`, the integer stored in every store |
 | Minor | A normative addition that does not break: every store valid under the earlier release in the same major stays valid |
 | Patch | An editorial change only |
 
