@@ -43,12 +43,6 @@ The specification text has one editable copy, `spec/index.md` here.
 docs.nemar.org links to it and never copies it; two copies drift.
 Never paste normative text into another document: link the tagged copy.
 
-### Decisions are recorded where they belong
-
-Specification decisions are Architecture Decision Records (ADRs) in [`.context/decisions/`](.context/decisions/README.md); copy `0000-template.md`, number sequentially, add it to the index, and never edit or delete an accepted one (supersede it).
-NEMAR profile and rollout decisions belong in nemarOrg/nemar-cli.
-Each ADR that an RFC produced links that RFC.
-
 ## Tooling is fixed
 
 **Bun** for JavaScript and JSON tooling, never npm or npx. **Biome** for JSON lint and format, never ESLint or Prettier. **uv** for anything Python, never pip or conda (no Python lives here yet).
