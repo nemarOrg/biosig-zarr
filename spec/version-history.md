@@ -9,7 +9,8 @@ The release scheme is in [`GOVERNANCE.md`](../GOVERNANCE.md): the major number o
 | `format_version` | What it is | Where it is defined |
 | --- | --- | --- |
 | 1 | `recording_metadata` is a string holding JavaScript Object Notation (JSON) text; a store with no `format_version` attribute is a version 1 store | [Format version](index.md#format-version) |
-| 2 | `recording_metadata` is a JSON object; the format that [`index.md`](index.md) specifies | [Format version](index.md#format-version) |
+| 2 | `recording_metadata` is a JSON object; the format of release `2.0.0`, which NEMAR serves | Release `2.0.0` |
+| 3 (proposed) | Two kinds of channel group (`uniform` and `timestamped`), valid intervals, declared missing values, a start time per group, the source's resolution, a per-channel derivation list, and the reader-safety rules; proposed by RFC-0001 and not accepted | [Reading earlier versions](index.md#reading-earlier-versions) and [Format version](index.md#format-version) |
 
 Version 2 has grown by addition without changing the number, so two version 2 stores can differ in which attributes they carry.
 The attributes that older stores can lack, and the release of biosigIO that first wrote each, are listed under [What changes the version](index.md#what-changes-the-version).
@@ -19,6 +20,7 @@ The attributes that older stores can lack, and the release of biosigIO that firs
 | Release | `format_version` | Summary |
 | --- | --- | --- |
 | 2.0.0 | 2 | The pre-beta text moved from docs.nemar.org, with no normative change. Four parts the text marks Proposed are not yet implemented in NEMAR's stores: the `biosig-zarr` tag inside stores, `.bzx`, `generated_by`, and the conformance classes. |
+| 3.0.0-draft.1 (proposed) | 3 | The text RFC-0001 proposes, on the branch `draft/3.0.0`; not accepted. See [`CHANGELOG.md`](../CHANGELOG.md). |
 
 Later releases are added here when they are tagged.
 A release that proposes a change lives on a draft branch and is tagged with a `-draft.N` suffix until its Request for Comments is accepted; see [`GOVERNANCE.md`](../GOVERNANCE.md).
