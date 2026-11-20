@@ -7,7 +7,7 @@ Decisions about NEMAR's profile of the format and its rollout are recorded in ne
 
 - One file per decision: `NNNN-short-kebab-title.md`, zero-padded to four digits.
 - `0000-template.md` is the template; copy it to start a new ADR. Do not edit `0000-template.md` itself.
-- Number sequentially. The next ADR after `0007-...` is `0008-...`.
+- Number sequentially; the next ADR is `0004`.
 - Status flows `proposed` -> `accepted` -> (later) `superseded by ADR-NNNN`. Never delete an ADR; supersede it.
 - Keep each ADR short. If it grows past two screens, you are probably writing a design doc, not a decision.
 
