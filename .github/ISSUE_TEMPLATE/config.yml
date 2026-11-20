@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Comment on a Request for Comments (RFC)
+    url: https://github.com/nemarOrg/rfcs
+    about: RFC comments are Discussion threads in nemarOrg/rfcs, not issues here. Open the repository and follow the link for the open RFC.

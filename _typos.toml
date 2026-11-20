@@ -1,0 +1,13 @@
+# Words the specification uses that the spell checker does not know.
+# Legal texts and the lockfile are third-party text and are not checked.
+[files]
+extend-exclude = ["LICENSES/", "bun.lock"]
+
+[default.extend-words]
+bzx = "bzx"
+biosigio = "biosigio"
+hdmf = "hdmf"
+nemar = "nemar"
+rfcs = "rfcs"
+NGFF = "NGFF"
+ND = "ND"

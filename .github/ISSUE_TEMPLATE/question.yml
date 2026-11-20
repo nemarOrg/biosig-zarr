@@ -1,0 +1,17 @@
+name: Question about the specification
+description: Ask how something in the format is meant to work
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+      description: Say what you are trying to do and which part of the text you read.
+    validations:
+      required: true
+  - type: input
+    id: location
+    attributes:
+      label: Where in the text
+      description: The file and heading, and the release tag if you are reading a release.
+    validations:
+      required: false

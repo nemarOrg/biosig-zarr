@@ -1,0 +1,30 @@
+name: Defect in the text
+description: An error, an ambiguity, or a broken link in the specification text
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this for a mistake or an unclear sentence in the text.
+        A proposal to change what a conforming writer or reader must do is a Request for Comments in nemarOrg/rfcs, not an issue.
+  - type: input
+    id: location
+    attributes:
+      label: Where
+      description: The file and heading, and the release tag if you are reading a release.
+      placeholder: "spec/index.md, heading name, tag 2.0.0"
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is wrong
+      description: Quote the sentence, and say what it gets wrong or why two readers could read it differently.
+    validations:
+      required: true
+  - type: textarea
+    id: fix
+    attributes:
+      label: Suggested fix
+      description: Optional. If your fix changes what conforms, say so.
+    validations:
+      required: false
