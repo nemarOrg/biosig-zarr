@@ -4,6 +4,39 @@ All notable changes to the specification are recorded here, newest first.
 The versioning scheme is in [`GOVERNANCE.md`](GOVERNANCE.md).
 A release is a Git tag made by the owner.
 
+## Unreleased: 3.0.0-draft.1
+
+The text that RFC-0001 in nemarOrg/rfcs proposes, on the branch `draft/3.0.0`.
+It is not accepted; it becomes `3.0.0` only if RFC-0001 is accepted.
+It specifies `format_version` 3.
+
+Normative changes, all proposed:
+
+- `format_version` 3: a writer writes 3 on every store, and a reader that implements version 3 also reads version 2 stores, with stated default values; a store is never moved to another version by editing its metadata.
+- Every channel group carries a required `kind`, `uniform` or `timestamped`; the root lists timestamped groups in a new `timestamped_groups`, and `channel_groups` names only uniform groups.
+- A uniform group carries `start_time`, `valid_intervals` (with a nullable `source_time`), and `time_regularization`; `rate` is never rounded; gaps are never written to storage; each valid interval is resampled on its own.
+- A timestamped group holds `time`, `values` and `time_index` arrays, with `nominal_rate`, `effective_rate`, `time_range`, `continuity` and `chunk_samples`.
+- Every signal array declares `missing_value`, and its `fill_value` equals it; an `int16` array reserves `-32768`, so data codes run from `-32767` to `32767`; `null` is allowed only for an exact copy of full-range source codes.
+- Non-finite source samples in an integer array are stored as the missing value, replacing the version 2 replacement by the code nearest physical zero.
+- One recording timeline per store, with an optional root `origin_source_time`; event onsets are on it, the `events` group carries a required `onset_source_basis`, and the rule from an onset to a sample is defined.
+- Storage types `int32` and `float64` join `int16` and `float32`, with a per-group `dtype` that overrides the root; a signal reader must support `int16` and may refuse the others with an error.
+- Source resolution fields: `source_sample_type` and `source_adc_bits` (root default, channel override), and `source_step`, `source_offset` and `source_digital_range` per channel.
+- Exact copies of source codes are allowed.
+- A required per-channel `derivation` list, from a closed vocabulary that a profile may extend with tokens containing a colon.
+- The four reader-safety layers (version, kind, structure, and refusal inside a uniform group), each with a conformance case.
+- A version 3 writer writes the format name `biosig-zarr`, and the root attribute `zarr_conventions` carries the convention identifier of ADR 0004.
+- The packing rules of `.bzx` are NEMAR's own, with OME-Zarr RFC-9 as prior art; an absent chunk has no entry; the packing rules share `format_version`.
+- A reader refuses a group whose valid intervals break their rules.
+- The NEMAR profile section lists the choices NEMAR proposes for version 3.
+
+Editorial corrections:
+
+- The status section said "Three parts" run ahead of any implementation and listed four; the count now matches the list, which gains the new `zarr_conventions` attribute as a fifth.
+- "This page" is now "this document" throughout, because the text lives in this repository and not on docs.nemar.org.
+- Open question 33 now records that the change process, the license and the home are decided, and closed questions 6, 9 and 16 say where version 3 specifies them; the numbering of the open questions is kept.
+- The `generated_by` example is now a valid JSON object.
+- Places that RFC-0001 puts up for comment are marked with their question number.
+
 ## Unreleased
 
 - The repository is initialized: licenses, governance, contribution terms, decision records, and checks on the text.
