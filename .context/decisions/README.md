@@ -7,7 +7,7 @@ Decisions about NEMAR's profile of the format and its rollout are recorded in ne
 
 - One file per decision: `NNNN-short-kebab-title.md`, zero-padded to four digits.
 - `0000-template.md` is the template; copy it to start a new ADR. Do not edit `0000-template.md` itself.
-- Number sequentially; the next ADR is `0004`.
+- Number sequentially; the next ADR is `0005`.
 - Status flows `proposed` -> `accepted` -> (later) `superseded by ADR-NNNN`. Never delete an ADR; supersede it.
 - Keep each ADR short. If it grows past two screens, you are probably writing a design doc, not a decision.
 
@@ -29,3 +29,4 @@ Add new entries here as you create ADRs:
 - [ADR 0001](0001-license-and-contribution-terms.md) - License and contribution terms
 - [ADR 0002](0002-no-reader-or-writer-library-in-this-repository.md) - No reader or writer library in this repository
 - [ADR 0003](0003-rfcs-live-in-nemarorg-rfcs.md) - Requests for Comments live in nemarOrg/rfcs
+- [ADR 0004](0004-zarr-convention-identifier.md) - The Zarr convention identifier is minted now
