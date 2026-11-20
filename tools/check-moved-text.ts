@@ -4,6 +4,11 @@
 // the Starlight front matter and asides, link targets, emphasis, and table and list syntax.
 // This script strips that markup from both files and prints the number of differing words.
 //
+// Limits of the word comparison: link targets are stripped from both files, so they are checked
+// separately (every target in the moved file must be an https://docs.nemar.org/ address, an
+// in-page #anchor, or an external URL that is a link target in the source), and table column
+// order is not compared, because the `|` separators are stripped.
+//
 // Usage: bun run tools/check-moved-text.ts [source.md [moved.md]]
 //
 // With no source argument, the source is read from the default branch of nemarOrg/docs
@@ -59,6 +64,32 @@ export function words(markdown: string): string[] {
     .filter((word) => word.length > 0);
 }
 
+/** Every link target `[text](target)` in the Markdown, outside fenced code blocks. */
+export function linkTargets(markdown: string): string[] {
+  let fenced = false;
+  const targets: string[] = [];
+  for (const line of markdown.split("\n")) {
+    if (/^```/.test(line.trim())) fenced = !fenced;
+    else if (!fenced) {
+      for (const match of line.matchAll(/!?\[[^\]]*\]\(([^)\s]*)\)/g)) targets.push(match[1]);
+    }
+  }
+  return targets;
+}
+
+/** The link targets of the moved file that the move does not allow. */
+export function badTargets(source: string, moved: string): string[] {
+  const known = new Set(linkTargets(source));
+  return linkTargets(moved).filter(
+    (target) =>
+      !(
+        target.startsWith("https://docs.nemar.org/") ||
+        target.startsWith("#") ||
+        known.has(target)
+      ),
+  );
+}
+
 /** The number of words that differ between two sequences, and the first differing context. */
 export function diffWords(a: string[], b: string[]): { count: number; context: string } {
   let start = 0;
@@ -108,13 +139,16 @@ async function readSource(path: string | undefined): Promise<string> {
 
 if (import.meta.main) {
   const [sourcePath, movedPath] = Bun.argv.slice(2);
-  const source = words(stripStarlight(await readSource(sourcePath)));
-  const moved = words(await Bun.file(movedPath ?? MOVED_DEFAULT).text());
+  const sourceText = stripStarlight(await readSource(sourcePath));
+  const movedText = await Bun.file(movedPath ?? MOVED_DEFAULT).text();
+  const source = words(sourceText);
+  const moved = words(movedText);
   const { count, context } = diffWords(source, moved);
   console.log(`${source.length} source words, ${moved.length} moved words`);
   console.log(`${count} differing words`);
-  if (count > 0) {
-    console.log(context);
-    process.exit(1);
-  }
+  const bad = badTargets(sourceText, movedText);
+  console.log(`${bad.length} link targets not allowed`);
+  for (const target of bad) console.log(`  ${target}`);
+  if (count > 0) console.log(context);
+  if (count > 0 || bad.length > 0) process.exit(1);
 }
