@@ -1,11 +1,13 @@
 # Specification Style
 
 This repository's product is text.
-These rules apply to `spec/`, to every RFC-facing document, and to the other Markdown files.
+These rules apply to `spec/`, to every document that quotes or proposes specification text, and to the other Markdown files.
+In this repository, a Request for Comments (RFC) is a proposal of the Neuroelectromagnetic Data Archive and Tools Resource (NEMAR), decided in nemarOrg/rfcs.
 
 ## Key words
 
 - Requirements use the key words MUST, MUST NOT, SHOULD, SHOULD NOT, and MAY, in capitals, as defined in RFC 2119 and clarified by RFC 8174.
+  Those two are documents of the Internet Engineering Task Force (IETF) and are separate from the NEMAR RFC process.
   The text says so once, in its terminology section.
 - Never use the capitalized words for anything but a requirement.
   A sentence that describes without requiring uses plain lowercase verbs.
