@@ -11,10 +11,13 @@
 //
 // Usage: bun run tools/check-moved-text.ts [source.md [moved.md]]
 //
-// With no source argument, the source is read from the default branch of nemarOrg/docs
-// through the GitHub CLI (`gh`), which needs read access to that repository.
+// With no source argument, the source is read from nemarOrg/docs at the commit the text was
+// moved from, a474abfe4d4a9d1bd4545259e21d3e916507c6a7, through the GitHub CLI (`gh`), which
+// needs read access to that repository. The commit is pinned, not the default branch, because the
+// page on docs.nemar.org was later replaced by a pointer to this repository.
 
-const SOURCE_REPO_PATH = "repos/nemarOrg/docs/contents/src/content/docs/formats/biosig-zarr.md";
+const SOURCE_COMMIT = "a474abfe4d4a9d1bd4545259e21d3e916507c6a7";
+const SOURCE_REPO_PATH = `repos/nemarOrg/docs/contents/src/content/docs/formats/biosig-zarr.md?ref=${SOURCE_COMMIT}`;
 const MOVED_DEFAULT = new URL("../spec/index.md", import.meta.url).pathname;
 
 /** Turn a Starlight page into plain Markdown: front matter to a title heading, asides to labels. */
