@@ -8,10 +8,10 @@ The format is developed by the Neuroelectromagnetic Data Archive and Tools Resou
 
 ## Status
 
-The specification text is not here yet.
-It was first published on docs.nemar.org, and it moves into [`spec/`](spec/index.md) in the next change to this repository, with no normative change.
+The specification text is in [`spec/index.md`](spec/index.md).
+It was first published on docs.nemar.org and was moved here with no normative change; it is still pre-beta.
+The first release, `2.0.0`, is a Git tag made by the owner; until it exists, nothing in this repository is a published version of the specification.
 The schemas and conformance vectors follow later.
-Until a release exists, nothing in this repository is a published version of the specification.
 
 Two identifiers are planned and neither is live:
 
