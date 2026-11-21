@@ -15,11 +15,12 @@ Editorial: no change to what conforms.
   and the checks that run them, `tools/check-schemas.ts` and `tools/vectors/`.
 - The editor's ruling: `GOVERNANCE.md` makes any change to a JSON Schema normative and lets the editor decide what is normative.
   On 2026-11-20 the editor ruled that these first version 2 schemas and vectors are editorial, because they transcribe the `2.0.0` text and add no requirement to it.
-- The repository is initialized: licenses, governance, contribution terms, decision records, and checks on the text.
-- A check, `tools/check-moved-text.ts`, compares the word sequence of the specification text with its earlier copy on docs.nemar.org.
-- ADR 0004 records the identifier of the biosig-zarr Zarr convention.
 
 ## 2.0.0
 
 Format version 2, moved from docs.nemar.org with no normative change.
 Four parts the text marks Proposed are not yet implemented in NEMAR's stores: the `biosig-zarr` tag inside stores, `.bzx`, `generated_by`, and the conformance classes.
+
+- The repository is initialized: licenses, governance, contribution terms, decision records, and checks on the text.
+- A check, `tools/check-moved-text.ts`, compares the word sequence of the specification text with its earlier copy on docs.nemar.org.
+- ADR 0004 records the identifier of the biosig-zarr Zarr convention.
