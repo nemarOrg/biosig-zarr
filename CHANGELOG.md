@@ -2,7 +2,7 @@
 
 All notable changes to the specification are recorded here, newest first.
 The versioning scheme is in [`GOVERNANCE.md`](GOVERNANCE.md).
-A release is a Git tag made by the owner.
+A release is a Git tag made by the editor.
 
 ## 2.0.1
 

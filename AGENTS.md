@@ -15,7 +15,7 @@ Who decides and how releases are tagged are in [`GOVERNANCE.md`](GOVERNANCE.md);
 
 Never move, delete, or re-create a published tag, and never edit an accepted RFC.
 A mistake is fixed in the next release or by a superseding RFC.
-Only the owner tags and releases; no agent creates a tag, a release, a label, or a repository setting.
+Only the editor tags and releases; no agent creates a tag, a release, a label, or a repository setting unless the editor asks for that one act.
 
 ### A normative change needs an accepted RFC
 
