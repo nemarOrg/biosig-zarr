@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://w3id.org/biosig-zarr/schemas/v3/view-array.schema.json",
+  "title": "biosig-zarr format version 3: view array metadata document",
+  "description": "The zarr.json of one view level (a downsampled minimum and maximum envelope of level 0, for rendering only) of a uniform group in a format version 3 store, transcribed from spec/index.md on the branch draft/3.0.0, which is the definition. Rules that relate two values or two documents, such as the length of a level and the one below it, downsample_factor and the group's view_downsample, or the missing value of level 0, are not expressed. Unknown attributes are allowed.",
+  "type": "object",
+  "$comment": "View pyramid: the view arrays a group's view_levels lists.",
+  "required": [
+    "zarr_format",
+    "node_type",
+    "data_type",
+    "shape",
+    "codecs",
+    "fill_value",
+    "attributes"
+  ],
+  "allOf": [{ "$ref": "defs.schema.json#/$defs/missingValueRule" }],
+  "properties": {
+    "zarr_format": { "$ref": "defs.schema.json#/$defs/zarrFormat" },
+    "node_type": { "$comment": "View pyramid: a view level is an array.", "const": "array" },
+    "data_type": { "$ref": "defs.schema.json#/$defs/storageType" },
+    "shape": {
+      "type": "array",
+      "$comment": "View pyramid: shape [2, n_channels, n_L]; along axis 0, index 0 is the minimum and index 1 is the maximum.",
+      "prefixItems": [
+        {
+          "type": "integer",
+          "$comment": "View pyramid: axis 0 has the minimum and the maximum.",
+          "const": 2
+        },
+        { "type": "integer" },
+        { "type": "integer" }
+      ],
+      "minItems": 3,
+      "items": false
+    },
+    "codecs": {
+      "type": "array",
+      "$comment": "View pyramid: view arrays are not sharded, and the chain is bytes with little-endian byte order, then blosc with the zstd compressor.",
+      "prefixItems": [
+        { "$ref": "defs.schema.json#/$defs/bytesLittle" },
+        { "$ref": "defs.schema.json#/$defs/bloscZstd" }
+      ],
+      "minItems": 2,
+      "items": false
+    },
+    "attributes": { "$ref": "#/$defs/attributes" },
+    "fill_value": true
+  },
+  "$defs": {
+    "attributes": {
+      "type": "object",
+      "$comment": "View pyramid: the REQUIRED rows of the view array attribute table.",
+      "required": [
+        "level",
+        "kind",
+        "axis0",
+        "downsample_factor",
+        "rate_effective",
+        "chunk_columns",
+        "missing_value",
+        "usable_for_inference"
+      ],
+      "properties": {
+        "level": {
+          "type": "integer",
+          "description": "View pyramid: the level number, 1 or greater.",
+          "minimum": 1
+        },
+        "kind": {
+          "type": "string",
+          "$comment": "View pyramid: minmax_envelope.",
+          "const": "minmax_envelope"
+        },
+        "axis0": {
+          "type": "array",
+          "$comment": "View pyramid: [\"min\", \"max\"].",
+          "const": ["min", "max"]
+        },
+        "downsample_factor": { "type": "integer" },
+        "rate_effective": { "type": "number" },
+        "chunk_columns": { "type": "integer" },
+        "missing_value": { "$ref": "defs.schema.json#/$defs/missingValue" },
+        "usable_for_inference": {
+          "type": "boolean",
+          "$comment": "View pyramid: false.",
+          "const": false
+        }
+      }
+    }
+  }
+}

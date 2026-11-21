@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://w3id.org/biosig-zarr/schemas/v3/uniform-group.schema.json",
+  "title": "biosig-zarr format version 3: uniform group metadata document",
+  "description": "The zarr.json of a uniform group (a channel group whose samples lie on one grid with a fixed rate) in a format version 3 store, transcribed from spec/index.md on the branch draft/3.0.0, which is the definition. Rules that relate two values, such as the length of channels and n_channels, the last valid interval and n_samples, or the order of the valid intervals, are not expressed. Unknown attributes are allowed.",
+  "type": "object",
+  "$comment": "Hierarchy: a uniform group is a Zarr group, named in channel_groups. Channel groups: the attributes of every group and of a uniform group.",
+  "required": ["zarr_format", "node_type", "attributes"],
+  "properties": {
+    "zarr_format": { "$ref": "defs.schema.json#/$defs/zarrFormat" },
+    "node_type": { "$comment": "Hierarchy: a channel group is a group.", "const": "group" },
+    "attributes": { "$ref": "#/$defs/attributes" }
+  },
+  "$defs": {
+    "attributes": {
+      "type": "object",
+      "$comment": "Channel groups: the REQUIRED rows of the table of attributes of every group and of the table of attributes of a uniform group.",
+      "required": [
+        "kind",
+        "modality",
+        "n_channels",
+        "n_samples",
+        "channels",
+        "rate",
+        "original_rate",
+        "start_time",
+        "valid_intervals",
+        "time_regularization",
+        "n_view_levels",
+        "view_levels",
+        "view_downsample",
+        "view_chunk_columns",
+        "chunk_seconds",
+        "shard_seconds"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "$comment": "Channel groups: every channel group carries kind, uniform or timestamped; this is a uniform group.",
+          "const": "uniform"
+        },
+        "modality": {
+          "type": "string",
+          "$comment": "Channel groups (line 394): the modality of the group, in uppercase, such as EEG; the pattern allows no lowercase letter. The pattern is deliberately weaker than uppercase: it also allows digits, underscores, other characters without case, and the empty string.",
+          "pattern": "^[^a-z]*$"
+        },
+        "n_channels": { "type": "integer" },
+        "n_samples": { "type": "integer" },
+        "channels": { "type": "array", "items": { "$ref": "#/$defs/channel" } },
+        "dtype": { "$ref": "defs.schema.json#/$defs/storageType" },
+        "rate": { "type": "number" },
+        "original_rate": { "type": "number" },
+        "start_time": { "type": "number" },
+        "valid_intervals": { "$ref": "defs.schema.json#/$defs/validIntervals" },
+        "time_regularization": { "$ref": "defs.schema.json#/$defs/timeRegularization" },
+        "n_view_levels": { "type": "integer" },
+        "view_levels": {
+          "type": "array",
+          "description": "Channel groups: the view level numbers, contiguous from 1.",
+          "items": { "type": "integer", "minimum": 1 }
+        },
+        "view_downsample": { "type": "integer" },
+        "view_chunk_columns": { "type": "integer" },
+        "chunk_seconds": { "type": "number" },
+        "shard_seconds": { "type": "number" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "$comment": "Channel groups: the condition, n_view_levels 0.",
+            "required": ["n_view_levels"],
+            "properties": { "n_view_levels": { "$comment": "Channel groups: 0.", "const": 0 } }
+          },
+          "then": {
+            "properties": {
+              "view_levels": {
+                "type": "array",
+                "description": "Channel groups: view_levels is empty when n_view_levels is 0.",
+                "maxItems": 0
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "$comment": "Time regularization: the condition, method interpolated.",
+            "required": ["time_regularization"],
+            "properties": {
+              "time_regularization": {
+                "type": "object",
+                "$comment": "Time regularization: method interpolated.",
+                "required": ["method"],
+                "properties": {
+                  "method": {
+                    "$comment": "Time regularization: interpolated.",
+                    "const": "interpolated"
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "channels": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "$comment": "Time regularization (line 629): with interpolated, every channel's derivation includes time_interpolated.",
+                  "required": ["derivation"],
+                  "properties": {
+                    "derivation": {
+                      "type": "array",
+                      "contains": {
+                        "$comment": "Time regularization: time_interpolated.",
+                        "const": "time_interpolated"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "channel": {
+      "type": "object",
+      "description": "Channel groups, Channel objects: a channel of a uniform group.",
+      "$comment": "Channel groups: original_rate, target_rate and anti_aliased are CONDITIONAL, present in a uniform group.",
+      "allOf": [{ "$ref": "defs.schema.json#/$defs/channel" }],
+      "required": ["original_rate", "target_rate", "anti_aliased"],
+      "properties": {
+        "original_rate": { "type": "number" },
+        "target_rate": { "type": "number" },
+        "anti_aliased": { "type": "boolean" }
+      }
+    }
+  }
+}

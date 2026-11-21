@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://w3id.org/biosig-zarr/schemas/v3/values-array.schema.json",
+  "title": "biosig-zarr format version 3: values array metadata document",
+  "description": "The zarr.json of the values array of a timestamped group in a format version 3 store, transcribed from spec/index.md on the branch draft/3.0.0, which is the definition. Rules that relate two values or two documents, such as the shape and the channel count, or the data type and the group's storage type, are not expressed. Unknown attributes are allowed.",
+  "type": "object",
+  "$comment": "Timestamped groups: a timestamped group holds the array values, shape [n_channels, n_samples], sharded.",
+  "required": [
+    "zarr_format",
+    "node_type",
+    "data_type",
+    "shape",
+    "codecs",
+    "fill_value",
+    "attributes"
+  ],
+  "allOf": [{ "$ref": "defs.schema.json#/$defs/missingValueRule" }],
+  "properties": {
+    "zarr_format": { "$ref": "defs.schema.json#/$defs/zarrFormat" },
+    "node_type": { "$comment": "Timestamped groups: values is an array.", "const": "array" },
+    "data_type": { "$ref": "defs.schema.json#/$defs/storageType" },
+    "shape": {
+      "type": "array",
+      "description": "Timestamped groups: shape [n_channels, n_samples].",
+      "prefixItems": [{ "type": "integer" }, { "type": "integer" }],
+      "minItems": 2,
+      "items": false
+    },
+    "codecs": {
+      "type": "array",
+      "$comment": "Timestamped groups: values is chunked with the sharding_indexed codec, with the inner codec chain and shard index of level 0.",
+      "contains": { "$ref": "defs.schema.json#/$defs/shardingIndexed" }
+    },
+    "attributes": { "$ref": "#/$defs/attributes" },
+    "fill_value": true
+  },
+  "$defs": {
+    "attributes": {
+      "type": "object",
+      "$comment": "Timestamped groups: the attributes of values are kind, scale, offset, missing_value, and physical_formula, all REQUIRED, with the meanings they have on level 0.",
+      "required": ["kind", "scale", "offset", "missing_value", "physical_formula"],
+      "properties": {
+        "kind": { "type": "string", "$comment": "Timestamped groups: values.", "const": "values" },
+        "scale": { "$ref": "defs.schema.json#/$defs/scaleArray" },
+        "offset": { "$ref": "defs.schema.json#/$defs/offsetArray" },
+        "missing_value": { "$ref": "defs.schema.json#/$defs/missingValue" },
+        "physical_formula": { "$ref": "defs.schema.json#/$defs/physicalFormula" }
+      }
+    }
+  }
+}

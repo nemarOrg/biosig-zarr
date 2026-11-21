@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://w3id.org/biosig-zarr/schemas/v3/level0-array.schema.json",
+  "title": "biosig-zarr format version 3: level-0 array metadata document",
+  "description": "The zarr.json of the level-0 array (the full-resolution signal) of a uniform group in a format version 3 store, transcribed from spec/index.md on the branch draft/3.0.0, which is the definition. Rules that relate two values or two documents, such as the shape and the channel count, the data type and the group's storage type, or shard_samples as a multiple of chunk_samples, are not expressed. Unknown attributes are allowed.",
+  "type": "object",
+  "$comment": "Level-0 array: each uniform group MUST contain an array named 0, written as that section states.",
+  "required": [
+    "zarr_format",
+    "node_type",
+    "data_type",
+    "shape",
+    "codecs",
+    "fill_value",
+    "attributes"
+  ],
+  "allOf": [{ "$ref": "defs.schema.json#/$defs/missingValueRule" }],
+  "properties": {
+    "zarr_format": { "$ref": "defs.schema.json#/$defs/zarrFormat" },
+    "node_type": { "$comment": "Level-0 array: level 0 is an array.", "const": "array" },
+    "data_type": { "$ref": "defs.schema.json#/$defs/storageType" },
+    "shape": {
+      "type": "array",
+      "description": "Level-0 array: the array MUST have shape [n_channels, n_samples].",
+      "prefixItems": [{ "type": "integer" }, { "type": "integer" }],
+      "minItems": 2,
+      "items": false
+    },
+    "codecs": {
+      "type": "array",
+      "$comment": "Level-0 array: the array MUST use the sharding_indexed codec.",
+      "contains": { "$ref": "defs.schema.json#/$defs/shardingIndexed" }
+    },
+    "attributes": { "$ref": "#/$defs/attributes" },
+    "fill_value": true
+  },
+  "$defs": {
+    "attributes": {
+      "type": "object",
+      "$comment": "Level-0 array: the REQUIRED rows of the level-0 attribute table.",
+      "required": [
+        "level",
+        "kind",
+        "rate",
+        "source_rate_hz",
+        "downsample_factor",
+        "chunk_samples",
+        "shard_samples",
+        "anti_aliased",
+        "usable_for_inference",
+        "scale",
+        "offset",
+        "missing_value",
+        "physical_formula"
+      ],
+      "properties": {
+        "level": { "type": "integer", "$comment": "Level-0 array: 0.", "const": 0 },
+        "kind": { "type": "string", "$comment": "Level-0 array: signal.", "const": "signal" },
+        "rate": { "type": "number" },
+        "source_rate_hz": { "type": "number" },
+        "downsample_factor": { "type": "integer", "$comment": "Level-0 array: 1.", "const": 1 },
+        "chunk_samples": { "type": "integer" },
+        "shard_samples": { "type": "integer" },
+        "anti_aliased": { "type": "boolean" },
+        "usable_for_inference": { "type": "boolean" },
+        "scale": { "$ref": "defs.schema.json#/$defs/scaleArray" },
+        "offset": { "$ref": "defs.schema.json#/$defs/offsetArray" },
+        "missing_value": { "$ref": "defs.schema.json#/$defs/missingValue" },
+        "physical_formula": { "$ref": "defs.schema.json#/$defs/physicalFormula" }
+      }
+    }
+  }
+}
