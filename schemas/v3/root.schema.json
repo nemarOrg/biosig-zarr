@@ -72,7 +72,7 @@
           "additionalProperties": { "type": "number" },
           "propertyNames": {
             "type": "string",
-            "$comment": "Root attributes: keyed by uppercase modality name; the pattern allows no lowercase letter.",
+            "$comment": "Root attributes (line 276): keyed by uppercase modality name; the pattern allows no lowercase letter. The pattern is deliberately weaker than uppercase: it also allows digits, underscores, other characters without case, and the empty string.",
             "pattern": "^[^a-z]*$"
           }
         },

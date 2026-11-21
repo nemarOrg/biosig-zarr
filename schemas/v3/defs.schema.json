@@ -376,12 +376,12 @@
         },
         "channel_type": {
           "type": "string",
-          "$comment": "Channel groups: the channel type, in uppercase, such as EEG or TRIG; the pattern allows no lowercase letter.",
+          "$comment": "Channel groups (line 423): the channel type, in uppercase, such as EEG or TRIG; the pattern allows no lowercase letter. The pattern is deliberately weaker than uppercase: it also allows digits, underscores, other characters without case, and the empty string.",
           "pattern": "^[^a-z]*$"
         },
         "modality": {
           "type": "string",
-          "$comment": "Channel groups: the modality of the group, which the group attributes give in uppercase; the pattern allows no lowercase letter.",
+          "$comment": "Channel groups (lines 394 and 424): the modality of the group, which the group attributes give in uppercase; the pattern allows no lowercase letter. The pattern is deliberately weaker than uppercase: it also allows digits, underscores, other characters without case, and the empty string.",
           "pattern": "^[^a-z]*$"
         },
         "unit": { "type": "string" },
@@ -470,7 +470,7 @@
           "then": {
             "properties": {
               "usable_for_inference": {
-                "$comment": "Channel groups: usable_for_inference is false for a discrete channel.",
+                "$comment": "Channel groups (line 430): usable_for_inference is false for a discrete channel.",
                 "const": false
               }
             }

@@ -35,7 +35,7 @@
         },
         "modality": {
           "type": "string",
-          "$comment": "Channel groups: the modality of the group, in uppercase, such as EEG; the pattern allows no lowercase letter.",
+          "$comment": "Channel groups (line 394): the modality of the group, in uppercase, such as EEG; the pattern allows no lowercase letter. The pattern is deliberately weaker than uppercase: it also allows digits, underscores, other characters without case, and the empty string.",
           "pattern": "^[^a-z]*$"
         },
         "n_channels": { "type": "integer" },
