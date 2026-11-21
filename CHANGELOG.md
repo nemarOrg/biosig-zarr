@@ -4,6 +4,21 @@ All notable changes to the specification are recorded here, newest first.
 The versioning scheme is in [`GOVERNANCE.md`](GOVERNANCE.md).
 A release is a Git tag made by the editor.
 
+## Unreleased: 3.0.0-draft.3
+
+The text that the Request for Comments (RFC) RFC-0001 in nemarOrg/rfcs proposes, on the branch `draft/3.0.0`, with release `2.0.2` merged in.
+It is not accepted.
+No normative change from `3.0.0-draft.2`.
+
+- Release `2.0.2` is merged in from `main`:
+  the specification is independent of the Neuroelectromagnetic Data Archive and Tools Resource (NEMAR), its first implementer,
+  and the copyright holder of its text is the biosig-zarr contributors, as Architecture Decision Record (ADR) 0005 records.
+- Four lines of the draft text are reworded, each in place and on one line, so `spec/index.md` keeps its line count and a line link into `3.0.0-draft.2` lands on the same text:
+  the notice at the top says that RFC-0001 proposes the text;
+  its sentence on stores served by NEMAR now defines NEMAR, at its first use;
+  the sentence on RFC 2119 and RFC 8174 sets them apart from the Requests for Comments in nemarOrg/rfcs;
+  and the sentence on the packing rules of `.bzx` makes them this specification's own, while the sentences after it, on prior art, are unchanged.
+
 ## Unreleased: 3.0.0-draft.2
 
 The text that RFC-0001 proposes, with its first test suite, on the branch `draft/3.0.0`.
