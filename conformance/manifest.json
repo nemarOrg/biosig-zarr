@@ -1,0 +1,259 @@
+{
+  "$comment": "The conformance contract; see conformance/README.md.",
+  "spec": "spec/index.md",
+  "vectors": [
+    {
+      "id": "v2-legacy-name",
+      "path": "stores/v2/v2-legacy-name.zarr",
+      "format_version": 2,
+      "class": "valid",
+      "layer": null,
+      "rule": "format-name",
+      "description": "Written by biosigIO 1.2.13 and not changed since.",
+      "expect": {
+        "2": {
+          "outcome": "accept",
+          "goldens": "goldens/v2-legacy-name.json"
+        }
+      },
+      "files": {
+        "eeg_100hz/0/c/0/0": "b32ab686f57c975f1a7cb088f0337074e6215a7923de1a13ffb7ce54a9ac77b7",
+        "eeg_100hz/0/zarr.json": "df1540209fc16954dd7fa42dff4db49deb11a27f671ab51b9ff1660cc8e2cfb9",
+        "eeg_100hz/view/1/c/0/0/0": "bd4c827370cf363b277e5c45cc088e58e17238305913b02dcd4ed43d399493db",
+        "eeg_100hz/view/1/zarr.json": "ded10996df0f779ff34a477f914c85a9c060371ad61f944fbd49277163b9b407",
+        "eeg_100hz/view/zarr.json": "36615682d5be9646729635067a75185212eb0c48d708ef06ad34c1f58dd587d2",
+        "eeg_100hz/zarr.json": "45505844917081266704d40cb109d82e6cda1727fd8c30383948862c5ac5a618",
+        "events/zarr.json": "fcc6bd469d32c6d9e1538ecd1d337b8ae8d0cb56618aa27997ca3efa29406f4c",
+        "misc_100hz/0/c/0/0": "c2f8bcd7299a6c29b0e9bec75570d6eaf43748c130841252a9f8025c704dc609",
+        "misc_100hz/0/zarr.json": "0d70a93ffa92483dbb4a2e5e1a43e870d572b39f3644e753a5e65d61b2667756",
+        "misc_100hz/view/1/c/0/0/0": "903bc3a3957bd0c51be8049c6821c278447b163cab934b5333079c6ca1717fef",
+        "misc_100hz/view/1/zarr.json": "b2600beb44eb21b76e31efbbc05742017cdbcb5a7f8d059c9db5b87447e31c4c",
+        "misc_100hz/view/zarr.json": "36615682d5be9646729635067a75185212eb0c48d708ef06ad34c1f58dd587d2",
+        "misc_100hz/zarr.json": "6c8bf2cd005415434ce7da408f03927b4ff7340ada7683643bf57a6ef10f0ebb",
+        "zarr.json": "64f891e5ab7ae5d9aedf7e6520d86b8d40ced9e3de62d739718e94e4515489cc"
+      }
+    },
+    {
+      "id": "v2-new-name",
+      "path": "stores/v2/v2-new-name.zarr",
+      "format_version": 2,
+      "class": "valid",
+      "layer": null,
+      "rule": "format-name",
+      "derived_from": "v2-legacy-name",
+      "alteration": {
+        "document": "zarr.json",
+        "patch": [
+          {
+            "op": "replace",
+            "path": "/attributes/format",
+            "value": "biosig-zarr"
+          }
+        ]
+      },
+      "expect": {
+        "2": {
+          "outcome": "accept",
+          "goldens": "goldens/v2-legacy-name.json"
+        }
+      },
+      "files": {
+        "eeg_100hz/0/c/0/0": "b32ab686f57c975f1a7cb088f0337074e6215a7923de1a13ffb7ce54a9ac77b7",
+        "eeg_100hz/0/zarr.json": "df1540209fc16954dd7fa42dff4db49deb11a27f671ab51b9ff1660cc8e2cfb9",
+        "eeg_100hz/view/1/c/0/0/0": "bd4c827370cf363b277e5c45cc088e58e17238305913b02dcd4ed43d399493db",
+        "eeg_100hz/view/1/zarr.json": "ded10996df0f779ff34a477f914c85a9c060371ad61f944fbd49277163b9b407",
+        "eeg_100hz/view/zarr.json": "36615682d5be9646729635067a75185212eb0c48d708ef06ad34c1f58dd587d2",
+        "eeg_100hz/zarr.json": "45505844917081266704d40cb109d82e6cda1727fd8c30383948862c5ac5a618",
+        "events/zarr.json": "fcc6bd469d32c6d9e1538ecd1d337b8ae8d0cb56618aa27997ca3efa29406f4c",
+        "misc_100hz/0/c/0/0": "c2f8bcd7299a6c29b0e9bec75570d6eaf43748c130841252a9f8025c704dc609",
+        "misc_100hz/0/zarr.json": "0d70a93ffa92483dbb4a2e5e1a43e870d572b39f3644e753a5e65d61b2667756",
+        "misc_100hz/view/1/c/0/0/0": "903bc3a3957bd0c51be8049c6821c278447b163cab934b5333079c6ca1717fef",
+        "misc_100hz/view/1/zarr.json": "b2600beb44eb21b76e31efbbc05742017cdbcb5a7f8d059c9db5b87447e31c4c",
+        "misc_100hz/view/zarr.json": "36615682d5be9646729635067a75185212eb0c48d708ef06ad34c1f58dd587d2",
+        "misc_100hz/zarr.json": "6c8bf2cd005415434ce7da408f03927b4ff7340ada7683643bf57a6ef10f0ebb",
+        "zarr.json": "86a39f1f4efffb7b937a67960150dae394c531fb4824729af4c4136dfdb41729"
+      }
+    },
+    {
+      "id": "v2-unknown-attribute",
+      "path": "stores/v2/v2-unknown-attribute.zarr",
+      "format_version": 2,
+      "class": "valid",
+      "layer": null,
+      "rule": "what-changes-the-version",
+      "derived_from": "v2-legacy-name",
+      "alteration": {
+        "document": "zarr.json",
+        "patch": [
+          {
+            "op": "add",
+            "path": "/attributes/conformance_unknown_attribute",
+            "value": {
+              "note": "An attribute no reader recognizes."
+            }
+          }
+        ]
+      },
+      "expect": {
+        "2": {
+          "outcome": "accept",
+          "goldens": "goldens/v2-legacy-name.json"
+        }
+      },
+      "files": {
+        "eeg_100hz/0/c/0/0": "b32ab686f57c975f1a7cb088f0337074e6215a7923de1a13ffb7ce54a9ac77b7",
+        "eeg_100hz/0/zarr.json": "df1540209fc16954dd7fa42dff4db49deb11a27f671ab51b9ff1660cc8e2cfb9",
+        "eeg_100hz/view/1/c/0/0/0": "bd4c827370cf363b277e5c45cc088e58e17238305913b02dcd4ed43d399493db",
+        "eeg_100hz/view/1/zarr.json": "ded10996df0f779ff34a477f914c85a9c060371ad61f944fbd49277163b9b407",
+        "eeg_100hz/view/zarr.json": "36615682d5be9646729635067a75185212eb0c48d708ef06ad34c1f58dd587d2",
+        "eeg_100hz/zarr.json": "45505844917081266704d40cb109d82e6cda1727fd8c30383948862c5ac5a618",
+        "events/zarr.json": "fcc6bd469d32c6d9e1538ecd1d337b8ae8d0cb56618aa27997ca3efa29406f4c",
+        "misc_100hz/0/c/0/0": "c2f8bcd7299a6c29b0e9bec75570d6eaf43748c130841252a9f8025c704dc609",
+        "misc_100hz/0/zarr.json": "0d70a93ffa92483dbb4a2e5e1a43e870d572b39f3644e753a5e65d61b2667756",
+        "misc_100hz/view/1/c/0/0/0": "903bc3a3957bd0c51be8049c6821c278447b163cab934b5333079c6ca1717fef",
+        "misc_100hz/view/1/zarr.json": "b2600beb44eb21b76e31efbbc05742017cdbcb5a7f8d059c9db5b87447e31c4c",
+        "misc_100hz/view/zarr.json": "36615682d5be9646729635067a75185212eb0c48d708ef06ad34c1f58dd587d2",
+        "misc_100hz/zarr.json": "6c8bf2cd005415434ce7da408f03927b4ff7340ada7683643bf57a6ef10f0ebb",
+        "zarr.json": "35b4fd17354e36f74221d39ab50d96ccd74f31d5c104498690ab7ee0f11e7bc7"
+      }
+    },
+    {
+      "id": "v2-version-3",
+      "path": "stores/v2/v2-version-3.zarr",
+      "format_version": 2,
+      "class": "invalid",
+      "layer": null,
+      "rule": "format-version",
+      "description": "Invalid because a version 2 reader MUST refuse a store whose format_version is greater than the highest version it implements (spec line 126), not because the store breaks another version 2 rule.",
+      "derived_from": "v2-legacy-name",
+      "alteration": {
+        "document": "zarr.json",
+        "patch": [
+          {
+            "op": "replace",
+            "path": "/attributes/format_version",
+            "value": 3
+          }
+        ]
+      },
+      "expect": {
+        "2": {
+          "outcome": "refuse",
+          "schema_failure": {
+            "schema": "https://w3id.org/biosig-zarr/schemas/v2/root.schema.json",
+            "document": "zarr.json",
+            "instance_path": "/attributes/format_version",
+            "keyword": "const"
+          }
+        }
+      },
+      "files": {
+        "eeg_100hz/0/c/0/0": "b32ab686f57c975f1a7cb088f0337074e6215a7923de1a13ffb7ce54a9ac77b7",
+        "eeg_100hz/0/zarr.json": "df1540209fc16954dd7fa42dff4db49deb11a27f671ab51b9ff1660cc8e2cfb9",
+        "eeg_100hz/view/1/c/0/0/0": "bd4c827370cf363b277e5c45cc088e58e17238305913b02dcd4ed43d399493db",
+        "eeg_100hz/view/1/zarr.json": "ded10996df0f779ff34a477f914c85a9c060371ad61f944fbd49277163b9b407",
+        "eeg_100hz/view/zarr.json": "36615682d5be9646729635067a75185212eb0c48d708ef06ad34c1f58dd587d2",
+        "eeg_100hz/zarr.json": "45505844917081266704d40cb109d82e6cda1727fd8c30383948862c5ac5a618",
+        "events/zarr.json": "fcc6bd469d32c6d9e1538ecd1d337b8ae8d0cb56618aa27997ca3efa29406f4c",
+        "misc_100hz/0/c/0/0": "c2f8bcd7299a6c29b0e9bec75570d6eaf43748c130841252a9f8025c704dc609",
+        "misc_100hz/0/zarr.json": "0d70a93ffa92483dbb4a2e5e1a43e870d572b39f3644e753a5e65d61b2667756",
+        "misc_100hz/view/1/c/0/0/0": "903bc3a3957bd0c51be8049c6821c278447b163cab934b5333079c6ca1717fef",
+        "misc_100hz/view/1/zarr.json": "b2600beb44eb21b76e31efbbc05742017cdbcb5a7f8d059c9db5b87447e31c4c",
+        "misc_100hz/view/zarr.json": "36615682d5be9646729635067a75185212eb0c48d708ef06ad34c1f58dd587d2",
+        "misc_100hz/zarr.json": "6c8bf2cd005415434ce7da408f03927b4ff7340ada7683643bf57a6ef10f0ebb",
+        "zarr.json": "246ab25088c15644ab908158e5f5d1a7d3330ba980ee02aa9262f73fa031d091"
+      }
+    },
+    {
+      "id": "v2-unknown-format",
+      "path": "stores/v2/v2-unknown-format.zarr",
+      "format_version": 2,
+      "class": "invalid",
+      "layer": null,
+      "rule": "format-name",
+      "derived_from": "v2-legacy-name",
+      "alteration": {
+        "document": "zarr.json",
+        "patch": [
+          {
+            "op": "replace",
+            "path": "/attributes/format",
+            "value": "example-zarr"
+          }
+        ]
+      },
+      "expect": {
+        "2": {
+          "outcome": "refuse",
+          "schema_failure": {
+            "schema": "https://w3id.org/biosig-zarr/schemas/v2/root.schema.json",
+            "document": "zarr.json",
+            "instance_path": "/attributes/format",
+            "keyword": "enum"
+          }
+        }
+      },
+      "files": {
+        "eeg_100hz/0/c/0/0": "b32ab686f57c975f1a7cb088f0337074e6215a7923de1a13ffb7ce54a9ac77b7",
+        "eeg_100hz/0/zarr.json": "df1540209fc16954dd7fa42dff4db49deb11a27f671ab51b9ff1660cc8e2cfb9",
+        "eeg_100hz/view/1/c/0/0/0": "bd4c827370cf363b277e5c45cc088e58e17238305913b02dcd4ed43d399493db",
+        "eeg_100hz/view/1/zarr.json": "ded10996df0f779ff34a477f914c85a9c060371ad61f944fbd49277163b9b407",
+        "eeg_100hz/view/zarr.json": "36615682d5be9646729635067a75185212eb0c48d708ef06ad34c1f58dd587d2",
+        "eeg_100hz/zarr.json": "45505844917081266704d40cb109d82e6cda1727fd8c30383948862c5ac5a618",
+        "events/zarr.json": "fcc6bd469d32c6d9e1538ecd1d337b8ae8d0cb56618aa27997ca3efa29406f4c",
+        "misc_100hz/0/c/0/0": "c2f8bcd7299a6c29b0e9bec75570d6eaf43748c130841252a9f8025c704dc609",
+        "misc_100hz/0/zarr.json": "0d70a93ffa92483dbb4a2e5e1a43e870d572b39f3644e753a5e65d61b2667756",
+        "misc_100hz/view/1/c/0/0/0": "903bc3a3957bd0c51be8049c6821c278447b163cab934b5333079c6ca1717fef",
+        "misc_100hz/view/1/zarr.json": "b2600beb44eb21b76e31efbbc05742017cdbcb5a7f8d059c9db5b87447e31c4c",
+        "misc_100hz/view/zarr.json": "36615682d5be9646729635067a75185212eb0c48d708ef06ad34c1f58dd587d2",
+        "misc_100hz/zarr.json": "6c8bf2cd005415434ce7da408f03927b4ff7340ada7683643bf57a6ef10f0ebb",
+        "zarr.json": "74e7dd646cfb958ff9c5f13eaf7575bba2747ef4d816dbb8ec7d46b452ff927a"
+      }
+    },
+    {
+      "id": "v2-no-channel-groups",
+      "path": "stores/v2/v2-no-channel-groups.zarr",
+      "format_version": 2,
+      "class": "invalid",
+      "layer": null,
+      "rule": "root-attributes",
+      "derived_from": "v2-legacy-name",
+      "alteration": {
+        "document": "zarr.json",
+        "patch": [
+          {
+            "op": "remove",
+            "path": "/attributes/channel_groups"
+          }
+        ]
+      },
+      "expect": {
+        "2": {
+          "outcome": "schema-invalid",
+          "schema_failure": {
+            "schema": "https://w3id.org/biosig-zarr/schemas/v2/root.schema.json",
+            "document": "zarr.json",
+            "instance_path": "/attributes",
+            "keyword": "required"
+          }
+        }
+      },
+      "files": {
+        "eeg_100hz/0/c/0/0": "b32ab686f57c975f1a7cb088f0337074e6215a7923de1a13ffb7ce54a9ac77b7",
+        "eeg_100hz/0/zarr.json": "df1540209fc16954dd7fa42dff4db49deb11a27f671ab51b9ff1660cc8e2cfb9",
+        "eeg_100hz/view/1/c/0/0/0": "bd4c827370cf363b277e5c45cc088e58e17238305913b02dcd4ed43d399493db",
+        "eeg_100hz/view/1/zarr.json": "ded10996df0f779ff34a477f914c85a9c060371ad61f944fbd49277163b9b407",
+        "eeg_100hz/view/zarr.json": "36615682d5be9646729635067a75185212eb0c48d708ef06ad34c1f58dd587d2",
+        "eeg_100hz/zarr.json": "45505844917081266704d40cb109d82e6cda1727fd8c30383948862c5ac5a618",
+        "events/zarr.json": "fcc6bd469d32c6d9e1538ecd1d337b8ae8d0cb56618aa27997ca3efa29406f4c",
+        "misc_100hz/0/c/0/0": "c2f8bcd7299a6c29b0e9bec75570d6eaf43748c130841252a9f8025c704dc609",
+        "misc_100hz/0/zarr.json": "0d70a93ffa92483dbb4a2e5e1a43e870d572b39f3644e753a5e65d61b2667756",
+        "misc_100hz/view/1/c/0/0/0": "903bc3a3957bd0c51be8049c6821c278447b163cab934b5333079c6ca1717fef",
+        "misc_100hz/view/1/zarr.json": "b2600beb44eb21b76e31efbbc05742017cdbcb5a7f8d059c9db5b87447e31c4c",
+        "misc_100hz/view/zarr.json": "36615682d5be9646729635067a75185212eb0c48d708ef06ad34c1f58dd587d2",
+        "misc_100hz/zarr.json": "6c8bf2cd005415434ce7da408f03927b4ff7340ada7683643bf57a6ef10f0ebb",
+        "zarr.json": "ca4c5ecdee5ac7264f9526c7b10518d42ffe193d91ee4d9376f8215151511f9f"
+      }
+    }
+  ]
+}

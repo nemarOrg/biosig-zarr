@@ -1,0 +1,22 @@
+[project]
+name = "biosig-zarr-vectors"
+version = "0.0.0"
+description = "Builds and checks the biosig-zarr conformance vectors; not a library"
+requires-python = ">=3.12"
+dependencies = ["numpy==2.5.5", "zarr==3.4.2"]
+
+[dependency-groups]
+dev = ["pytest==9.2.0", "ruff==0.17.6", "ty==0.0.107"]
+
+[tool.uv]
+package = false
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "PTH"]
+
+[tool.pytest.ini_options]
+addopts = "-p no:cacheprovider"
