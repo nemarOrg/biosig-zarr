@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://w3id.org/biosig-zarr/schemas/v3/timestamped-group.schema.json",
+  "title": "biosig-zarr format version 3: timestamped group metadata document",
+  "description": "The zarr.json of a timestamped group (a channel group with one explicit time per sample) in a format version 3 store, transcribed from spec/index.md on the branch draft/3.0.0, which is the definition. Rules that relate two values or two documents, such as time_range and the first and last values of time, are not expressed. Unknown attributes are allowed.",
+  "type": "object",
+  "$comment": "Hierarchy: a timestamped group is a Zarr group, named in timestamped_groups. Timestamped groups: the attributes of a timestamped group, in addition to those of every group.",
+  "required": ["zarr_format", "node_type", "attributes"],
+  "properties": {
+    "zarr_format": { "$ref": "defs.schema.json#/$defs/zarrFormat" },
+    "node_type": { "$comment": "Hierarchy: a channel group is a group.", "const": "group" },
+    "attributes": { "$ref": "#/$defs/attributes" }
+  },
+  "$defs": {
+    "attributes": {
+      "type": "object",
+      "$comment": "Channel groups and Timestamped groups: the REQUIRED rows of the table of attributes of every group and of the table of attributes of a timestamped group.",
+      "required": [
+        "kind",
+        "modality",
+        "n_channels",
+        "n_samples",
+        "channels",
+        "nominal_rate",
+        "effective_rate",
+        "time_range",
+        "continuity",
+        "chunk_samples"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "$comment": "Channel groups: every channel group carries kind, uniform or timestamped; this is a timestamped group.",
+          "const": "timestamped"
+        },
+        "modality": { "type": "string" },
+        "n_channels": { "type": "integer" },
+        "n_samples": {
+          "type": "integer",
+          "$comment": "Timestamped groups: n_samples MUST be at least 1.",
+          "minimum": 1
+        },
+        "channels": { "type": "array", "items": { "$ref": "#/$defs/channel" } },
+        "dtype": { "$ref": "defs.schema.json#/$defs/storageType" },
+        "nominal_rate": { "anyOf": [{ "type": "number" }, { "type": "null" }] },
+        "effective_rate": { "anyOf": [{ "type": "number" }, { "type": "null" }] },
+        "time_range": {
+          "type": "array",
+          "description": "Timestamped groups: the first and the last value of time.",
+          "prefixItems": [{ "type": "number" }, { "type": "number" }],
+          "minItems": 2,
+          "items": false
+        },
+        "continuity": {
+          "type": "string",
+          "$comment": "Timestamped groups: continuous, step, instantaneous, or unknown.",
+          "enum": ["continuous", "step", "instantaneous", "unknown"]
+        },
+        "chunk_samples": { "type": "integer" }
+      },
+      "not": {
+        "$comment": "Timestamped groups: a timestamped group MUST NOT carry the attribute rate.",
+        "required": ["rate"],
+        "properties": { "rate": true }
+      },
+      "if": {
+        "$comment": "Timestamped groups: the condition, n_samples 1.",
+        "required": ["n_samples"],
+        "properties": { "n_samples": { "$comment": "Timestamped groups: 1.", "const": 1 } }
+      },
+      "then": {
+        "properties": {
+          "effective_rate": {
+            "$comment": "Timestamped groups: effective_rate is null when n_samples is 1.",
+            "type": "null"
+          }
+        }
+      }
+    },
+    "channel": {
+      "type": "object",
+      "description": "Channel groups, Channel objects: a channel of a timestamped group.",
+      "allOf": [{ "$ref": "defs.schema.json#/$defs/channel" }],
+      "not": {
+        "$comment": "Timestamped groups: channel objects in a timestamped group have no original_rate, target_rate or anti_aliased, which are CONDITIONAL, present in a uniform group.",
+        "anyOf": [
+          {
+            "$comment": "Timestamped groups: no original_rate.",
+            "required": ["original_rate"],
+            "properties": { "original_rate": true }
+          },
+          {
+            "$comment": "Timestamped groups: no target_rate.",
+            "required": ["target_rate"],
+            "properties": { "target_rate": true }
+          },
+          {
+            "$comment": "Timestamped groups: no anti_aliased.",
+            "required": ["anti_aliased"],
+            "properties": { "anti_aliased": true }
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://w3id.org/biosig-zarr/schemas/v3/events-group.schema.json",
+  "title": "biosig-zarr format version 3: events group metadata document",
+  "description": "The zarr.json of the events group of a format version 3 store, transcribed from spec/index.md on the branch draft/3.0.0, which is the definition. Rules that relate two documents, such as n_events and the length of the event arrays, are not expressed. Unknown attributes are allowed.",
+  "type": "object",
+  "$comment": "Events group: the root group MUST contain a group named events.",
+  "required": ["zarr_format", "node_type", "attributes"],
+  "properties": {
+    "zarr_format": { "$ref": "defs.schema.json#/$defs/zarrFormat" },
+    "node_type": { "$comment": "Events group: events is a group.", "const": "group" },
+    "attributes": { "$ref": "#/$defs/attributes" }
+  },
+  "$defs": {
+    "attributes": {
+      "type": "object",
+      "$comment": "Events group: the REQUIRED rows of the events attribute table.",
+      "required": ["n_events", "label_map", "onset_source_basis"],
+      "properties": {
+        "n_events": { "type": "integer" },
+        "label_map": {
+          "type": "object",
+          "description": "Events group: a map from an event code, written as a decimal string, to its description.",
+          "propertyNames": {
+            "type": "string",
+            "$comment": "Events group: an event code, written as a decimal string. The pattern checks the decimal form only; whether the value fits the int32 code array is not checked.",
+            "pattern": "^-?[0-9]+$"
+          },
+          "additionalProperties": {
+            "type": "string",
+            "description": "Events group: the code's description; the text gives no type, and a description is taken to be a string."
+          }
+        },
+        "onset_source_basis": {
+          "type": "string",
+          "$comment": "Events group: how the source counted onsets, timeline, concatenated, or unknown.",
+          "enum": ["timeline", "concatenated", "unknown"]
+        }
+      },
+      "if": {
+        "$comment": "Events group: the condition, n_events 0.",
+        "required": ["n_events"],
+        "properties": { "n_events": { "$comment": "Events group: 0.", "const": 0 } }
+      },
+      "then": {
+        "properties": {
+          "label_map": {
+            "type": "object",
+            "description": "Events group: label_map is empty when n_events is 0.",
+            "maxProperties": 0
+          }
+        }
+      }
+    }
+  }
+}
