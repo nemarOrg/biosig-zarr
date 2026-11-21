@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://w3id.org/biosig-zarr/schemas/v2/uniform-group.schema.json",
+  "title": "biosig-zarr format version 2: channel group metadata document",
+  "description": "The zarr.json of a channel group (the channels of one modality that share one sampling rate) in a format version 2 store, transcribed from spec/index.md at release 2.0.0, which is the definition. Attributes the text lists as possibly absent in a version 2 store are not required, and unknown attributes are allowed.",
+  "type": "object",
+  "$comment": "Hierarchy: a channel group is a Zarr group. Channel groups: the group attribute table.",
+  "required": ["zarr_format", "node_type", "attributes"],
+  "properties": {
+    "zarr_format": {
+      "$comment": "Zarr requirements: a store MUST NOT use Zarr version 2 metadata.",
+      "const": 3
+    },
+    "node_type": {
+      "$comment": "Hierarchy: a channel group is a group.",
+      "const": "group"
+    },
+    "attributes": { "$ref": "#/$defs/attributes" }
+  },
+  "$defs": {
+    "attributes": {
+      "type": "object",
+      "$comment": "Channel groups: the REQUIRED rows of the group attribute table, less n_view_levels, view_levels, view_downsample, view_chunk_columns, chunk_seconds and shard_seconds, which What changes the version lists as possibly absent.",
+      "required": ["modality", "rate", "original_rate", "n_channels", "n_samples", "channels"],
+      "properties": {
+        "modality": { "type": "string" },
+        "rate": { "type": "number" },
+        "original_rate": { "type": "number" },
+        "n_channels": { "type": "integer" },
+        "n_samples": { "type": "integer" },
+        "channels": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/channel" }
+        },
+        "n_view_levels": { "type": "integer" },
+        "view_levels": {
+          "type": "array",
+          "items": { "type": "integer" }
+        },
+        "view_downsample": { "type": "integer" },
+        "view_chunk_columns": { "type": "integer" },
+        "chunk_seconds": { "type": "number" },
+        "shard_seconds": { "type": "number" }
+      }
+    },
+    "channel": {
+      "type": "object",
+      "$comment": "Channel groups: the REQUIRED rows of the channel object table.",
+      "required": [
+        "label",
+        "row_index",
+        "channel_type",
+        "modality",
+        "unit",
+        "prefilter",
+        "original_rate",
+        "target_rate",
+        "anti_aliased",
+        "usable_for_inference",
+        "scale",
+        "offset"
+      ],
+      "properties": {
+        "label": { "type": "string" },
+        "row_index": {
+          "type": "integer",
+          "$comment": "Channel groups: the row_index values of a group MUST be the integers 0 to n_channels - 1.",
+          "minimum": 0
+        },
+        "channel_type": { "type": "string" },
+        "modality": { "type": "string" },
+        "unit": { "type": "string" },
+        "prefilter": { "type": "string" },
+        "original_rate": { "type": "number" },
+        "target_rate": { "type": "number" },
+        "anti_aliased": { "type": "boolean" },
+        "usable_for_inference": { "type": "boolean" },
+        "scale": { "type": "number" },
+        "offset": { "type": "number" },
+        "nonfinite_samples": { "type": "integer" },
+        "bids_unit": { "type": "string" }
+      }
+    }
+  }
+}
