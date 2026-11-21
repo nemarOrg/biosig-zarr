@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://w3id.org/biosig-zarr/schemas/v2/view-array.schema.json",
+  "title": "biosig-zarr format version 2: view array metadata document",
+  "description": "The zarr.json of one view level (a downsampled minimum and maximum envelope of level 0, for rendering only) of a channel group in a format version 2 store, transcribed from spec/index.md at release 2.0.0, which is the definition. Rules that relate two values, such as the length of a level and the one below it, are not expressed. Attributes the text lists as possibly absent in a version 2 store are not required, and unknown attributes are allowed.",
+  "type": "object",
+  "$comment": "View pyramid: the view arrays a group's view_levels lists.",
+  "required": ["zarr_format", "node_type", "data_type", "shape", "codecs", "attributes"],
+  "properties": {
+    "zarr_format": {
+      "$comment": "Zarr requirements: a store MUST NOT use Zarr version 2 metadata.",
+      "const": 3
+    },
+    "node_type": {
+      "$comment": "View pyramid: a view level is an array.",
+      "const": "array"
+    },
+    "data_type": {
+      "type": "string",
+      "$comment": "View pyramid: the same data type as level 0, which Level-0 array says MUST be int16 or float32.",
+      "enum": ["int16", "float32"]
+    },
+    "shape": {
+      "type": "array",
+      "$comment": "View pyramid: shape [2, n_channels, n_L]; along axis 0, index 0 is the minimum and index 1 is the maximum.",
+      "prefixItems": [
+        {
+          "type": "integer",
+          "$comment": "View pyramid: axis 0 has the minimum and the maximum.",
+          "const": 2
+        },
+        { "type": "integer" },
+        { "type": "integer" }
+      ],
+      "minItems": 3,
+      "items": false
+    },
+    "codecs": {
+      "type": "array",
+      "$comment": "View pyramid: view arrays are not sharded, and the chain is bytes with little-endian byte order, then blosc with the zstd compressor.",
+      "prefixItems": [{ "$ref": "#/$defs/bytesLittle" }, { "$ref": "#/$defs/bloscZstd" }],
+      "minItems": 2,
+      "items": false
+    },
+    "attributes": { "$ref": "#/$defs/attributes" }
+  },
+  "$defs": {
+    "bytesLittle": {
+      "type": "object",
+      "$comment": "View pyramid: bytes with little-endian byte order.",
+      "required": ["name", "configuration"],
+      "properties": {
+        "name": { "$comment": "View pyramid: the bytes codec.", "const": "bytes" },
+        "configuration": {
+          "type": "object",
+          "$comment": "View pyramid: little-endian byte order.",
+          "required": ["endian"],
+          "properties": {
+            "endian": { "$comment": "View pyramid: little-endian byte order.", "const": "little" }
+          }
+        }
+      }
+    },
+    "bloscZstd": {
+      "type": "object",
+      "$comment": "View pyramid: blosc with the zstd compressor.",
+      "required": ["name", "configuration"],
+      "properties": {
+        "name": { "$comment": "View pyramid: the blosc codec.", "const": "blosc" },
+        "configuration": {
+          "type": "object",
+          "$comment": "View pyramid: the zstd compressor.",
+          "required": ["cname"],
+          "properties": {
+            "cname": { "$comment": "View pyramid: the zstd compressor.", "const": "zstd" }
+          }
+        }
+      }
+    },
+    "attributes": {
+      "type": "object",
+      "$comment": "View pyramid: the REQUIRED rows of the view array attribute table, less chunk_columns, which What changes the version lists as possibly absent.",
+      "required": [
+        "level",
+        "kind",
+        "axis0",
+        "downsample_factor",
+        "rate_effective",
+        "usable_for_inference"
+      ],
+      "properties": {
+        "level": {
+          "type": "integer",
+          "description": "View pyramid: the level number, 1 or greater.",
+          "minimum": 1
+        },
+        "kind": {
+          "type": "string",
+          "$comment": "View pyramid: \"minmax_envelope\".",
+          "const": "minmax_envelope"
+        },
+        "axis0": {
+          "type": "array",
+          "$comment": "View pyramid: [\"min\", \"max\"].",
+          "const": ["min", "max"]
+        },
+        "downsample_factor": { "type": "integer" },
+        "rate_effective": { "type": "number" },
+        "chunk_columns": { "type": "integer" },
+        "usable_for_inference": {
+          "type": "boolean",
+          "$comment": "View pyramid: false.",
+          "const": false
+        }
+      }
+    }
+  }
+}

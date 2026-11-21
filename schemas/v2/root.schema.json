@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://w3id.org/biosig-zarr/schemas/v2/root.schema.json",
+  "title": "biosig-zarr format version 2: root group metadata document",
+  "description": "The root zarr.json of a format version 2 store, transcribed from spec/index.md at release 2.0.0, which is the definition. Rules that relate two values, such as the channel groups named in channel_groups and the groups present, are not expressed. Attributes the text lists as possibly absent in a version 2 store are not required, and unknown attributes are allowed.",
+  "type": "object",
+  "$comment": "Zarr requirements: a store MUST be a Zarr v3 hierarchy, and every node's metadata is in a zarr.json object. Root attributes: the attribute table.",
+  "required": ["zarr_format", "node_type", "attributes"],
+  "properties": {
+    "zarr_format": {
+      "$comment": "Zarr requirements: a store MUST NOT use Zarr version 2 metadata.",
+      "const": 3
+    },
+    "node_type": {
+      "$comment": "Hierarchy: the root is a group.",
+      "const": "group"
+    },
+    "attributes": { "$ref": "#/$defs/attributes" }
+  },
+  "$defs": {
+    "attributes": {
+      "type": "object",
+      "$comment": "Root attributes: the REQUIRED rows, less view_chunk_columns, which What changes the version lists as possibly absent. generated_by is REQUIRED (Proposed), but a reader MUST NOT require it until it leaves Proposed, so it is not required here.",
+      "required": [
+        "format",
+        "format_version",
+        "channel_groups",
+        "dtype",
+        "modality_rates",
+        "anti_alias_filter",
+        "view_downsample",
+        "source_format",
+        "recording_metadata",
+        "created_utc"
+      ],
+      "properties": {
+        "format": {
+          "type": "string",
+          "$comment": "Format name: the name biosig-zarr (Proposed) and the legacy name biosigio-zarr denote the same format; a reader MUST refuse a store whose format is neither name.",
+          "enum": ["biosig-zarr", "biosigio-zarr"]
+        },
+        "format_version": {
+          "type": "integer",
+          "$comment": "Format version: format_version MUST be an integer, and this page specifies version 2.",
+          "const": 2
+        },
+        "channel_groups": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "dtype": {
+          "type": "string",
+          "$comment": "Root attributes: \"int16\" or \"float32\".",
+          "enum": ["int16", "float32"]
+        },
+        "modality_rates": {
+          "type": "object",
+          "description": "The rate caps the writer applied, in hertz, keyed by uppercase modality name.",
+          "additionalProperties": { "type": "number" }
+        },
+        "anti_alias_filter": { "type": "string" },
+        "view_downsample": { "type": "integer" },
+        "view_chunk_columns": { "type": "integer" },
+        "source_format": { "type": "string" },
+        "recording_metadata": {
+          "type": "object",
+          "description": "Format version: version 2 holds a JSON object here, where version 1 holds a string. Recording metadata: its members are not defined."
+        },
+        "created_utc": { "type": "string" },
+        "subject_info_excluded": {
+          "type": "boolean",
+          "$comment": "Root attributes: CONDITIONAL, true when the exclusion ran; Status of this document: a CONDITIONAL attribute MUST be absent when its condition does not hold, so when present it is true.",
+          "const": true
+        },
+        "channels_tsv_units": {
+          "type": "object",
+          "$comment": "Root attributes: it holds the integer counts converted, relabelled, and kept_importer_unit, and the boolean units_column_present.",
+          "required": ["converted", "relabelled", "kept_importer_unit", "units_column_present"],
+          "properties": {
+            "converted": { "type": "integer" },
+            "relabelled": { "type": "integer" },
+            "kept_importer_unit": { "type": "integer" },
+            "units_column_present": { "type": "boolean" },
+            "matched_case_insensitive": {
+              "type": "object",
+              "additionalProperties": { "type": "string" }
+            }
+          }
+        },
+        "generated_by": {
+          "type": "array",
+          "description": "Proposed. Generating software: the software that produced the store.",
+          "$comment": "Generating software: generated_by MUST be a non-empty array of objects.",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/generatedByEntry" }
+        },
+        "biosigio_version": { "type": "string" },
+        "note": { "type": "string" }
+      }
+    },
+    "generatedByEntry": {
+      "type": "object",
+      "$comment": "Generating software: every entry MUST have name (string) and version (string).",
+      "required": ["name", "version"],
+      "properties": {
+        "name": { "type": "string" },
+        "version": { "type": "string" },
+        "code_url": { "type": "string" },
+        "description": { "type": "string" },
+        "container": {
+          "type": "object",
+          "$comment": "Generating software: container is an object with type, tag, and uri, as in BIDS; the text gives no member types, and they are taken to be strings, as in BIDS.",
+          "properties": {
+            "type": { "type": "string" },
+            "tag": { "type": "string" },
+            "uri": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}
