@@ -23,6 +23,8 @@ The attributes that older stores can lack, and the release of biosigIO that firs
 | 2.0.1 | 2 | Editorial, no change to what conforms: the JSON Schemas for format version 2, in `schemas/v2/`, and the first conformance vectors, in `conformance/`, cut from one recording dedicated to the public domain. |
 | 2.0.2 | 2 | Editorial, no change to what conforms: the specification is independent of NEMAR, its first implementer, and the copyright holder of its text is the biosig-zarr contributors ([Architecture Decision Record 0005](../.context/decisions/0005-the-specification-is-independent-of-nemar.md)). |
 | 3.0.0-draft.1 (proposed) | 3 | The text RFC-0001 proposes, on the branch `draft/3.0.0`; not accepted. See [`CHANGELOG.md`](../CHANGELOG.md). |
+| 3.0.0-draft.2 (proposed) | 3 | The text RFC-0001 proposes, with release `2.0.1` merged in and the JSON Schemas and conformance vectors for format version 3; not accepted. See [`CHANGELOG.md`](../CHANGELOG.md). |
+| 3.0.0-draft.3 (proposed) | 3 | The text RFC-0001 proposes, with release `2.0.2` merged in: the specification is independent of NEMAR; no normative change from `3.0.0-draft.2`, and not accepted. See [`CHANGELOG.md`](../CHANGELOG.md). |
 
 Later releases are added here when they are tagged.
 A release that proposes a change lives on a draft branch and is tagged with a `-draft.N` suffix until its Request for Comments is accepted; see [`GOVERNANCE.md`](../GOVERNANCE.md).
