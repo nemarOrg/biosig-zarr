@@ -112,6 +112,11 @@ DERIVED = [
     {
         "id": "v2-version-3",
         "class": "invalid",
+        "description": (
+            "Invalid because a version 2 reader MUST refuse a store whose format_version is "
+            "greater than the highest version it implements (spec line 126), not because "
+            "the store breaks another version 2 rule."
+        ),
         "rule": "format-version",
         "patch": [{"op": "replace", "path": "/attributes/format_version", "value": 3}],
         "expect": {
@@ -402,6 +407,7 @@ def do_derive(crop: Path) -> None:
                 "class": spec["class"],
                 "layer": None,
                 "rule": spec["rule"],
+                **({"description": spec["description"]} if "description" in spec else {}),
                 "derived_from": LEGACY,
                 "alteration": {"document": "zarr.json", "patch": spec["patch"]},
                 "expect": {"2": spec["expect"]},
@@ -422,7 +428,7 @@ def do_derive(crop: Path) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser = argparse.ArgumentParser(description=(__doc__ or "").splitlines()[0])
     parser.add_argument("step", choices=["crop", "write", "derive", "all"])
     parser.add_argument("--work", type=Path, required=True, help="scratch directory")
     args = parser.parse_args()

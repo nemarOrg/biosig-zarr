@@ -124,6 +124,7 @@
       "class": "invalid",
       "layer": null,
       "rule": "format-version",
+      "description": "Invalid because a version 2 reader MUST refuse a store whose format_version is greater than the highest version it implements (spec line 126), not because the store breaks another version 2 rule.",
       "derived_from": "v2-legacy-name",
       "alteration": {
         "document": "zarr.json",
