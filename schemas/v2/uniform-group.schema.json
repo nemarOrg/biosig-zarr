@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://w3id.org/biosig-zarr/schemas/v2/uniform-group.schema.json",
   "title": "biosig-zarr format version 2: channel group metadata document",
-  "description": "The zarr.json of a channel group (the channels of one modality that share one sampling rate) in a format version 2 store, transcribed from spec/index.md at release 2.0.0, which is the definition. Attributes the text lists as possibly absent in a version 2 store are not required, and unknown attributes are allowed.",
+  "description": "The zarr.json of a channel group (the channels of one modality that share one sampling rate) in a format version 2 store, transcribed from spec/index.md at release 2.0.0, which is the definition. Rules that relate two values, such as the length of channels and n_channels, or the row_index values and n_channels, are not expressed. Attributes the text lists as possibly absent in a version 2 store are not required, and unknown attributes are allowed.",
   "type": "object",
   "$comment": "Hierarchy: a channel group is a Zarr group. Channel groups: the group attribute table.",
   "required": ["zarr_format", "node_type", "attributes"],

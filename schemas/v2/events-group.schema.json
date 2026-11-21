@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://w3id.org/biosig-zarr/schemas/v2/events-group.schema.json",
   "title": "biosig-zarr format version 2: events group metadata document",
-  "description": "The zarr.json of the events group of a format version 2 store, transcribed from spec/index.md at release 2.0.0, which is the definition. Unknown attributes are allowed.",
+  "description": "The zarr.json of the events group of a format version 2 store, transcribed from spec/index.md at release 2.0.0, which is the definition. Rules that relate two values, such as n_events and the length of the event arrays, are not expressed. Unknown attributes are allowed.",
   "type": "object",
   "$comment": "Events group: the root group MUST contain a group named events.",
   "required": ["zarr_format", "node_type", "attributes"],
@@ -29,10 +29,13 @@
           "description": "Events group: a map from an event code, written as a decimal string, to its description.",
           "propertyNames": {
             "type": "string",
-            "$comment": "Events group: an event code, written as a decimal string; Array: code is int32.",
+            "$comment": "Events group: an event code, written as a decimal string. The pattern checks the decimal form only; whether the value fits the int32 code array is not checked.",
             "pattern": "^-?[0-9]+$"
           },
-          "additionalProperties": { "type": "string" }
+          "additionalProperties": {
+            "type": "string",
+            "$comment": "Events group: the value is the code's description; the text gives no type, and a description is taken to be a string."
+          }
         }
       }
     }
