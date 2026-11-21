@@ -14,15 +14,13 @@ It is not accepted; the schemas and vectors for format version 3 are part of the
   `root`, `uniform-group`, `level0-array`, `view-array`, `events-group`, `timestamped-group`, `time-array`, and `values-array`, with shared definitions in `defs.schema.json`.
   They describe what a writer conforming to the version 3 text writes, and every constraint in them names the heading of the text it comes from.
   Under `GOVERNANCE.md` a change to a schema is normative, so they are proposed with the text.
-- Conformance vectors for a reader of the version 3 text: twelve version 3 stores in `conformance/stores/v3/` and one version 1 store in `conformance/stores/v1/`,
+- Conformance vectors for a reader of the version 3 text: thirteen version 3 stores in `conformance/stores/v3/` and one version 1 store in `conformance/stores/v1/`,
   cut from the same recording dedicated to the public domain, and written by `tools/vectors/build.py` with zarr-python and NumPy, because no writer of version 3 exists.
   They hold at least one failing case for each layer of reader safety, the gap example of the `events` group, the ties of `round` in the onset rule, and the mask rule of the view pyramid.
 - Every entry of `conformance/manifest.json` has an outcome for a reader of the version 3 text, under the key `"3"` of `expect`, including the version 2 vectors, which such a reader reads with the defaults of "Reading earlier versions".
-- An entry released in `2.0.1` is edited: `layer` of `v2-version-3` was `null`, and is now `2`,
-  because `layer` names the reader-safety layer for the newest reader the manifest has outcomes for, and a reader of the version 3 text refuses that store at layer 2 (its groups have no `kind`).
 - New checks: `tools/check-vectors.ts` reads every store's metadata as a reader of the version 3 text and compares the result with the manifest, and its tests show that each layer, the ties of `round`, and the mask rule decide an outcome;
   `tools/check-schemas.ts` also covers the version 3 schemas and vectors.
-- Editorial updates of the draft text: the status of the conformance classes, the paragraph under "Conformance" that said no test suite existed, and open questions 31 and 32, now closed in version 3.
+- Editorial updates of the draft text: the status of the conformance classes, the paragraph under "Conformance" that said no test suite existed, the sentence under "Reader safety" that said the suite will have a case for each layer, which it now has, and open questions 31 and 32, now closed in version 3.
 
 ## Unreleased: 3.0.0-draft.1
 
