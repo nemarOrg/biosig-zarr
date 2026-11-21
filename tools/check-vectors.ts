@@ -209,13 +209,16 @@ function readUniform(
     const empty: number[] = [];
     // The mask rule: column j covers acquired samples if and only if some valid interval
     // has start < (j + 1) * f and stop > j * f.
-    for (let j = 0; checks.maskRule && j < shape[2]; j += 1) {
+    for (let j = 0; j < shape[2]; j += 1) {
       const covered = valid_intervals.some(
         (i) => i.start < (j + 1) * factor && i.stop > j * factor,
       );
       if (!covered) empty.push(j);
     }
-    view_empty_columns[String(level)] = empty;
+    // Without the mask rule a reader finds an empty column only by the missing value a
+    // writer MUST store in it; when missing_value is null, the column holds the fill value,
+    // which can be a data value, so such a reader finds none ("View pyramid").
+    view_empty_columns[String(level)] = checks.maskRule || missing_value !== null ? empty : [];
   }
   return {
     n_samples,

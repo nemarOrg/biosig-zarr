@@ -51,7 +51,7 @@ test("round ties: turned off, an outcome changes", () => {
 
 test("mask rule: turned off, an outcome changes", () => {
   const ids = changed({ maskRule: false });
-  expect(ids).toEqual(["v3-gap-10hz"]);
+  expect(ids).toEqual(["v3-gap-exact-copy"]);
 });
 
 test("a manifest that disagrees with the computation fails", () => {
