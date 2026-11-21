@@ -2,7 +2,7 @@
 
 All notable changes to the specification are recorded here, newest first.
 The versioning scheme is in [`GOVERNANCE.md`](GOVERNANCE.md).
-A release is a Git tag made by the owner.
+A release is a Git tag made by the editor.
 
 ## Unreleased: 3.0.0-draft.2
 
@@ -82,6 +82,22 @@ Editorial corrections:
 - Open questions 4, 5 and 12 say what version 3 does about them and point to RFC-0001 questions 5, 2 and 29; other open questions name their RFC-0001 question.
 - The `generated_by` example is now a valid JSON object.
 - Places that RFC-0001 puts up for comment are marked with their question number.
+
+## 2.0.2
+
+Editorial: no change to what conforms.
+The normative text, the JavaScript Object Notation (JSON) Schemas, and the conformance vectors are those of `2.0.1`.
+
+- The specification is independent of the Neuroelectromagnetic Data Archive and Tools Resource (NEMAR),
+  and the copyright holder of its text is the biosig-zarr contributors;
+  Architecture Decision Record (ADR) 0005 records the decision and how ADRs 0001 to 0004 read in its light.
+- NEMAR is named only as the text's origin (first published on docs.nemar.org), as its first implementer and the profile it defines, as the source of the recording the vectors are cut from,
+  and as the host of the repository and of the venue for Requests for Comments (RFCs), nemarOrg/rfcs.
+- `GOVERNANCE.md` names the editor, Seyed Yahya Shirazi, in a personal capacity, says that an RFC about this specification is decided by its editor and that hosting gives no say over the text,
+  and, with `README.md`, gains a section on hosting and continuity.
+- `README.md` states the current status: releases are tags made by the editor, and `schemas/` and `conformance/` hold the format version 2 schemas and vectors since `2.0.1`.
+- The editor's ruling: `GOVERNANCE.md` makes a change that alters who decides normative.
+  On 2026-11-20 the editor ruled this change editorial, because the same person stays editor, RFCs stay in nemarOrg/rfcs, and nothing that conforms changes.
 
 ## 2.0.1
 

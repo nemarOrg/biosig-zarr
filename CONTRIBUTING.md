@@ -1,7 +1,7 @@
 # Contributing
 
 Thank you for helping with the biosig-zarr specification.
-The organization's code of conduct and security policy apply here; they are inherited from the nemarOrg organization.
+The organization's code of conduct and security policy apply here; they are inherited from the nemarOrg organization, which hosts this repository.
 
 ## What to send, and where
 
@@ -60,4 +60,4 @@ The third check is link checking with lychee, which runs in continuous integrati
 - Open a pull request against `main`, the only integration branch.
 - A pull request gets at most two review rounds.
   Every finding is fixed, or declined with a one-line reason.
-- Releases are tags made by the owner; do not tag.
+- Releases are tags made by the editor; do not tag.

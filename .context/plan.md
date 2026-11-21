@@ -12,7 +12,7 @@ It holds no reader or writer library.
 
 - [x] Repository initialized: licenses, governance, contribution terms, decision records, checks on the text
 - [ ] The specification text moves from docs.nemar.org into `spec/index.md`, with no normative change
-- [ ] First release, `2.0.0`, tagged by the owner
+- [ ] First release, `2.0.0`, tagged by the editor
 - [ ] The version 3 text that RFC-0001 proposes, on `draft/3.0.0`, tagged `3.0.0-draft.1`
 - [ ] JSON Schemas for every attribute object, published at a stable address
 - [ ] Conformance vectors from real recordings under a public-domain dedication
@@ -33,4 +33,4 @@ Recorded in neuromechanist/biosigio#179 ("What beta means"); all five must hold:
 ## Notes
 
 - Specification decisions are recorded in `decisions/`; NEMAR profile and rollout decisions are recorded in nemarOrg/nemar-cli.
-- Labels, tags, releases, and repository settings are the owner's acts.
+- Labels, tags, releases, and repository settings are the editor's acts.

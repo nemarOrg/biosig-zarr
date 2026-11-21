@@ -16,7 +16,7 @@ The Markdown is the product, so a Markdown change must run the checks; the defau
 
 ## Rules
 
-- One integration branch, `main`; releases are tags made by the owner.
+- One integration branch, `main`; releases are tags made by the editor.
 - Required checks and path filters: a skipped workflow leaves a required check pending.
   If a ruleset ever requires a check from `text.yml`, move the path filter into a gate job first.
 - Add `[skip ci]` to the subject of a commit that touches only files no job reads (`.context/`, `.memory/`, `.rules/`); never on a pull request with required checks.

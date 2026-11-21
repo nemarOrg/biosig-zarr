@@ -1,6 +1,6 @@
 # Licenses
 
-The Neuroelectromagnetic Data Archive and Tools Resource (NEMAR) decided on 2026-11-18, and confirmed on 2026-11-20, that this repository has three license parts, by kind of file.
+This repository has three license parts, by kind of file, and [ADR 0001](.context/decisions/0001-license-and-contribution-terms.md) records why.
 The full license texts are in [`LICENSES/`](LICENSES/).
 
 ## 1. Specification text
@@ -28,9 +28,11 @@ No contributor license agreement is used.
 
 ## Record of the text's earlier license
 
-The specification text was first published on docs.nemar.org, in a repository licensed under Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0).
-That license does not allow derivative works or commercial use, and it contradicts the license NEMAR decided for the text on 2026-11-18.
-On 2026-11-20 the owner of the text relicensed it to the W3C Software and Document License in this repository.
-Once the text has moved, the format page on docs.nemar.org is removed and replaced by a pointer to this repository, so this repository holds the one canonical copy.
+The specification text was first published on docs.nemar.org, the documentation site of the Neuroelectromagnetic Data Archive and Tools Resource (NEMAR), in a repository licensed under Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0).
+That license does not allow derivative works or commercial use.
+On 2026-11-20 the text's author relicensed it under the W3C Software and Document License, in this repository.
+The format page on docs.nemar.org was then replaced by a pointer to this repository, which holds the one canonical copy.
 
-Copyright (c) 2026 NEMAR contributors.
+Hosting this repository, which NEMAR provides as a service, gives NEMAR no ownership of the text.
+
+Copyright (c) 2026 the biosig-zarr contributors.
