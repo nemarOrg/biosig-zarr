@@ -1,13 +1,14 @@
 # Governance
 
 This document says who decides what in this repository, how a change is made, and how releases are tagged.
-It is short on purpose: one organization maintains the specification, and the rules are meant to be easy to check.
+It is short on purpose: one editor maintains the specification today, and the rules are meant to be easy to check.
 
 ## Who decides
 
-The owner of the Neuroelectromagnetic Data Archive and Tools Resource (NEMAR) is the editor of the specification.
+The editor of the specification is Seyed Yahya Shirazi, in a personal capacity.
+The specification is independent of the Neuroelectromagnetic Data Archive and Tools Resource (NEMAR): NEMAR is where the text was first published and is its first implementer, and it decides nothing here.
 The editor merges changes, makes releases, and decides whether a change is normative or editorial.
-The format gets an organization of its own only when a second institution co-maintains it; this repository stays under nemarOrg until then.
+The repository is hosted in the nemarOrg GitHub organization, and hosting gives that organization no say over the text; the format gets an organization of its own when a second institution co-maintains it.
 
 ## Two kinds of change
 
@@ -17,6 +18,7 @@ An **editorial** change does not alter what conforms: spelling, links, formattin
 When the editor and a proposer disagree, or when it is unclear, the change is normative.
 
 - A normative change needs an accepted Request for Comments (RFC) in [nemarOrg/rfcs](https://github.com/nemarOrg/rfcs), which has a fixed comment window and ends in a written decision.
+  An RFC about this specification is decided by its editor.
 - An editorial change goes by pull request review: one approval from the editor, after the checks pass.
 - `main` carries only accepted text.
   The text an RFC proposes lives on a branch until the RFC is accepted; then the branch merges.
@@ -43,15 +45,21 @@ When the RFC is accepted, the branch merges and the release is tagged without th
 
 The first release is `2.0.0`: the specification text as moved from docs.nemar.org, for format version 2 as NEMAR's archive serves it, with no normative change.
 Its release notes list the parts the text marks as Proposed that are not yet implemented.
-The text proposed by RFC-0001 is `3.0.0-draft.1`, on `draft/3.0.0`.
+The text proposed by RFC-0001 lives on `draft/3.0.0`, tagged `3.0.0-draft.N`.
 
 Schemas and conformance vectors are released with the text, under the same tag.
 
 ## Identifiers and citation
 
-Each release is intended to receive a Digital Object Identifier (DOI) from NEMAR's DOI registry, which is planned and not yet live.
+Each release is intended to receive a Digital Object Identifier (DOI) issued through nemar-doi, the planned DOI service of the NEMAR archive, which registers it and does not own it; the DOI names the authors in `CITATION.cff`.
 When a DOI is assigned, it is recorded in `CHANGELOG.md` and in `CITATION.cff`.
 A permanent address, `w3id.org/biosig-zarr`, is being registered and will redirect to this repository.
+
+## Hosting and continuity
+
+NEMAR hosts this repository and offers its hosting and its DOI registration, nemar-doi, as a service, not as ownership.
+The specification is meant to be as independent as possible, and NEMAR is ready to hand it off once it matures.
+Until then, NEMAR backstops the specification and guarantees that it continues; decisions stay with the editor, through RFCs, as [Who decides](#who-decides) says.
 
 ## Where decisions are recorded
 

@@ -18,7 +18,9 @@ The attributes that older stores can lack, and the release of biosigIO that firs
 
 | Release | `format_version` | Summary |
 | --- | --- | --- |
-| 2.0.0 | 2 | The pre-beta text moved from docs.nemar.org, with no normative change. Four parts the text marks Proposed are not yet implemented in NEMAR's stores: the `biosig-zarr` tag inside stores, `.bzx`, `generated_by`, and the conformance classes. |
+| 2.0.0 | 2 | The pre-beta text moved from docs.nemar.org, with no normative change. Four parts the text marks Proposed are not yet implemented in stores served by the Neuroelectromagnetic Data Archive and Tools Resource (NEMAR): the `biosig-zarr` tag inside stores, `.bzx`, `generated_by`, and the conformance classes. |
+| 2.0.1 | 2 | Editorial, no change to what conforms: the JSON Schemas for format version 2, in `schemas/v2/`, and the first conformance vectors, in `conformance/`, cut from one recording dedicated to the public domain. |
+| 2.0.2 | 2 | Editorial, no change to what conforms: the specification is independent of NEMAR, its first implementer, and the copyright holder of its text is the biosig-zarr contributors ([Architecture Decision Record 0005](../.context/decisions/0005-the-specification-is-independent-of-nemar.md)). |
 
 Later releases are added here when they are tagged.
 A release that proposes a change lives on a draft branch and is tagged with a `-draft.N` suffix until its Request for Comments is accepted; see [`GOVERNANCE.md`](../GOVERNANCE.md).

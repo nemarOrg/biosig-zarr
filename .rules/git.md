@@ -20,7 +20,7 @@
   - Exception: post-merge bot bump and sync commits on the integration branch always carry it (see `.rules/ci_cd.md`)
 
 ## Branch Strategy
-- **One integration branch:** `main`. Releases are tags made by the owner; never tag.
+- **One integration branch:** `main`. Releases are tags made by the editor; never tag.
 - **Work branches:** `feature/short-description` or `fix/short-description`, branched from `main`
 - **Draft branches:** the text an RFC proposes lives on `draft/<major>.<minor>.<patch>` until the RFC is accepted (see `GOVERNANCE.md`); `main` carries only accepted text
 - **No spaces** in branch names, use hyphens
