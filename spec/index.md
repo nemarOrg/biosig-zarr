@@ -1224,7 +1224,7 @@ A signal reader SHOULD verify the checksum of each shard index it reads.
 ### Reader safety
 
 Four layers keep a reader from misreading a store, so that no single omission returns wrong times or wrong values.
-The conformance suite will have at least one case for each layer, which fails when the check is removed (see [Conformance](#conformance)).
+The conformance suite has at least one case for each layer, which fails when the check is removed (see [Conformance](#conformance)).
 Every reader of a uniform group MUST also pass the gap case of the [`events` group](#events-group):
 at 10 Hz, with the valid intervals `[0, 20)` and `[24, 40)`, an event at 2.02 seconds has no sample.
 **Open for comment: RFC-0001 question 36** (whether the four layers are enough).
