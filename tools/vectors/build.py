@@ -145,7 +145,10 @@ DERIVED: list[dict[str, Any]] = [
         "description": (
             "Invalid because a version 2 reader MUST refuse a store whose format_version is "
             "greater than the highest version it implements (spec line 126), not because "
-            "the store breaks another version 2 rule."
+            "the store breaks another version 2 rule. A reader of the version 3 text may "
+            "refuse it at the root, because it has no timestamped_groups (line 271 of the "
+            "draft text), before it reaches "
+            "layer 2; its refusal is not unique to layer 2, and v3-no-kind is the layer 2 case."
         ),
         "rule": "format-version",
         "patch": [{"op": "replace", "path": "/attributes/format_version", "value": 3}],
@@ -158,7 +161,7 @@ DERIVED: list[dict[str, Any]] = [
                 "keyword": "const",
             },
         },
-        "layer": 2,
+        "layer": None,
         "expect3": {
             "outcome": "refuse",
             "refusal": {"layer": 2, "rule": "reader-safety", "subject": "eeg_100hz"},
@@ -533,6 +536,15 @@ GAP_RATE = 10.0
 GAP_SEGMENTS = [(0, 200, 0.0), (240, 400, 2.4)]  # source samples [a, b), and source_time
 GAP_NONFINITE = ("O1-A1", 300)  # channel, source sample
 
+# The exact-copy gap vector: the first 4 seconds at the source rate, the codes copied
+# unchanged, so no missing value is declared and the fill value 0 is a possible data code.
+# The group starts 5 ms into the timeline, and the second segment is dated 2.4 s, so that
+# its place on the grid, (2.4 - 0.005) * 100 = 239.5, and the onset 0.0, at
+# (0.0 - 0.005) * 100 = -0.5, are exact ties of round.
+EXACT_START_TIME = 0.005
+EXACT_SEGMENTS = [(0, 200, 0.005), (240, 400, 2.4)]
+EXACT_EVENTS = [(0.0, 0.0, 0), (1.0, 0.0, 0), (2.2, 0.0, 0), (3.0, 0.0, 0)]
+
 
 def round_half_up(x: float) -> int:
     """round(x) as the text defines it: floor(x + 0.5), in 64-bit floating point."""
@@ -711,17 +723,23 @@ def view_levels(n_samples: int, stop_columns: int) -> list[int]:
     return levels
 
 
-def view_envelope(digital: np.ndarray, acquired: np.ndarray, factor: int) -> np.ndarray:
+def view_envelope(
+    digital: np.ndarray, acquired: np.ndarray, factor: int, missing: int | None, fill: int
+) -> np.ndarray:
     """Column j holds the minimum and maximum of the acquired, non-missing level-0
-    samples j * f to (j + 1) * f - 1, or the missing value when there are none."""
+    samples j * f to (j + 1) * f - 1, or, when there are none, the missing value, or the
+    fill value when the array declares no missing value ("View pyramid")."""
     n_channels, n_samples = digital.shape
     columns = n_samples // factor
-    out = np.full((2, n_channels, columns), MISSING_INT16, dtype=np.int16)
+    out = np.full((2, n_channels, columns), fill, dtype=np.int16)
     for j in range(columns):
         window = slice(j * factor, (j + 1) * factor)
         for c in range(n_channels):
             values = digital[c, window]
-            values = values[acquired[window] & (values != MISSING_INT16)]
+            keep = acquired[window]
+            if missing is not None:
+                keep = keep & (values != missing)
+            values = values[keep]
             if values.size:
                 out[0, c, j] = values.min()
                 out[1, c, j] = values.max()
@@ -780,31 +798,51 @@ def write_uniform_group(
     chunk: int,
     shard: int,
     stop_columns: int,
+    start_time: float = 0.0,
+    exact: bool = False,
 ) -> dict[str, Any]:
-    """Write one uniform group; return its values for the goldens."""
+    """Write one uniform group; return its values for the goldens.
+
+    With ``exact``, the group is an exact copy of the source codes ("Exact copies"): no
+    resampling, scale and offset are the source's, the derivation list is empty, and the
+    arrays declare no missing value, so their fill value 0 is a possible data value.
+    """
     source_rate = signals[labels[0]]["rate"]
     source = np.stack([source_physical(signals[label]) for label in labels])
     if nonfinite is not None:
         source[labels.index(nonfinite[0]), nonfinite[1]] = np.nan
-    start_time = 0.0
     grid, near, intervals = place_intervals(
         [(source[:, a:b], t) for a, b, t in segments], source_rate, rate, start_time
     )
     n_samples = grid.shape[1]
     acquired = acquired_mask(intervals, n_samples)
-    digital = np.full(grid.shape, MISSING_INT16, dtype=np.int16)
+    missing_value: int | None = None if exact else MISSING_INT16
+    fill = 0 if exact else MISSING_INT16
+    if exact:
+        if rate != source_rate or nonfinite is not None:
+            sys.exit("an exact copy is neither resampled nor altered in value; stopping")
+        codes_source = np.stack([signals[label]["codes"] for label in labels]).astype(np.float64)
+        code_grid, _, _ = place_intervals(
+            [(codes_source[:, a:b], t) for a, b, t in segments], source_rate, rate, start_time
+        )
+    digital = np.full(grid.shape, fill, dtype=np.int16)
     scales, offsets, channels = [], [], []
     resampled = rate != source_rate
     for row, label in enumerate(labels):
-        codes, scale, offset = quantize(np.where(acquired, grid[row], np.nan))
-        digital[row] = codes
+        if exact:
+            digital[row, acquired] = code_grid[row, acquired].astype(np.int16)
+            scale, offset = signals[label]["step"], signals[label]["offset"]
+        else:
+            codes, scale, offset = quantize(np.where(acquired, grid[row], np.nan))
+            digital[row] = codes
         scales.append(scale)
         offsets.append(offset)
         missing = int(np.sum(acquired & ~np.isfinite(grid[row])))
         derivation = ["resampled"] if resampled else []
         if missing:
             derivation.append("nonfinite_to_missing")
-        derivation.append("requantized")
+        if not exact:
+            derivation.append("requantized")
         uniform = {
             "original_rate": source_rate,
             "target_rate": rate,
@@ -851,7 +889,7 @@ def write_uniform_group(
         dtype="int16",
         chunks=(len(labels), chunk),
         shards=(len(labels), shard),
-        fill_value=MISSING_INT16,
+        fill_value=fill,
         attributes={
             "level": 0,
             "kind": "signal",
@@ -864,7 +902,7 @@ def write_uniform_group(
             "usable_for_inference": any(c["usable_for_inference"] for c in channels),
             "scale": scales,
             "offset": offsets,
-            "missing_value": MISSING_INT16,
+            "missing_value": missing_value,
             "physical_formula": PHYSICAL_FORMULA,
         },
         compressors=BLOSC_ZSTD,
@@ -875,14 +913,14 @@ def write_uniform_group(
     view = group.create_group("view")
     for level in levels:
         factor = VIEW_DOWNSAMPLE**level
-        envelope = view_envelope(digital, acquired, factor)
+        envelope = view_envelope(digital, acquired, factor, missing_value, fill)
         columns = min(VIEW_CHUNK_COLUMNS, envelope.shape[2])
         array = view.create_array(
             str(level),
             shape=envelope.shape,
             dtype="int16",
             chunks=(2, len(labels), columns),
-            fill_value=MISSING_INT16,
+            fill_value=fill,
             compressors=BLOSC_ZSTD,
             serializer=BYTES_LITTLE,
             chunk_key_encoding=KEY_ENCODING,
@@ -893,7 +931,7 @@ def write_uniform_group(
                 "downsample_factor": factor,
                 "rate_effective": rate / factor,
                 "chunk_columns": columns,
-                "missing_value": MISSING_INT16,
+                "missing_value": missing_value,
                 "usable_for_inference": False,
             },
         )
@@ -905,7 +943,13 @@ def write_uniform_group(
         "n_samples": n_samples,
         "channels": [
             golden_channel(
-                channels[row], digital[row], scales[row], offsets[row], grid[row], near[row]
+                channels[row],
+                digital[row],
+                scales[row],
+                offsets[row],
+                grid[row],
+                near[row],
+                acquired if exact else acquired & (digital[row] != MISSING_INT16),
             )
             for row in range(len(labels))
         ],
@@ -1003,7 +1047,11 @@ def write_timestamped_group(
         "kind": "timestamped",
         "n_samples": n,
         "time": time.tolist(),
-        "channels": [golden_channel(channel, digital, scale, offset, physical, physical)],
+        "channels": [
+            golden_channel(
+                channel, digital, scale, offset, physical, physical, digital != MISSING_INT16
+            )
+        ],
     }
 
 
@@ -1014,9 +1062,9 @@ def golden_channel(
     offset: float,
     unquantized: np.ndarray,
     nearest: np.ndarray,
+    present: np.ndarray,
 ) -> dict[str, Any]:
     """The values a reader returns for one channel; null where there is no sample."""
-    present = digital != MISSING_INT16
     physical = digital.astype(np.float64) * scale + offset
 
     def listed(values: np.ndarray) -> list[float | None]:
@@ -1138,6 +1186,20 @@ def write_v3_store(vector_id: str, crop: Path) -> dict:
             chunk=4, shard=16, stop_columns=2,
         )  # fmt: skip
         events = write_events(root, GAP_EVENTS)
+    elif vector_id == "v3-gap-exact-copy":
+        root = zarr.create_group(
+            target,
+            zarr_format=3,
+            attributes=root_attributes(
+                ["eeg_100hz"], [], DEFAULT_CAPS, len(EEG_CHANNELS), [BIOSIG_CONVENTION]
+            ),
+        )
+        groups["eeg_100hz"] = write_uniform_group(
+            root, "eeg_100hz", EEG_CHANNELS, signals, tsv,
+            segments=EXACT_SEGMENTS, rate=100.0, nonfinite=None,
+            chunk=40, shard=160, stop_columns=25, start_time=EXACT_START_TIME, exact=True,
+        )  # fmt: skip
+        events = write_events(root, EXACT_EVENTS)
     elif vector_id == "v3-timestamped":
         root = zarr.create_group(
             target,
@@ -1285,6 +1347,43 @@ V3_VECTORS: list[dict[str, Any]] = [
             "events": {
                 "onset_source_basis": "timeline",
                 "samples": event_samples("eeg_10hz", [3, 13, None, 33], GAP_EVENTS),
+            },
+        },
+    },
+    {
+        "id": "v3-gap-exact-copy",
+        "dir": "v3",
+        "class": "valid",
+        "layer": 4,
+        "rule": "view-pyramid",
+        "description": (
+            "An exact copy of the source codes at 100 Hz, with no missing value declared, so "
+            "the fill value 0 of the gap and of the empty view columns is a possible data "
+            "value and only the mask rule finds the empty columns. start_time is 0.005; the "
+            "second interval's place on the grid, 239.5, and the onset 0.0, at -0.5, are exact "
+            "ties of round. A reader that implements neither start_time nor valid_intervals "
+            "MUST refuse it, naming each."
+        ),
+        "expect": {
+            "outcome": "accept",
+            "goldens": "goldens/v3-gap-exact-copy.json",
+            "uniform_groups": ["eeg_100hz"],
+            "timestamped_groups": [],
+            "groups": {
+                "eeg_100hz": {
+                    "start_time": EXACT_START_TIME,
+                    "valid_intervals": [
+                        {"start": 0, "stop": 200, "source_time": 0.005},
+                        {"start": 240, "stop": 400, "source_time": 2.4},
+                    ],
+                    "missing_value": None,
+                    "refuse_without": ["start_time", "valid_intervals"],
+                    "view_empty_columns": {"1": list(range(50, 60)), "2": [13, 14]},
+                }
+            },
+            "events": {
+                "onset_source_basis": "timeline",
+                "samples": event_samples("eeg_100hz", [0, 100, None, 300], EXACT_EVENTS),
             },
         },
     },
@@ -1519,6 +1618,9 @@ def check_ties() -> None:
         x = (onset - 0.0) * GAP_RATE
         if onset != 2.02 and x - math.floor(x) != 0.5:
             sys.exit(f"{onset} * {GAP_RATE} = {x!r} is not an exact tie; stopping")
+    for x in ((0.0 - EXACT_START_TIME) * 100.0, (2.4 - EXACT_START_TIME) * 100.0):
+        if x - math.floor(x) != 0.5:
+            sys.exit(f"{x!r} is not an exact tie; stopping")
 
 
 def do_v3(crop: Path) -> list[Path]:

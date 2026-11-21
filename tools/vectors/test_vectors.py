@@ -153,7 +153,14 @@ def read_store(store: Path) -> dict:
         for level in attrs["view_levels"]:
             view = child(child(group, "view"), str(level))
             assert view.shape[:2] == (2, attrs["n_channels"])
-            views[level] = (np.asarray(view[:]), view.attrs["downsample_factor"])
+            metadata = json.loads(
+                (store / name / "view" / str(level) / "zarr.json").read_text("utf-8")
+            )
+            views[level] = (
+                np.asarray(view[:]),
+                view.attrs["downsample_factor"],
+                metadata["fill_value"],
+            )
         groups[name] = {
             "kind": "uniform",
             "rate": attrs["rate"],
@@ -283,7 +290,8 @@ def test_views_and_the_mask_rule(vector: dict) -> None:
             continue
         mask = acquired(group["intervals"], group["n_samples"])
         digital, missing = group["digital"], group["missing"]
-        for level, (view, factor) in group["views"].items():
+        for level, (view, factor, fill) in group["views"].items():
+            nothing = fill if missing is None else missing
             empty = []
             for j in range(view.shape[2]):
                 window = slice(j * factor, (j + 1) * factor)
@@ -293,14 +301,15 @@ def test_views_and_the_mask_rule(vector: dict) -> None:
                 )
                 if not covered:
                     empty.append(j)
-                    assert (view[:, :, j] == missing).all()
+                    assert (view[:, :, j] == nothing).all()
                 for c in range(digital.shape[0]):
                     values = digital[c, window]
-                    values = values[mask[window] & (values != missing)]
+                    keep = mask[window] if missing is None else mask[window] & (values != missing)
+                    values = values[keep]
                     if values.size:
                         assert (view[0, c, j], view[1, c, j]) == (values.min(), values.max())
                     else:
-                        assert (view[:, c, j] == missing).all()
+                        assert (view[:, c, j] == nothing).all()
             assert empty == expected[name]["view_empty_columns"][str(level)]
 
 
@@ -379,3 +388,50 @@ def test_no_chunk_wholly_in_a_gap(vector: dict) -> None:
                 start = s * shard + k * chunk
                 if not mask[start : start + chunk].any():
                     assert (index[k] == np.iinfo(np.uint64).max).all()
+
+
+def test_the_mask_rule_decides_on_data() -> None:
+    """In v3-gap-exact-copy no missing value is declared, so the columns the mask rule
+    excludes hold the fill value 0, a possible data code: a reader without the mask rule
+    returns them as data, and differs from the text's reading."""
+    vector = BY_ID["v3-gap-exact-copy"]
+    group = read_store(store_path(vector))["groups"]["eeg_100hz"]
+    assert group["missing"] is None
+    level0 = json.loads((store_path(vector) / "eeg_100hz" / "0" / "zarr.json").read_text("utf-8"))
+    scale = np.asarray(level0["attributes"]["scale"])
+    offset = np.asarray(level0["attributes"]["offset"])
+    for level, (view, _, fill) in group["views"].items():
+        excluded = vector["expect"]["3"]["groups"]["eeg_100hz"]["view_empty_columns"][str(level)]
+        assert excluded, "the vector must have columns only the mask rule excludes"
+        assert fill == 0
+        for j in excluded:
+            assert (view[:, :, j] == fill).all()
+            # What a reader without the mask rule returns: physical values, not "empty".
+            without_mask = view[:, :, j].astype(np.float64) * scale + offset
+            assert np.isfinite(without_mask).all()
+        # The fill value occurs as data in an acquired sample of the store, so it cannot
+        # mark an empty column by itself.
+    mask = acquired(group["intervals"], group["n_samples"])
+    assert (group["digital"][:, mask] == 0).any()
+
+
+def test_the_negative_and_placement_ties() -> None:
+    """In v3-gap-exact-copy the onset 0.0 is at (0.0 - 0.005) * 100 = -0.5 and the second
+    interval at (2.4 - 0.005) * 100 = 239.5, both exact ties: floor(x + 0.5) gives sample 0
+    and start 240, where rounding halves away from zero gives -1, no sample."""
+    vector = BY_ID["v3-gap-exact-copy"]
+    group = vector["expect"]["3"]["groups"]["eeg_100hz"]
+    start_time = group["start_time"]
+    x = (0.0 - start_time) * 100.0
+    assert x == -0.5
+    assert round_half_up(x) == 0
+    assert math.copysign(math.floor(abs(x) + 0.5), x) == -1
+    assert vector["expect"]["3"]["events"]["samples"][0] == {
+        "group": "eeg_100hz",
+        "onset": 0.0,
+        "sample": 0,
+    }
+    second = group["valid_intervals"][1]
+    y = (second["source_time"] - start_time) * 100.0
+    assert y - math.floor(y) == 0.5
+    assert second["start"] == round_half_up(y)

@@ -248,9 +248,9 @@
       "path": "stores/v2/v2-version-3.zarr",
       "format_version": 2,
       "class": "invalid",
-      "layer": 2,
+      "layer": null,
       "rule": "format-version",
-      "description": "Invalid because a version 2 reader MUST refuse a store whose format_version is greater than the highest version it implements (spec line 126), not because the store breaks another version 2 rule.",
+      "description": "Invalid because a version 2 reader MUST refuse a store whose format_version is greater than the highest version it implements (spec line 126), not because the store breaks another version 2 rule. A reader of the version 3 text may refuse it at the root, because it has no timestamped_groups (line 271 of the draft text), before it reaches layer 2; its refusal is not unique to layer 2, and v3-no-kind is the layer 2 case.",
       "derived_from": "v2-legacy-name",
       "alteration": {
         "document": "zarr.json",
@@ -610,6 +610,89 @@
         "events/onset/zarr.json": "6543c30b509200acf42d004130aef9fbe46f4eb00d52b85b90be7a7b5b49b307",
         "events/zarr.json": "f72be88aa1a335c8efc8cfce509fd8ba336643b4e7d87b7a3a325f6a92a29be9",
         "zarr.json": "88c46e77dcfaa69a25ca2cbdd834f70aadf29e4c3606f1da6809822de7a11354"
+      }
+    },
+    {
+      "id": "v3-gap-exact-copy",
+      "path": "stores/v3/v3-gap-exact-copy.zarr",
+      "format_version": 3,
+      "class": "valid",
+      "layer": 4,
+      "rule": "view-pyramid",
+      "description": "An exact copy of the source codes at 100 Hz, with no missing value declared, so the fill value 0 of the gap and of the empty view columns is a possible data value and only the mask rule finds the empty columns. start_time is 0.005; the second interval's place on the grid, 239.5, and the onset 0.0, at -0.5, are exact ties of round. A reader that implements neither start_time nor valid_intervals MUST refuse it, naming each.",
+      "expect": {
+        "3": {
+          "outcome": "accept",
+          "goldens": "goldens/v3-gap-exact-copy.json",
+          "uniform_groups": ["eeg_100hz"],
+          "timestamped_groups": [],
+          "groups": {
+            "eeg_100hz": {
+              "start_time": 0.005,
+              "valid_intervals": [
+                {
+                  "start": 0,
+                  "stop": 200,
+                  "source_time": 0.005
+                },
+                {
+                  "start": 240,
+                  "stop": 400,
+                  "source_time": 2.4
+                }
+              ],
+              "missing_value": null,
+              "refuse_without": ["start_time", "valid_intervals"],
+              "view_empty_columns": {
+                "1": [50, 51, 52, 53, 54, 55, 56, 57, 58, 59],
+                "2": [13, 14]
+              }
+            }
+          },
+          "events": {
+            "onset_source_basis": "timeline",
+            "samples": [
+              {
+                "group": "eeg_100hz",
+                "onset": 0.0,
+                "sample": 0
+              },
+              {
+                "group": "eeg_100hz",
+                "onset": 1.0,
+                "sample": 100
+              },
+              {
+                "group": "eeg_100hz",
+                "onset": 2.2,
+                "sample": null
+              },
+              {
+                "group": "eeg_100hz",
+                "onset": 3.0,
+                "sample": 300
+              }
+            ]
+          }
+        }
+      },
+      "files": {
+        "eeg_100hz/0/c/0/0": "6002932c492fdfa6775aedb54d0dba453c4e0f27fe8e85a455a25f765ab87f03",
+        "eeg_100hz/0/c/0/1": "7db512bd90d11ee648609f886369d3e02e5849359200823104c3908bcf607eca",
+        "eeg_100hz/0/c/0/2": "081bbd33895a82c9f58edda19c68b3de1fabfeee9aa015c76e4ced9fcb1d8397",
+        "eeg_100hz/0/zarr.json": "cf95947ca8d5dc3b083f65461cd73ac956a2706af6defe3ffceba85d2d57fb3b",
+        "eeg_100hz/view/1/c/0/0/0": "353a91965e987b238063085cf221538883effc8fe0d204cf1640bce5ae4aab54",
+        "eeg_100hz/view/1/zarr.json": "8d3c485620b3708a01c45d499abf237d7ffc3cd27011a09fe4d51f36872f3cc0",
+        "eeg_100hz/view/2/c/0/0/0": "459bd312b41c631aa9f861ec07620670df143636e796dc8317aebe4c6ac45ceb",
+        "eeg_100hz/view/2/zarr.json": "18ca0a745de0d794e7e2d647c87d4c184bec90058b2a0806ba063871d28588f5",
+        "eeg_100hz/view/zarr.json": "36615682d5be9646729635067a75185212eb0c48d708ef06ad34c1f58dd587d2",
+        "eeg_100hz/zarr.json": "0977b7b5d38d5b35ff40afaee0737dc9e08b5886ad321422ac470b450ddb9625",
+        "events/code/zarr.json": "510ee22a0484c2ca5e784dcbb28b5c2fb967cc3744c6b329e1745acb66c15044",
+        "events/duration/zarr.json": "6543c30b509200acf42d004130aef9fbe46f4eb00d52b85b90be7a7b5b49b307",
+        "events/onset/c/0": "4bb4c33b463aa19191cc6ec15efacf924a919908dee536ca3b1f98ead9bfadc6",
+        "events/onset/zarr.json": "6543c30b509200acf42d004130aef9fbe46f4eb00d52b85b90be7a7b5b49b307",
+        "events/zarr.json": "f72be88aa1a335c8efc8cfce509fd8ba336643b4e7d87b7a3a325f6a92a29be9",
+        "zarr.json": "a458b9715bf0305a0dfb7cb07618c2a2b92812b00443fe6ab98fa3f75b48116a"
       }
     },
     {
