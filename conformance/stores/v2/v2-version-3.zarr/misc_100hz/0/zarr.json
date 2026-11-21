@@ -1,0 +1,85 @@
+{
+  "shape": [
+    1,
+    1000
+  ],
+  "data_type": "int16",
+  "chunk_grid": {
+    "name": "regular",
+    "configuration": {
+      "chunk_shape": [
+        1,
+        1200
+      ]
+    }
+  },
+  "chunk_key_encoding": {
+    "name": "default",
+    "configuration": {
+      "separator": "/"
+    }
+  },
+  "fill_value": 0,
+  "codecs": [
+    {
+      "name": "sharding_indexed",
+      "configuration": {
+        "chunk_shape": [
+          1,
+          400
+        ],
+        "codecs": [
+          {
+            "name": "bytes",
+            "configuration": {
+              "endian": "little"
+            }
+          },
+          {
+            "name": "blosc",
+            "configuration": {
+              "typesize": 2,
+              "cname": "zstd",
+              "clevel": 5,
+              "shuffle": "shuffle",
+              "blocksize": 0
+            }
+          }
+        ],
+        "index_codecs": [
+          {
+            "name": "bytes",
+            "configuration": {
+              "endian": "little"
+            }
+          },
+          {
+            "name": "crc32c"
+          }
+        ],
+        "index_location": "end"
+      }
+    }
+  ],
+  "attributes": {
+    "level": 0,
+    "rate": 100.0,
+    "source_rate_hz": 100.0,
+    "downsample_factor": 1,
+    "kind": "signal",
+    "chunk_samples": 400,
+    "shard_samples": 1200,
+    "anti_aliased": false,
+    "usable_for_inference": true,
+    "scale": [
+      3.9712806511032914e-05
+    ],
+    "offset": [
+      -1.3513191227681798
+    ],
+    "physical_formula": "physical = digital * scale + offset"
+  },
+  "zarr_format": 3,
+  "node_type": "array",
+  "storage_transformers": []
+}

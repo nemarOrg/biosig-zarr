@@ -1,7 +1,7 @@
 # Words the specification uses that the spell checker does not know.
-# Legal texts and the lockfile are third-party text and are not checked.
+# Legal texts, the lockfile and the conformance stores (a writer's output) are not checked.
 [files]
-extend-exclude = ["LICENSES/", "bun.lock"]
+extend-exclude = ["LICENSES/", "bun.lock", "conformance/stores/"]
 
 [default.extend-words]
 bzx = "bzx"

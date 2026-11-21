@@ -1,0 +1,51 @@
+{
+  "attributes": {
+    "biosigio_version": "1.2.13",
+    "format": "biosig-zarr",
+    "format_version": 2,
+    "source_format": "edf",
+    "modality_rates": {
+      "EEG": 250,
+      "MEG": 250,
+      "IEEG": 1000,
+      "EMG": 1000
+    },
+    "dtype": "int16",
+    "view_downsample": 4,
+    "view_chunk_columns": 1024,
+    "anti_alias_filter": "scipy.signal.resample_poly (polyphase FIR)",
+    "channel_groups": [
+      "eeg_100hz",
+      "misc_100hz"
+    ],
+    "recording_metadata": {
+      "startdate": {
+        "__biosigio_type__": "datetime",
+        "value": "2013-01-01T11:12:13"
+      },
+      "filetype": 0,
+      "number_of_signals": 5,
+      "file_duration": 0,
+      "datarecord_duration": 0,
+      "source_file": "sub-01_task-rest_eeg.edf",
+      "source_format": "edf",
+      "channels_tsv_units": {
+        "converted": 0,
+        "relabelled": 5,
+        "kept_importer_unit": 0,
+        "units_column_present": true
+      }
+    },
+    "subject_info_excluded": true,
+    "channels_tsv_units": {
+      "converted": 0,
+      "relabelled": 5,
+      "kept_importer_unit": 0,
+      "units_column_present": true
+    },
+    "created_utc": "2026-11-21T00:49:09.802142+00:00",
+    "note": "Derived serving copy. level 0 of each group is the anti-aliased inference signal; view/* are min/max render envelopes (not for inference). BIDS source remains authoritative."
+  },
+  "zarr_format": 3,
+  "node_type": "group"
+}
