@@ -6,15 +6,12 @@
 
 ## Context
 
-The biosig-zarr text was first written for the Neuroelectromagnetic Data Archive and Tools Resource (NEMAR), its first implementer, and first published on docs.nemar.org.
-This repository was created in the nemarOrg GitHub organization, and its first files named NEMAR as the party that decides:
-in `LICENSE.md`, as the decider of the licenses, which were set on 2026-11-18, and through its contributors as the copyright holder;
-in `GOVERNANCE.md`, through its owner as the editor; and in `README.md`, as the developer of the format.
-A format that one archive decides gives other implementers no say and ties the text to that archive.
-On 2026-11-20 the text's author, who relicensed it on the same day and is its editor, made the specification independent of NEMAR.
-`GOVERNANCE.md` makes a change that alters who decides normative, so it would need an accepted Request for Comments (RFC);
+The biosig-zarr text was first written for the Neuroelectromagnetic Data Archive and Tools Resource (NEMAR), its first implementer, and first published on docs.nemar.org;
+the first files of this repository, in the nemarOrg GitHub organization, named NEMAR as the party that set the licenses, held the copyright and supplied the editor.
+On 2026-11-20 the text's author, who is its editor, made the specification independent of NEMAR, because a format that one archive decides gives other implementers no say.
+`GOVERNANCE.md` makes normative a change that alters who decides, which needs an accepted Request for Comments (RFC);
 here the editor stays the same person and RFCs stay in nemarOrg/rfcs.
-Architecture Decision Records (ADRs) 0001 to 0004 were written before this change, and this repository's convention allows no edit to an ADR except its status.
+Architecture Decision Records (ADRs) 0001 to 0004 predate this change, and this repository's convention allows no edit to an ADR except its status.
 
 ## Decision
 
@@ -47,6 +44,6 @@ Architecture Decision Records (ADRs) 0001 to 0004 were written before this chang
 
 ## Receipts
 
-- Owner decision on 2026-11-20, recorded on the Request for Comments program board as questions Q37 and Q38 (biosig-zarr is independent of NEMAR, and the copyright holder of its text is the biosig-zarr contributors),
+- Owner decision on 2026-11-20, recorded on the RFC program board as questions Q37 and Q38 (biosig-zarr is independent of NEMAR, and the copyright holder of its text is the biosig-zarr contributors),
   with the answers to Q39 (the editor, and the ruling that the change is editorial), Q40 (the RFC venue), Q41 (the repository's home) and Q42 (release DOIs through nemar-doi), each option A.
 - NEMAR ADR 0131, "biosig-zarr has its own home and packing rules, and its tag rename waits for re-conversion" (nemarOrg/nemar-cli).
