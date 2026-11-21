@@ -9,8 +9,15 @@
 //
 // A document's schema follows from its place in the hierarchy (spec/index.md, "Hierarchy"):
 // the root zarr.json, events/zarr.json, <group>/zarr.json, <group>/0/zarr.json, and
-// <group>/view/<level>/zarr.json. The view group and the event arrays have no schema.
+// <group>/view/<level>/zarr.json; in version 3 also <group>/time/zarr.json and
+// <group>/values/zarr.json, and a group named in the root's timestamped_groups takes the
+// timestamped-group schema. The view group, time_index and the event arrays have no schema.
 // The check lists directories because it reads local files; a reader navigates by attributes.
+//
+// A store is checked against the schemas of the directory it sits in, stores/v<N>/, which is
+// the version it was written for before any alteration; a directory with no schemas/v<N>/,
+// such as stores/v1/, is not validated. Every required, enum, const and pattern in
+// schemas/v3/ must sit beside a $comment that names the heading of the text it comes from.
 //
 // It also checks that each vector's class agrees with its expected outcome: a valid vector is
 // accepted and cites no schema failure; an invalid vector is refused or schema-invalid.
@@ -60,6 +67,28 @@ for (const file of schemaFiles) {
   if (schema.$id !== expected) problems.push(`${relative(ROOT, file)}: $id is not ${expected}`);
   ajv.addSchema(schema);
 }
+// Every constraint of a version 3 schema names its source in the text.
+const CITED = ["required", "enum", "const", "pattern"];
+function uncited(node: unknown, at: string): string[] {
+  if (Array.isArray(node)) return node.flatMap((item, i) => uncited(item, `${at}/${i}`));
+  if (node === null || typeof node !== "object") return [];
+  const object = node as Record<string, unknown>;
+  const here = CITED.some((keyword) => keyword in object) && typeof object.$comment !== "string";
+  return [
+    ...(here ? [at || "/"] : []),
+    ...Object.entries(object)
+      .filter(([key]) => key !== "enum" && key !== "const")
+      .flatMap(([key, value]) => uncited(value, `${at}/${key}`)),
+  ];
+}
+for (const file of schemaFiles.filter((path) => relative(SCHEMAS, path).startsWith(`v3${sep}`))) {
+  for (const at of uncited(readJson(file), "")) {
+    problems.push(
+      `${relative(ROOT, file)}${at}: a constraint without a $comment naming its source`,
+    );
+  }
+}
+
 const validators = new Map<string, ValidateFunction>();
 for (const file of schemaFiles) {
   const id = (readJson(file) as { $id: string }).$id;
@@ -68,17 +97,36 @@ for (const file of schemaFiles) {
   else validators.set(id, validate);
 }
 
-/** The schema $id for a metadata document, from its path inside a store, or null. */
-function schemaFor(version: number, documentPath: string): string | null {
+/**
+ * The schema $id for a metadata document, from its path inside a store, or null.
+ * `timestamped` names the groups the root lists in timestamped_groups (version 3 only).
+ */
+function schemaFor(version: number, documentPath: string, timestamped: string[]): string | null {
   const parts = documentPath.split("/");
   const base = `${ID_BASE}schemas/v${version}/`;
   if (parts.length === 1) return `${base}root.schema.json`;
   if (parts.length === 2 && parts[0] === "events") return `${base}events-group.schema.json`;
   if (parts[0] === "events") return null;
+  if (version >= 3 && timestamped.includes(parts[0])) {
+    if (parts.length === 2) return `${base}timestamped-group.schema.json`;
+    if (parts.length === 3 && parts[1] === "time") return `${base}time-array.schema.json`;
+    if (parts.length === 3 && parts[1] === "values") return `${base}values-array.schema.json`;
+    return null;
+  }
   if (parts.length === 2) return `${base}uniform-group.schema.json`;
   if (parts.length === 3 && parts[1] === "0") return `${base}level0-array.schema.json`;
   if (parts.length === 4 && parts[1] === "view") return `${base}view-array.schema.json`;
   return null;
+}
+
+/** The version of the schemas a store is checked against: the N of its stores/v<N>/ directory. */
+function schemaVersion(vector: Vector): number | null {
+  const match = /^stores\/v([0-9]+)\//.exec(vector.path);
+  if (!match) return null;
+  const version = Number(match[1]);
+  return schemaFiles.some((file) => relative(SCHEMAS, file).startsWith(`v${version}${sep}`))
+    ? version
+    : null;
 }
 
 function describe(errors: ErrorObject[] | null | undefined): string {
@@ -113,9 +161,18 @@ for (const vector of manifest.vectors) {
     problems.push(`${vector.id}: class is neither valid nor invalid`);
   }
   let failureSeen = false;
-  for (const file of walk(store).filter((path) => path.endsWith("zarr.json"))) {
+  const version = schemaVersion(vector);
+  const rootAttributes = (readJson(join(store, "zarr.json")) as { attributes?: unknown })
+    .attributes;
+  const listed = (rootAttributes as { timestamped_groups?: unknown } | undefined)
+    ?.timestamped_groups;
+  const timestamped = Array.isArray(listed)
+    ? listed.filter((name) => typeof name === "string")
+    : [];
+  const documentFiles = version === null ? [] : walk(store).filter((p) => p.endsWith("zarr.json"));
+  for (const file of documentFiles) {
     const documentPath = relative(store, file).split(sep).join("/");
-    const id = schemaFor(vector.format_version, documentPath);
+    const id = schemaFor(version, documentPath, timestamped);
     if (!id) continue;
     const validate = validators.get(id);
     if (!validate) {
