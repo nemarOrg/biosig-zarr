@@ -1,0 +1,140 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://w3id.org/biosig-zarr/schemas/v3/root.schema.json",
+  "title": "biosig-zarr format version 3: root group metadata document",
+  "description": "The root zarr.json of a format version 3 store, as a writer conforming to the version 3 text writes it, transcribed from spec/index.md on the branch draft/3.0.0, which is the definition. Rules that relate two values, such as a name appearing in only one of channel_groups and timestamped_groups, or the groups named and the groups present, are not expressed. Unknown attributes are allowed, because a reader MUST ignore attributes it does not recognize.",
+  "type": "object",
+  "$comment": "Zarr requirements: every node's metadata is in a zarr.json object. Root attributes: the attribute table.",
+  "required": ["zarr_format", "node_type", "attributes"],
+  "properties": {
+    "zarr_format": { "$ref": "defs.schema.json#/$defs/zarrFormat" },
+    "node_type": { "$comment": "Hierarchy: the root is a group.", "const": "group" },
+    "attributes": { "$ref": "#/$defs/attributes" }
+  },
+  "$defs": {
+    "attributes": {
+      "type": "object",
+      "$comment": "Root attributes: the REQUIRED rows of the table, which a writer conforming to this document writes, including zarr_conventions and generated_by (both REQUIRED, Proposed). A reader MUST NOT require zarr_conventions or generated_by until they leave Proposed; this schema describes what a writer writes.",
+      "required": [
+        "format",
+        "format_version",
+        "zarr_conventions",
+        "channel_groups",
+        "timestamped_groups",
+        "dtype",
+        "source_sample_type",
+        "source_adc_bits",
+        "modality_rates",
+        "anti_alias_filter",
+        "view_downsample",
+        "view_chunk_columns",
+        "source_format",
+        "recording_metadata",
+        "created_utc",
+        "generated_by"
+      ],
+      "properties": {
+        "format": {
+          "type": "string",
+          "$comment": "Format name: the name biosig-zarr (Proposed) and the legacy name biosigio-zarr denote the same format, and a reader MUST refuse a store whose format is neither name. A writer of version 3 MUST write biosig-zarr.",
+          "const": "biosig-zarr"
+        },
+        "format_version": {
+          "type": "integer",
+          "$comment": "Format version: format_version MUST be an integer, and a writer that implements this document MUST write 3 on every store it writes.",
+          "const": 3
+        },
+        "zarr_conventions": { "$ref": "defs.schema.json#/$defs/zarrConventions" },
+        "channel_groups": {
+          "type": "array",
+          "description": "Root attributes: the names of the uniform groups, and only those, in the order they were written. It MAY be empty.",
+          "$comment": "Channel groups: a group name MUST be unique within the store.",
+          "uniqueItems": true,
+          "items": { "type": "string" }
+        },
+        "timestamped_groups": {
+          "type": "array",
+          "description": "Root attributes: the names of the timestamped groups, in the order they were written. It MAY be empty.",
+          "$comment": "Channel groups: a group name MUST be unique within the store.",
+          "uniqueItems": true,
+          "items": { "type": "string" }
+        },
+        "dtype": { "$ref": "defs.schema.json#/$defs/storageType" },
+        "source_sample_type": { "$ref": "defs.schema.json#/$defs/sourceSampleType" },
+        "source_adc_bits": { "$ref": "defs.schema.json#/$defs/sourceAdcBits" },
+        "origin_source_time": {
+          "description": "Recording timeline: the value of the source's own clock at time 0, in seconds; absent or null when the source has no such clock.",
+          "anyOf": [{ "type": "number" }, { "type": "null" }]
+        },
+        "modality_rates": {
+          "type": "object",
+          "description": "Root attributes: the rate caps the writer applied, in hertz, keyed by uppercase modality name.",
+          "additionalProperties": { "type": "number" },
+          "propertyNames": {
+            "type": "string",
+            "$comment": "Root attributes (line 276): keyed by uppercase modality name; the pattern allows no lowercase letter. The pattern is deliberately weaker than uppercase: it also allows digits, underscores, other characters without case, and the empty string.",
+            "pattern": "^[^a-z]*$"
+          }
+        },
+        "anti_alias_filter": { "type": "string" },
+        "view_downsample": { "type": "integer" },
+        "view_chunk_columns": { "type": "integer" },
+        "source_format": { "type": "string" },
+        "recording_metadata": {
+          "type": "object",
+          "description": "Root attributes: technical metadata about the recording, a JSON object. Recording metadata: its members are not defined."
+        },
+        "created_utc": { "type": "string" },
+        "subject_info_excluded": {
+          "type": "boolean",
+          "$comment": "Root attributes: CONDITIONAL, true when the exclusion ran; a CONDITIONAL attribute MUST be absent when its condition does not hold, so when present it is true.",
+          "const": true
+        },
+        "channels_tsv_units": {
+          "type": "object",
+          "$comment": "Root attributes: it holds the integer counts converted, relabelled, and kept_importer_unit, and the boolean units_column_present.",
+          "required": ["converted", "relabelled", "kept_importer_unit", "units_column_present"],
+          "properties": {
+            "converted": { "type": "integer" },
+            "relabelled": { "type": "integer" },
+            "kept_importer_unit": { "type": "integer" },
+            "units_column_present": { "type": "boolean" },
+            "matched_case_insensitive": {
+              "type": "object",
+              "additionalProperties": { "type": "string" }
+            }
+          }
+        },
+        "generated_by": {
+          "type": "array",
+          "description": "Proposed. Generating software: the software that produced the store, the writer of the Zarr hierarchy first.",
+          "$comment": "Generating software: generated_by MUST be a non-empty array of objects.",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/generatedByEntry" }
+        },
+        "biosigio_version": { "type": "string" },
+        "note": { "type": "string" }
+      }
+    },
+    "generatedByEntry": {
+      "type": "object",
+      "$comment": "Generating software: every entry MUST have name (string) and version (string).",
+      "required": ["name", "version"],
+      "properties": {
+        "name": { "type": "string" },
+        "version": { "type": "string" },
+        "code_url": { "type": "string" },
+        "description": { "type": "string" },
+        "container": {
+          "type": "object",
+          "description": "Generating software: an object with type, tag, and uri, as in BIDS; the text gives no member types, and they are taken to be strings, as in BIDS.",
+          "properties": {
+            "type": { "type": "string" },
+            "tag": { "type": "string" },
+            "uri": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}

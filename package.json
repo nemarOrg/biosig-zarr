@@ -11,9 +11,12 @@
   },
   "scripts": {
     "lint": "biome ci .",
-    "format": "biome check --write ."
+    "format": "biome check --write .",
+    "check:schemas": "bun run tools/check-schemas.ts",
+    "test": "bun test tools"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.6.8"
+    "@biomejs/biome": "2.6.8",
+    "ajv": "8.20.0"
   }
 }

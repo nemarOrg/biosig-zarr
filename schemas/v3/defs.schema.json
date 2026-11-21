@@ -1,0 +1,576 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://w3id.org/biosig-zarr/schemas/v3/defs.schema.json",
+  "title": "biosig-zarr format version 3: shared definitions",
+  "description": "Definitions that several format version 3 schemas share, transcribed from spec/index.md on the branch draft/3.0.0, which is the definition. This file validates no document on its own.",
+  "$defs": {
+    "zarrConventions": {
+      "type": "array",
+      "description": "Zarr convention: the root attribute zarr_conventions.",
+      "$comment": "Zarr convention: zarr_conventions MUST be an array that holds exactly one entry whose uuid is the identifier of the biosig-zarr convention (ADR 0004); the array MAY hold entries for other conventions, whose members this text does not constrain.",
+      "contains": {
+        "type": "object",
+        "$comment": "Zarr convention: the entry whose uuid is the biosig-zarr identifier.",
+        "required": ["uuid"],
+        "properties": {
+          "uuid": {
+            "$comment": "Zarr convention: the identifier of the biosig-zarr convention.",
+            "const": "3d7d2fe9-20a5-46d9-a92b-9170cddf6633"
+          }
+        }
+      },
+      "minContains": 1,
+      "maxContains": 1,
+      "items": {
+        "type": "object",
+        "if": {
+          "$comment": "Zarr convention: the condition selects the biosig-zarr entry.",
+          "required": ["uuid"],
+          "properties": {
+            "uuid": {
+              "$comment": "Zarr convention: the identifier of the biosig-zarr convention.",
+              "const": "3d7d2fe9-20a5-46d9-a92b-9170cddf6633"
+            }
+          }
+        },
+        "then": {
+          "$comment": "Zarr convention: the entry SHOULD have name equal to biosig-zarr, MAY have spec_url, schema_url and description, and MUST NOT have other members. The SHOULD is not checked.",
+          "properties": {
+            "uuid": { "type": "string" },
+            "name": { "type": "string" },
+            "spec_url": { "type": "string" },
+            "schema_url": { "type": "string" },
+            "description": { "type": "string" }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    "storageType": {
+      "type": "string",
+      "$comment": "Sample resolution: the storage type MUST be one of int16, int32, float32, and float64.",
+      "enum": ["int16", "int32", "float32", "float64"]
+    },
+    "sourceSampleType": {
+      "type": "string",
+      "description": "Sample resolution: the type of a decoded sample in the source.",
+      "$comment": "Sample resolution: int<N> or uint<N> with N from 1 to 64, float32, float64, or n/a when unknown.",
+      "pattern": "^(u?int([1-9]|[1-5][0-9]|6[0-4])|float32|float64|n/a)$"
+    },
+    "sourceAdcBits": {
+      "description": "Sample resolution: the bit depth of the analog-to-digital converter, only when the source states it.",
+      "anyOf": [{ "type": "integer" }, { "type": "null" }]
+    },
+    "sourceStep": {
+      "description": "Sample resolution: one source digital step in the channel's unit; nonzero; null for a floating point source, or when unknown.",
+      "anyOf": [
+        {
+          "type": "number",
+          "not": { "$comment": "Sample resolution: source_step is nonzero.", "const": 0 }
+        },
+        { "type": "null" }
+      ]
+    },
+    "sourceOffset": {
+      "description": "Sample resolution: the physical value of source digital code 0, in the channel's unit.",
+      "anyOf": [{ "type": "number" }, { "type": "null" }]
+    },
+    "sourceDigitalRange": {
+      "description": "Sample resolution: the digital minimum and maximum the source declares; null when it declares none.",
+      "anyOf": [
+        {
+          "type": "array",
+          "prefixItems": [{ "type": "integer" }, { "type": "integer" }],
+          "minItems": 2,
+          "items": false
+        },
+        { "type": "null" }
+      ]
+    },
+    "derivation": {
+      "type": "array",
+      "description": "The derivation list: every step that made a stored sample differ from the source sample, in the order the steps were applied.",
+      "items": {
+        "type": "string",
+        "anyOf": [
+          {
+            "$comment": "The derivation list: each token is one of the tokens of the table. nonfinite_zeroed is left out, because a writer of version 3 MUST NOT store non-finite samples as physical zero; the token exists for tools that describe a version 2 store.",
+            "enum": [
+              "resampled",
+              "nearest_sample",
+              "time_interpolated",
+              "unit_converted",
+              "requantized",
+              "narrowed",
+              "nonfinite_to_missing",
+              "gap_filled"
+            ]
+          },
+          {
+            "$comment": "The derivation list: a profile MAY add tokens that contain a colon, such as nemar:sss.",
+            "pattern": ":"
+          }
+        ]
+      }
+    },
+    "timestampDerivation": {
+      "type": "array",
+      "description": "Timestamped groups, the time array: what was done to the source timestamps; empty when the values are the source's own timestamps shifted to the origin.",
+      "items": {
+        "type": "string",
+        "$comment": "Timestamped groups: the tokens of the time array's derivation, clock_synchronized, dejittered, deduced and sorted. Time regularization: timestamp_derivation takes its tokens from the same list.",
+        "enum": ["clock_synchronized", "dejittered", "deduced", "sorted"]
+      }
+    },
+    "validIntervals": {
+      "type": "array",
+      "description": "Valid intervals: where a uniform group holds acquired samples. That the first start is 0, that the intervals are sorted, non-empty and non-overlapping, that the last stop is n_samples, and how start follows from source_time relate two values and are not expressed.",
+      "$comment": "Channel groups: valid_intervals is never empty.",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/validInterval" }
+    },
+    "validInterval": {
+      "type": "object",
+      "$comment": "Valid intervals: each entry is an object with the members start, stop and source_time; the table gives them no Presence column, and every entry carries all three, source_time being null when the source does not say.",
+      "required": ["start", "stop", "source_time"],
+      "properties": {
+        "start": { "type": "integer" },
+        "stop": { "type": "integer" },
+        "source_time": { "anyOf": [{ "type": "number" }, { "type": "null" }] }
+      }
+    },
+    "timeRegularization": {
+      "description": "Time regularization: null when the source declared uniform sampling; otherwise how per-sample timestamps were placed on the grid.",
+      "anyOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "$comment": "Time regularization: the members of the table; interpolation is CONDITIONAL.",
+          "required": [
+            "method",
+            "nominal_rate",
+            "effective_rate",
+            "max_abs_time_error",
+            "rms_time_error",
+            "timestamp_derivation"
+          ],
+          "properties": {
+            "method": {
+              "type": "string",
+              "$comment": "Time regularization: index_order or interpolated.",
+              "enum": ["index_order", "interpolated"]
+            },
+            "interpolation": { "type": "string" },
+            "nominal_rate": { "anyOf": [{ "type": "number" }, { "type": "null" }] },
+            "effective_rate": { "anyOf": [{ "type": "number" }, { "type": "null" }] },
+            "max_abs_time_error": { "type": "number" },
+            "rms_time_error": { "type": "number" },
+            "timestamp_derivation": { "$ref": "#/$defs/timestampDerivation" }
+          },
+          "if": {
+            "$comment": "Time regularization: the condition of interpolation, method interpolated.",
+            "required": ["method"],
+            "properties": {
+              "method": {
+                "$comment": "Time regularization: interpolated.",
+                "const": "interpolated"
+              }
+            }
+          },
+          "then": {
+            "$comment": "Time regularization: interpolation is present when method is interpolated.",
+            "required": ["interpolation"],
+            "properties": { "interpolation": true }
+          },
+          "else": {
+            "$comment": "Time regularization: a CONDITIONAL member is absent when its condition does not hold.",
+            "not": {
+              "$comment": "Time regularization: interpolation is absent.",
+              "required": ["interpolation"],
+              "properties": { "interpolation": true }
+            }
+          }
+        }
+      ]
+    },
+    "missingValue": {
+      "description": "Missing values: the stored value that means no sample here, encoded as Zarr v3 encodes fill_value for the array's data type, or null when every stored value is data.",
+      "$comment": "Missing values: a declared missing_value MUST be the value the table gives for the array's data type: -32768 for int16, -2147483648 for int32, NaN for float32 and float64.",
+      "enum": [-32768, -2147483648, "NaN", null]
+    },
+    "missingValueRule": {
+      "description": "Missing values: the rules that tie an array's missing_value to its data type and its fill_value. Applied to every signal array: level 0, every view array, and values in a timestamped group.",
+      "type": "object",
+      "allOf": [
+        {
+          "if": {
+            "$comment": "Missing values: the int16 row of the table.",
+            "required": ["data_type"],
+            "properties": {
+              "data_type": { "$comment": "Missing values: int16.", "const": "int16" }
+            }
+          },
+          "then": {
+            "properties": {
+              "attributes": {
+                "type": "object",
+                "properties": {
+                  "missing_value": {
+                    "$comment": "Missing values: an int16 array declares -32768, or null for an exact copy.",
+                    "enum": [-32768, null]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "$comment": "Missing values: the int32 row of the table.",
+            "required": ["data_type"],
+            "properties": {
+              "data_type": { "$comment": "Missing values: int32.", "const": "int32" }
+            }
+          },
+          "then": {
+            "properties": {
+              "attributes": {
+                "type": "object",
+                "properties": {
+                  "missing_value": {
+                    "$comment": "Missing values: an int32 array declares -2147483648, or null for an exact copy.",
+                    "enum": [-2147483648, null]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "$comment": "Missing values: the float32 and float64 row of the table.",
+            "required": ["data_type"],
+            "properties": {
+              "data_type": {
+                "$comment": "Missing values: float32 or float64.",
+                "enum": ["float32", "float64"]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "attributes": {
+                "type": "object",
+                "properties": {
+                  "missing_value": {
+                    "$comment": "Missing values: a floating point array declares NaN; missing_value MAY be null only on an integer array.",
+                    "const": "NaN"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "$comment": "Missing values: the condition of the fill value rule, a declared int16 missing value.",
+            "required": ["attributes"],
+            "properties": {
+              "attributes": {
+                "type": "object",
+                "$comment": "Missing values: missing_value is -32768.",
+                "required": ["missing_value"],
+                "properties": {
+                  "missing_value": { "$comment": "Missing values: -32768.", "const": -32768 }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "fill_value": {
+                "$comment": "Missing values: when missing_value is not null, the array's fill_value MUST equal it.",
+                "const": -32768
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "$comment": "Missing values: the condition of the fill value rule, a declared int32 missing value.",
+            "required": ["attributes"],
+            "properties": {
+              "attributes": {
+                "type": "object",
+                "$comment": "Missing values: missing_value is -2147483648.",
+                "required": ["missing_value"],
+                "properties": {
+                  "missing_value": {
+                    "$comment": "Missing values: -2147483648.",
+                    "const": -2147483648
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "fill_value": {
+                "$comment": "Missing values: when missing_value is not null, the array's fill_value MUST equal it.",
+                "const": -2147483648
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "$comment": "Missing values: the condition of the fill value rule, a declared floating point missing value.",
+            "required": ["attributes"],
+            "properties": {
+              "attributes": {
+                "type": "object",
+                "$comment": "Missing values: missing_value is NaN.",
+                "required": ["missing_value"],
+                "properties": {
+                  "missing_value": { "$comment": "Missing values: NaN.", "const": "NaN" }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "fill_value": {
+                "$comment": "Missing values: when missing_value is not null, the array's fill_value MUST equal it.",
+                "const": "NaN"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "channel": {
+      "type": "object",
+      "description": "Channel groups, Channel objects: the members every channel object has, in a uniform or a timestamped group. Each group schema adds the CONDITIONAL members of its kind.",
+      "$comment": "Channel groups: the REQUIRED rows of the channel object table.",
+      "required": [
+        "label",
+        "row_index",
+        "channel_type",
+        "modality",
+        "unit",
+        "prefilter",
+        "usable_for_inference",
+        "scale",
+        "offset",
+        "source_step",
+        "source_offset",
+        "source_digital_range",
+        "derivation"
+      ],
+      "properties": {
+        "label": { "type": "string" },
+        "row_index": {
+          "type": "integer",
+          "$comment": "Channel groups: the row_index values of a group MUST be the integers 0 to n_channels - 1.",
+          "minimum": 0
+        },
+        "channel_type": {
+          "type": "string",
+          "$comment": "Channel groups (line 423): the channel type, in uppercase, such as EEG or TRIG; the pattern allows no lowercase letter. The pattern is deliberately weaker than uppercase: it also allows digits, underscores, other characters without case, and the empty string.",
+          "pattern": "^[^a-z]*$"
+        },
+        "modality": {
+          "type": "string",
+          "$comment": "Channel groups (lines 394 and 424): the modality of the group, which the group attributes give in uppercase; the pattern allows no lowercase letter. The pattern is deliberately weaker than uppercase: it also allows digits, underscores, other characters without case, and the empty string.",
+          "pattern": "^[^a-z]*$"
+        },
+        "unit": { "type": "string" },
+        "prefilter": { "type": "string" },
+        "usable_for_inference": { "type": "boolean" },
+        "scale": {
+          "type": "number",
+          "description": "Channel groups: a copy of this channel's entry in the scale array of level 0, or of values, which is nonzero.",
+          "not": {
+            "$comment": "Level-0 array: one finite, nonzero factor per channel.",
+            "const": 0
+          }
+        },
+        "offset": { "type": "number" },
+        "source_sample_type": { "$ref": "#/$defs/sourceSampleType" },
+        "source_adc_bits": { "$ref": "#/$defs/sourceAdcBits" },
+        "source_step": { "$ref": "#/$defs/sourceStep" },
+        "source_offset": { "$ref": "#/$defs/sourceOffset" },
+        "source_digital_range": { "$ref": "#/$defs/sourceDigitalRange" },
+        "derivation": { "$ref": "#/$defs/derivation" },
+        "nonfinite_samples": { "type": "integer" },
+        "bids_unit": { "type": "string" }
+      },
+      "allOf": [
+        {
+          "if": {
+            "$comment": "Sample resolution: the condition, source_step null.",
+            "required": ["source_step"],
+            "properties": { "source_step": { "type": "null" } }
+          },
+          "then": {
+            "properties": {
+              "source_offset": {
+                "$comment": "Sample resolution: source_offset is null when source_step is null.",
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "$comment": "The derivation list: the condition, the token nonfinite_to_missing.",
+            "required": ["derivation"],
+            "properties": {
+              "derivation": {
+                "type": "array",
+                "contains": {
+                  "$comment": "The derivation list: nonfinite_to_missing.",
+                  "const": "nonfinite_to_missing"
+                }
+              }
+            }
+          },
+          "then": {
+            "$comment": "Channel groups: nonfinite_samples is CONDITIONAL, present when non-finite source samples were stored as missing, which the token nonfinite_to_missing records.",
+            "required": ["nonfinite_samples"],
+            "properties": { "nonfinite_samples": true }
+          }
+        },
+        {
+          "if": {
+            "$comment": "Missing values: the condition, nonfinite_samples present.",
+            "required": ["nonfinite_samples"],
+            "properties": { "nonfinite_samples": true }
+          },
+          "then": {
+            "properties": {
+              "usable_for_inference": {
+                "$comment": "Missing values and Channel groups: a channel with any non-finite source sample stored as missing has usable_for_inference false.",
+                "const": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "$comment": "Channel groups: the condition, a discrete channel, whose channel_type is TRIG, SYSCLOCK, or CTRL (Channel groups, Resampling).",
+            "required": ["channel_type"],
+            "properties": {
+              "channel_type": {
+                "$comment": "Channel groups: the discrete channel types.",
+                "enum": ["TRIG", "SYSCLOCK", "CTRL"]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "usable_for_inference": {
+                "$comment": "Channel groups (line 430): usable_for_inference is false for a discrete channel.",
+                "const": false
+              }
+            }
+          }
+        }
+      ]
+    },
+    "shardingIndexed": {
+      "type": "object",
+      "$comment": "Level-0 array: the sharding_indexed codec, with its inner codec chain and its shard index codecs.",
+      "required": ["name", "configuration"],
+      "properties": {
+        "name": {
+          "$comment": "Level-0 array: the array MUST use the sharding_indexed codec.",
+          "const": "sharding_indexed"
+        },
+        "configuration": {
+          "type": "object",
+          "$comment": "Level-0 array: the inner codec chain and the shard index codecs.",
+          "required": ["codecs", "index_codecs"],
+          "properties": {
+            "codecs": {
+              "type": "array",
+              "$comment": "Level-0 array: the inner chain MUST be bytes with little-endian byte order, then blosc with the zstd compressor.",
+              "prefixItems": [{ "$ref": "#/$defs/bytesLittle" }, { "$ref": "#/$defs/bloscZstd" }],
+              "minItems": 2,
+              "items": false
+            },
+            "index_codecs": {
+              "type": "array",
+              "$comment": "Level-0 array: the index codecs MUST be bytes with little-endian byte order, then crc32c.",
+              "prefixItems": [{ "$ref": "#/$defs/bytesLittle" }, { "$ref": "#/$defs/crc32c" }],
+              "minItems": 2,
+              "items": false
+            }
+          }
+        }
+      }
+    },
+    "bytesLittle": {
+      "type": "object",
+      "$comment": "Level-0 array and View pyramid: bytes with little-endian byte order.",
+      "required": ["name", "configuration"],
+      "properties": {
+        "name": { "$comment": "Level-0 array: the bytes codec.", "const": "bytes" },
+        "configuration": {
+          "type": "object",
+          "$comment": "Level-0 array: little-endian byte order.",
+          "required": ["endian"],
+          "properties": {
+            "endian": { "$comment": "Level-0 array: little-endian byte order.", "const": "little" }
+          }
+        }
+      }
+    },
+    "bloscZstd": {
+      "type": "object",
+      "$comment": "Level-0 array and View pyramid: blosc with the zstd compressor.",
+      "required": ["name", "configuration"],
+      "properties": {
+        "name": { "$comment": "Level-0 array: the blosc codec.", "const": "blosc" },
+        "configuration": {
+          "type": "object",
+          "$comment": "Level-0 array: the zstd compressor.",
+          "required": ["cname"],
+          "properties": {
+            "cname": { "$comment": "Level-0 array: the zstd compressor.", "const": "zstd" }
+          }
+        }
+      }
+    },
+    "crc32c": {
+      "type": "object",
+      "$comment": "Level-0 array: the crc32c index codec.",
+      "required": ["name"],
+      "properties": {
+        "name": { "$comment": "Level-0 array: the crc32c index codec.", "const": "crc32c" }
+      }
+    },
+    "physicalFormula": {
+      "type": "string",
+      "$comment": "Level-0 array: the literal text physical = digital * scale + offset.",
+      "const": "physical = digital * scale + offset"
+    },
+    "scaleArray": {
+      "type": "array",
+      "description": "Level-0 array: one finite, nonzero factor per channel, indexed by row_index.",
+      "items": {
+        "type": "number",
+        "not": { "$comment": "Level-0 array: one finite, nonzero factor per channel.", "const": 0 }
+      }
+    },
+    "offsetArray": {
+      "type": "array",
+      "description": "Level-0 array: one finite offset per channel, indexed by row_index.",
+      "items": { "type": "number" }
+    },
+    "zarrFormat": {
+      "$comment": "Zarr requirements: a store MUST be a Zarr v3 hierarchy and MUST NOT use Zarr version 2 metadata.",
+      "const": 3
+    }
+  }
+}

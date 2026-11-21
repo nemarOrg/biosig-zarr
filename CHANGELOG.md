@@ -4,6 +4,24 @@ All notable changes to the specification are recorded here, newest first.
 The versioning scheme is in [`GOVERNANCE.md`](GOVERNANCE.md).
 A release is a Git tag made by the owner.
 
+## Unreleased: 3.0.0-draft.2
+
+The text that RFC-0001 proposes, with its first test suite, on the branch `draft/3.0.0`.
+It is not accepted; the schemas and vectors for format version 3 are part of the proposal, and reach `main` only if RFC-0001 is accepted.
+
+- Release `2.0.1` is merged in from `main`, with the format version 2 schemas and vectors.
+- JavaScript Object Notation (JSON) Schemas for format version 3, in `schemas/v3/`:
+  `root`, `uniform-group`, `level0-array`, `view-array`, `events-group`, `timestamped-group`, `time-array`, and `values-array`, with shared definitions in `defs.schema.json`.
+  They describe what a writer conforming to the version 3 text writes, and every constraint in them names the heading of the text it comes from.
+  Under `GOVERNANCE.md` a change to a schema is normative, so they are proposed with the text.
+- Conformance vectors for a reader of the version 3 text: thirteen version 3 stores in `conformance/stores/v3/` and one version 1 store in `conformance/stores/v1/`,
+  cut from the same recording dedicated to the public domain, and written by `tools/vectors/build.py` with zarr-python and NumPy, because no writer of version 3 exists.
+  They hold at least one failing case for each layer of reader safety, the gap example of the `events` group, the ties of `round` in the onset rule, and the mask rule of the view pyramid.
+- Every entry of `conformance/manifest.json` has an outcome for a reader of the version 3 text, under the key `"3"` of `expect`, including the version 2 vectors, which such a reader reads with the defaults of "Reading earlier versions".
+- New checks: `tools/check-vectors.ts` reads every store's metadata as a reader of the version 3 text and compares the result with the manifest, and its tests show that each layer, the ties of `round`, and the mask rule decide an outcome;
+  `tools/check-schemas.ts` also covers the version 3 schemas and vectors.
+- Editorial updates of the draft text: the status of the conformance classes, the paragraph under "Conformance" that said no test suite existed, the sentence under "Reader safety" that said the suite will have a case for each layer, which it now has, and open questions 31 and 32, now closed in version 3.
+
 ## Unreleased: 3.0.0-draft.1
 
 The text that RFC-0001 in nemarOrg/rfcs proposes, on the branch `draft/3.0.0`.
@@ -65,13 +83,23 @@ Editorial corrections:
 - The `generated_by` example is now a valid JSON object.
 - Places that RFC-0001 puts up for comment are marked with their question number.
 
-## Unreleased
+## 2.0.1
 
-- The repository is initialized: licenses, governance, contribution terms, decision records, and checks on the text.
-- A check, `tools/check-moved-text.ts`, compares the word sequence of the specification text with its earlier copy on docs.nemar.org.
-- ADR 0004 records the identifier of the biosig-zarr Zarr convention.
+Editorial: no change to what conforms.
+
+- JavaScript Object Notation (JSON) Schemas for format version 2, one per metadata document, in `schemas/v2/`: `root`, `uniform-group`, `level0-array`, `view-array`, and `events-group`.
+- The first conformance vectors, in `conformance/`: six format version 2 stores cut from one recording dedicated to the public domain (Creative Commons CC0 1.0),
+  dataset `on009081` of the Neuroelectromagnetic Data Archive and Tools Resource (NEMAR), and written by biosigIO 1.2.13,
+  with their manifest, goldens, and sources;
+  and the checks that run them, `tools/check-schemas.ts` and `tools/vectors/`.
+- The editor's ruling: `GOVERNANCE.md` makes any change to a JSON Schema normative and lets the editor decide what is normative.
+  On 2026-11-20 the editor ruled that these first version 2 schemas and vectors are editorial, because they transcribe the `2.0.0` text and add no requirement to it.
 
 ## 2.0.0
 
 Format version 2, moved from docs.nemar.org with no normative change.
 Four parts the text marks Proposed are not yet implemented in NEMAR's stores: the `biosig-zarr` tag inside stores, `.bzx`, `generated_by`, and the conformance classes.
+
+- The repository is initialized: licenses, governance, contribution terms, decision records, and checks on the text.
+- A check, `tools/check-moved-text.ts`, compares the word sequence of the specification text with its earlier copy on docs.nemar.org.
+- ADR 0004 records the identifier of the biosig-zarr Zarr convention.

@@ -1,0 +1,158 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://w3id.org/biosig-zarr/schemas/v2/level0-array.schema.json",
+  "title": "biosig-zarr format version 2: level-0 array metadata document",
+  "description": "The zarr.json of the level-0 array (the full-resolution signal) of a channel group in a format version 2 store, transcribed from spec/index.md at release 2.0.0, which is the definition. Rules that relate two values, such as the shape and the channel count, are not expressed. Attributes the text lists as possibly absent in a version 2 store are not required, and unknown attributes are allowed.",
+  "type": "object",
+  "$comment": "Level-0 array: each channel group MUST contain an array named 0, written as that section states.",
+  "required": ["zarr_format", "node_type", "data_type", "shape", "codecs", "attributes"],
+  "properties": {
+    "zarr_format": {
+      "$comment": "Zarr requirements: a store MUST NOT use Zarr version 2 metadata.",
+      "const": 3
+    },
+    "node_type": {
+      "$comment": "Level-0 array: level 0 is an array.",
+      "const": "array"
+    },
+    "data_type": {
+      "type": "string",
+      "$comment": "Level-0 array: the array MUST be int16 or float32.",
+      "enum": ["int16", "float32"]
+    },
+    "shape": {
+      "type": "array",
+      "$comment": "Level-0 array: the array MUST have shape [n_channels, n_samples].",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": { "type": "integer" }
+    },
+    "codecs": {
+      "type": "array",
+      "$comment": "Level-0 array: the array MUST use the sharding_indexed codec.",
+      "contains": { "$ref": "#/$defs/sharding" }
+    },
+    "attributes": { "$ref": "#/$defs/attributes" }
+  },
+  "$defs": {
+    "sharding": {
+      "type": "object",
+      "required": ["name", "configuration"],
+      "properties": {
+        "name": {
+          "$comment": "Level-0 array: the array MUST use the sharding_indexed codec.",
+          "const": "sharding_indexed"
+        },
+        "configuration": {
+          "type": "object",
+          "$comment": "Level-0 array: the inner codec chain and the shard index codecs.",
+          "required": ["codecs", "index_codecs"],
+          "properties": {
+            "codecs": {
+              "type": "array",
+              "$comment": "Level-0 array: the inner chain MUST be bytes with little-endian byte order, then blosc with the zstd compressor.",
+              "prefixItems": [{ "$ref": "#/$defs/bytesLittle" }, { "$ref": "#/$defs/bloscZstd" }],
+              "minItems": 2,
+              "items": false
+            },
+            "index_codecs": {
+              "type": "array",
+              "$comment": "Level-0 array: the index codecs MUST be bytes with little-endian byte order, then crc32c.",
+              "prefixItems": [{ "$ref": "#/$defs/bytesLittle" }, { "$ref": "#/$defs/crc32c" }],
+              "minItems": 2,
+              "items": false
+            }
+          }
+        }
+      }
+    },
+    "bytesLittle": {
+      "type": "object",
+      "$comment": "Level-0 array: bytes with little-endian byte order.",
+      "required": ["name", "configuration"],
+      "properties": {
+        "name": { "$comment": "Level-0 array: the bytes codec.", "const": "bytes" },
+        "configuration": {
+          "type": "object",
+          "$comment": "Level-0 array: little-endian byte order.",
+          "required": ["endian"],
+          "properties": {
+            "endian": { "$comment": "Level-0 array: little-endian byte order.", "const": "little" }
+          }
+        }
+      }
+    },
+    "bloscZstd": {
+      "type": "object",
+      "$comment": "Level-0 array: blosc with the zstd compressor.",
+      "required": ["name", "configuration"],
+      "properties": {
+        "name": { "$comment": "Level-0 array: the blosc codec.", "const": "blosc" },
+        "configuration": {
+          "type": "object",
+          "$comment": "Level-0 array: the zstd compressor.",
+          "required": ["cname"],
+          "properties": {
+            "cname": { "$comment": "Level-0 array: the zstd compressor.", "const": "zstd" }
+          }
+        }
+      }
+    },
+    "crc32c": {
+      "type": "object",
+      "$comment": "Level-0 array: the crc32c index codec.",
+      "required": ["name"],
+      "properties": {
+        "name": { "$comment": "Level-0 array: the crc32c index codec.", "const": "crc32c" }
+      }
+    },
+    "attributes": {
+      "type": "object",
+      "$comment": "Level-0 array: the REQUIRED rows of the level-0 attribute table, less source_rate_hz, chunk_samples and shard_samples, which What changes the version lists as possibly absent.",
+      "required": [
+        "level",
+        "kind",
+        "rate",
+        "downsample_factor",
+        "anti_aliased",
+        "usable_for_inference",
+        "scale",
+        "offset",
+        "physical_formula"
+      ],
+      "properties": {
+        "level": { "type": "integer", "$comment": "Level-0 array: 0.", "const": 0 },
+        "kind": { "type": "string", "$comment": "Level-0 array: \"signal\".", "const": "signal" },
+        "rate": { "type": "number" },
+        "source_rate_hz": { "type": "number" },
+        "downsample_factor": {
+          "type": "integer",
+          "$comment": "Level-0 array: 1.",
+          "const": 1
+        },
+        "chunk_samples": { "type": "integer" },
+        "shard_samples": { "type": "integer" },
+        "anti_aliased": { "type": "boolean" },
+        "usable_for_inference": { "type": "boolean" },
+        "scale": {
+          "type": "array",
+          "description": "Level-0 array: one finite, nonzero factor per channel, indexed by row_index.",
+          "items": {
+            "type": "number",
+            "$comment": "Level-0 array: one finite, nonzero factor per channel.",
+            "not": { "const": 0 }
+          }
+        },
+        "offset": {
+          "type": "array",
+          "items": { "type": "number" }
+        },
+        "physical_formula": {
+          "type": "string",
+          "$comment": "Level-0 array: the literal text.",
+          "const": "physical = digital * scale + offset"
+        }
+      }
+    }
+  }
+}

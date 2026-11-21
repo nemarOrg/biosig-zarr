@@ -1,0 +1,58 @@
+{
+  "attributes": {
+    "format": "biosig-zarr",
+    "format_version": 4,
+    "zarr_conventions": [
+      {
+        "uuid": "3d7d2fe9-20a5-46d9-a92b-9170cddf6633",
+        "name": "biosig-zarr"
+      }
+    ],
+    "channel_groups": [
+      "eeg_100hz"
+    ],
+    "timestamped_groups": [],
+    "dtype": "int16",
+    "source_sample_type": "int16",
+    "source_adc_bits": null,
+    "modality_rates": {
+      "EEG": 250,
+      "MEG": 250,
+      "IEEG": 1000,
+      "EMG": 1000
+    },
+    "anti_alias_filter": "windowed-sinc low-pass finite impulse response filter, 41 taps, Hamming window, cutoff at half the served rate, applied with NumPy to each run of finite source samples of each valid interval with reflected edges; each grid point takes the filtered value at its nearest source sample",
+    "view_downsample": 4,
+    "view_chunk_columns": 1024,
+    "source_format": "EDF",
+    "recording_metadata": {
+      "source_file": "sub-01_task-rest_eeg.edf",
+      "number_of_signals": 4
+    },
+    "created_utc": "2026-11-21T02:11:15Z",
+    "channels_tsv_units": {
+      "converted": 0,
+      "relabelled": 4,
+      "kept_importer_unit": 0,
+      "units_column_present": true
+    },
+    "generated_by": [
+      {
+        "name": "biosig-zarr-conformance-builder",
+        "version": "1",
+        "code_url": "https://github.com/nemarOrg/biosig-zarr/tree/draft/3.0.0/tools/vectors",
+        "description": "tools/vectors/build.py: writes the conformance vectors; not a library"
+      },
+      {
+        "name": "zarr-python",
+        "version": "3.4.2"
+      },
+      {
+        "name": "numpy",
+        "version": "2.5.5"
+      }
+    ]
+  },
+  "zarr_format": 3,
+  "node_type": "group"
+}

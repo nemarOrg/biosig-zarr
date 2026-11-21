@@ -1,0 +1,35 @@
+{
+  "attributes": {
+    "modality": "MISC",
+    "rate": 100.0,
+    "original_rate": 100.0,
+    "n_channels": 1,
+    "n_samples": 1000,
+    "channels": [
+      {
+        "label": "Add_lead1",
+        "channel_type": "MISC",
+        "modality": "MISC",
+        "unit": "\u00b5V",
+        "prefilter": "n/a",
+        "original_rate": 100.0,
+        "target_rate": 100.0,
+        "anti_aliased": false,
+        "usable_for_inference": true,
+        "scale": 3.9712806511032914e-05,
+        "offset": -1.3513191227681798,
+        "row_index": 0
+      }
+    ],
+    "n_view_levels": 1,
+    "view_levels": [
+      1
+    ],
+    "view_downsample": 4,
+    "view_chunk_columns": 1024,
+    "chunk_seconds": 4.0,
+    "shard_seconds": 300.0
+  },
+  "zarr_format": 3,
+  "node_type": "group"
+}

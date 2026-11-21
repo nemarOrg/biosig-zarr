@@ -1,0 +1,77 @@
+{
+  "attributes": {
+    "modality": "EEG",
+    "rate": 100.0,
+    "original_rate": 100.0,
+    "n_channels": 4,
+    "n_samples": 1000,
+    "channels": [
+      {
+        "label": "Fp1-A1",
+        "channel_type": "EEG",
+        "modality": "EEG",
+        "unit": "\u00b5V",
+        "prefilter": "n/a",
+        "original_rate": 100.0,
+        "target_rate": 100.0,
+        "anti_aliased": false,
+        "usable_for_inference": true,
+        "scale": 0.0037559150465626898,
+        "offset": 2.0038616303698547,
+        "row_index": 0
+      },
+      {
+        "label": "Fp2-A2",
+        "channel_type": "EEG",
+        "modality": "EEG",
+        "unit": "\u00b5V",
+        "prefilter": "n/a",
+        "original_rate": 100.0,
+        "target_rate": 100.0,
+        "anti_aliased": false,
+        "usable_for_inference": true,
+        "scale": 0.005944701651574618,
+        "offset": 14.066907652572922,
+        "row_index": 1
+      },
+      {
+        "label": "O1-A1",
+        "channel_type": "EEG",
+        "modality": "EEG",
+        "unit": "\u00b5V",
+        "prefilter": "n/a",
+        "original_rate": 100.0,
+        "target_rate": 100.0,
+        "anti_aliased": false,
+        "usable_for_inference": true,
+        "scale": 0.004935079916813359,
+        "offset": 34.13628916199244,
+        "row_index": 2
+      },
+      {
+        "label": "O2-A2",
+        "channel_type": "EEG",
+        "modality": "EEG",
+        "unit": "\u00b5V",
+        "prefilter": "n/a",
+        "original_rate": 100.0,
+        "target_rate": 100.0,
+        "anti_aliased": false,
+        "usable_for_inference": true,
+        "scale": 0.002068120769843791,
+        "offset": -2.8517926734214427,
+        "row_index": 3
+      }
+    ],
+    "n_view_levels": 1,
+    "view_levels": [
+      1
+    ],
+    "view_downsample": 4,
+    "view_chunk_columns": 1024,
+    "chunk_seconds": 4.0,
+    "shard_seconds": 300.0
+  },
+  "zarr_format": 3,
+  "node_type": "group"
+}
