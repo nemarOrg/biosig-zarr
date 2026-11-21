@@ -1,0 +1,40 @@
+{
+  "attributes": {
+    "kind": "timestamped",
+    "modality": "MISC",
+    "n_channels": 1,
+    "n_samples": 1000,
+    "channels": [
+      {
+        "label": "Add_lead1",
+        "row_index": 0,
+        "channel_type": "MISC",
+        "modality": "MISC",
+        "unit": "\u00b5V",
+        "prefilter": "n/a",
+        "usable_for_inference": true,
+        "scale": 3.971341249886382e-05,
+        "offset": -1.3513389791712649,
+        "source_step": 0.10009918364232853,
+        "source_offset": 0.050049591821334616,
+        "source_digital_range": [
+          -32768,
+          32767
+        ],
+        "derivation": [
+          "requantized"
+        ]
+      }
+    ],
+    "nominal_rate": 100.0,
+    "effective_rate": 100.0,
+    "time_range": [
+      0.0,
+      9.99
+    ],
+    "continuity": "continuous",
+    "chunk_samples": 400
+  },
+  "zarr_format": 3,
+  "node_type": "group"
+}

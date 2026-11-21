@@ -14,6 +14,48 @@
         "2": {
           "outcome": "accept",
           "goldens": "goldens/v2-legacy-name.json"
+        },
+        "3": {
+          "outcome": "accept",
+          "goldens": "goldens/v2-legacy-name.json",
+          "uniform_groups": ["eeg_100hz", "misc_100hz"],
+          "timestamped_groups": [],
+          "groups": {
+            "eeg_100hz": {
+              "start_time": 0,
+              "valid_intervals": [
+                {
+                  "start": 0,
+                  "stop": 1000,
+                  "source_time": 0
+                }
+              ],
+              "missing_value": null,
+              "refuse_without": [],
+              "view_empty_columns": {
+                "1": []
+              }
+            },
+            "misc_100hz": {
+              "start_time": 0,
+              "valid_intervals": [
+                {
+                  "start": 0,
+                  "stop": 1000,
+                  "source_time": 0
+                }
+              ],
+              "missing_value": null,
+              "refuse_without": [],
+              "view_empty_columns": {
+                "1": []
+              }
+            }
+          },
+          "events": {
+            "onset_source_basis": "unknown",
+            "samples": []
+          }
         }
       },
       "files": {
@@ -55,6 +97,48 @@
         "2": {
           "outcome": "accept",
           "goldens": "goldens/v2-legacy-name.json"
+        },
+        "3": {
+          "outcome": "accept",
+          "goldens": "goldens/v2-legacy-name.json",
+          "uniform_groups": ["eeg_100hz", "misc_100hz"],
+          "timestamped_groups": [],
+          "groups": {
+            "eeg_100hz": {
+              "start_time": 0,
+              "valid_intervals": [
+                {
+                  "start": 0,
+                  "stop": 1000,
+                  "source_time": 0
+                }
+              ],
+              "missing_value": null,
+              "refuse_without": [],
+              "view_empty_columns": {
+                "1": []
+              }
+            },
+            "misc_100hz": {
+              "start_time": 0,
+              "valid_intervals": [
+                {
+                  "start": 0,
+                  "stop": 1000,
+                  "source_time": 0
+                }
+              ],
+              "missing_value": null,
+              "refuse_without": [],
+              "view_empty_columns": {
+                "1": []
+              }
+            }
+          },
+          "events": {
+            "onset_source_basis": "unknown",
+            "samples": []
+          }
         }
       },
       "files": {
@@ -98,6 +182,48 @@
         "2": {
           "outcome": "accept",
           "goldens": "goldens/v2-legacy-name.json"
+        },
+        "3": {
+          "outcome": "accept",
+          "goldens": "goldens/v2-legacy-name.json",
+          "uniform_groups": ["eeg_100hz", "misc_100hz"],
+          "timestamped_groups": [],
+          "groups": {
+            "eeg_100hz": {
+              "start_time": 0,
+              "valid_intervals": [
+                {
+                  "start": 0,
+                  "stop": 1000,
+                  "source_time": 0
+                }
+              ],
+              "missing_value": null,
+              "refuse_without": [],
+              "view_empty_columns": {
+                "1": []
+              }
+            },
+            "misc_100hz": {
+              "start_time": 0,
+              "valid_intervals": [
+                {
+                  "start": 0,
+                  "stop": 1000,
+                  "source_time": 0
+                }
+              ],
+              "missing_value": null,
+              "refuse_without": [],
+              "view_empty_columns": {
+                "1": []
+              }
+            }
+          },
+          "events": {
+            "onset_source_basis": "unknown",
+            "samples": []
+          }
         }
       },
       "files": {
@@ -122,7 +248,7 @@
       "path": "stores/v2/v2-version-3.zarr",
       "format_version": 2,
       "class": "invalid",
-      "layer": null,
+      "layer": 2,
       "rule": "format-version",
       "description": "Invalid because a version 2 reader MUST refuse a store whose format_version is greater than the highest version it implements (spec line 126), not because the store breaks another version 2 rule.",
       "derived_from": "v2-legacy-name",
@@ -144,6 +270,14 @@
             "document": "zarr.json",
             "instance_path": "/attributes/format_version",
             "keyword": "const"
+          }
+        },
+        "3": {
+          "outcome": "refuse",
+          "refusal": {
+            "layer": 2,
+            "rule": "reader-safety",
+            "subject": "eeg_100hz"
           }
         }
       },
@@ -191,6 +325,14 @@
             "instance_path": "/attributes/format",
             "keyword": "enum"
           }
+        },
+        "3": {
+          "outcome": "refuse",
+          "refusal": {
+            "layer": null,
+            "rule": "format-name",
+            "subject": "format"
+          }
         }
       },
       "files": {
@@ -236,6 +378,15 @@
             "instance_path": "/attributes",
             "keyword": "required"
           }
+        },
+        "3": {
+          "outcome": "schema-invalid",
+          "schema_failure": {
+            "schema": "https://w3id.org/biosig-zarr/schemas/v2/root.schema.json",
+            "document": "zarr.json",
+            "instance_path": "/attributes",
+            "keyword": "required"
+          }
         }
       },
       "files": {
@@ -253,6 +404,876 @@
         "misc_100hz/view/zarr.json": "36615682d5be9646729635067a75185212eb0c48d708ef06ad34c1f58dd587d2",
         "misc_100hz/zarr.json": "6c8bf2cd005415434ce7da408f03927b4ff7340ada7683643bf57a6ef10f0ebb",
         "zarr.json": "ca4c5ecdee5ac7264f9526c7b10518d42ffe193d91ee4d9376f8215151511f9f"
+      }
+    },
+    {
+      "id": "v1-no-format-version",
+      "path": "stores/v1/v1-no-format-version.zarr",
+      "format_version": 3,
+      "class": "invalid",
+      "layer": 1,
+      "rule": "format-version",
+      "description": "A version 1 store: no format_version, and recording_metadata as a string holding JSON text. A reader of the version 3 text MUST refuse it as unsupported.",
+      "derived_from": "v2-legacy-name",
+      "alteration": {
+        "document": "zarr.json",
+        "patch": [
+          {
+            "op": "remove",
+            "path": "/attributes/format_version"
+          },
+          {
+            "op": "replace",
+            "path": "/attributes/recording_metadata",
+            "value": "{\"startdate\": {\"__biosigio_type__\": \"datetime\", \"value\": \"2013-01-01T11:12:13\"}, \"filetype\": 0, \"number_of_signals\": 5, \"file_duration\": 0, \"datarecord_duration\": 0, \"source_file\": \"sub-01_task-rest_eeg.edf\", \"source_format\": \"edf\", \"channels_tsv_units\": {\"converted\": 0, \"relabelled\": 5, \"kept_importer_unit\": 0, \"units_column_present\": true}}"
+          }
+        ]
+      },
+      "expect": {
+        "3": {
+          "outcome": "refuse",
+          "refusal": {
+            "layer": 1,
+            "rule": "format-version",
+            "subject": "format_version"
+          }
+        }
+      },
+      "files": {
+        "eeg_100hz/0/c/0/0": "b32ab686f57c975f1a7cb088f0337074e6215a7923de1a13ffb7ce54a9ac77b7",
+        "eeg_100hz/0/zarr.json": "df1540209fc16954dd7fa42dff4db49deb11a27f671ab51b9ff1660cc8e2cfb9",
+        "eeg_100hz/view/1/c/0/0/0": "bd4c827370cf363b277e5c45cc088e58e17238305913b02dcd4ed43d399493db",
+        "eeg_100hz/view/1/zarr.json": "ded10996df0f779ff34a477f914c85a9c060371ad61f944fbd49277163b9b407",
+        "eeg_100hz/view/zarr.json": "36615682d5be9646729635067a75185212eb0c48d708ef06ad34c1f58dd587d2",
+        "eeg_100hz/zarr.json": "45505844917081266704d40cb109d82e6cda1727fd8c30383948862c5ac5a618",
+        "events/zarr.json": "fcc6bd469d32c6d9e1538ecd1d337b8ae8d0cb56618aa27997ca3efa29406f4c",
+        "misc_100hz/0/c/0/0": "c2f8bcd7299a6c29b0e9bec75570d6eaf43748c130841252a9f8025c704dc609",
+        "misc_100hz/0/zarr.json": "0d70a93ffa92483dbb4a2e5e1a43e870d572b39f3644e753a5e65d61b2667756",
+        "misc_100hz/view/1/c/0/0/0": "903bc3a3957bd0c51be8049c6821c278447b163cab934b5333079c6ca1717fef",
+        "misc_100hz/view/1/zarr.json": "b2600beb44eb21b76e31efbbc05742017cdbcb5a7f8d059c9db5b87447e31c4c",
+        "misc_100hz/view/zarr.json": "36615682d5be9646729635067a75185212eb0c48d708ef06ad34c1f58dd587d2",
+        "misc_100hz/zarr.json": "6c8bf2cd005415434ce7da408f03927b4ff7340ada7683643bf57a6ef10f0ebb",
+        "zarr.json": "5737968e8608967a88233ad7839d13795294e8c082b818a69b1b4f27d7b27e67"
+      }
+    },
+    {
+      "id": "v3-continuous",
+      "path": "stores/v3/v3-continuous.zarr",
+      "format_version": 3,
+      "class": "valid",
+      "layer": 4,
+      "rule": "missing-values",
+      "description": "One uniform int16 group of four EEG channels at their source rate, one valid interval, the declared missing value, and the zarr_conventions entry. A reader that does not implement missing_value MUST refuse it, naming missing_value.",
+      "expect": {
+        "3": {
+          "outcome": "accept",
+          "goldens": "goldens/v3-continuous.json",
+          "uniform_groups": ["eeg_100hz"],
+          "timestamped_groups": [],
+          "groups": {
+            "eeg_100hz": {
+              "start_time": 0.0,
+              "valid_intervals": [
+                {
+                  "start": 0,
+                  "stop": 1000,
+                  "source_time": 0.0
+                }
+              ],
+              "missing_value": -32768,
+              "refuse_without": ["missing_value"],
+              "view_empty_columns": {
+                "1": []
+              }
+            }
+          },
+          "events": {
+            "onset_source_basis": "timeline",
+            "samples": [
+              {
+                "group": "eeg_100hz",
+                "onset": 1.0,
+                "sample": 100
+              },
+              {
+                "group": "eeg_100hz",
+                "onset": 2.0,
+                "sample": 200
+              },
+              {
+                "group": "eeg_100hz",
+                "onset": 9.5,
+                "sample": 950
+              },
+              {
+                "group": "eeg_100hz",
+                "onset": 11.0,
+                "sample": null
+              }
+            ]
+          }
+        }
+      },
+      "files": {
+        "eeg_100hz/0/c/0/0": "88e8ec70d2b0a7619eea94f8f4373895949694d508d6ee94fc5a51f080a5c540",
+        "eeg_100hz/0/zarr.json": "73803a97b8ad326999cdd5d9ca1673f4f0db7dd62d5ab047631ff033ba64c407",
+        "eeg_100hz/view/1/c/0/0/0": "23c0cc9e922c671d3f4411f73d3886b19caea7799289839b06913e9245cd9ae3",
+        "eeg_100hz/view/1/zarr.json": "7658af4081ed1299e6f883e5a2a26b9a2927213afb662136d80cf5fd4b11c0f7",
+        "eeg_100hz/view/zarr.json": "36615682d5be9646729635067a75185212eb0c48d708ef06ad34c1f58dd587d2",
+        "eeg_100hz/zarr.json": "fe76c235932e89f6b0973847d006715656855e971a44d819b63ddacceafc78c7",
+        "events/code/zarr.json": "510ee22a0484c2ca5e784dcbb28b5c2fb967cc3744c6b329e1745acb66c15044",
+        "events/duration/zarr.json": "6543c30b509200acf42d004130aef9fbe46f4eb00d52b85b90be7a7b5b49b307",
+        "events/onset/c/0": "50c7b22d063eed8d5a2391d3c7396b5339bf9ab9c6d328c90407d79875a17b29",
+        "events/onset/zarr.json": "6543c30b509200acf42d004130aef9fbe46f4eb00d52b85b90be7a7b5b49b307",
+        "events/zarr.json": "f72be88aa1a335c8efc8cfce509fd8ba336643b4e7d87b7a3a325f6a92a29be9",
+        "zarr.json": "a458b9715bf0305a0dfb7cb07618c2a2b92812b00443fe6ab98fa3f75b48116a"
+      }
+    },
+    {
+      "id": "v3-gap-10hz",
+      "path": "stores/v3/v3-gap-10hz.zarr",
+      "format_version": 3,
+      "class": "valid",
+      "layer": 4,
+      "rule": "events-group",
+      "description": "The gap case of the text: 10 Hz, valid intervals [0, 20) and [24, 40), an event at 2.02 s with no sample, three onsets that are exact ties of round, one sample missing inside an interval, and view levels with factors 4 and 16.",
+      "expect": {
+        "3": {
+          "outcome": "accept",
+          "goldens": "goldens/v3-gap-10hz.json",
+          "uniform_groups": ["eeg_10hz"],
+          "timestamped_groups": [],
+          "groups": {
+            "eeg_10hz": {
+              "start_time": 0.0,
+              "valid_intervals": [
+                {
+                  "start": 0,
+                  "stop": 20,
+                  "source_time": 0.0
+                },
+                {
+                  "start": 24,
+                  "stop": 40,
+                  "source_time": 2.4
+                }
+              ],
+              "missing_value": -32768,
+              "refuse_without": ["valid_intervals", "missing_value"],
+              "view_empty_columns": {
+                "1": [5],
+                "2": []
+              }
+            }
+          },
+          "events": {
+            "onset_source_basis": "timeline",
+            "samples": [
+              {
+                "group": "eeg_10hz",
+                "onset": 0.25,
+                "sample": 3
+              },
+              {
+                "group": "eeg_10hz",
+                "onset": 1.25,
+                "sample": 13
+              },
+              {
+                "group": "eeg_10hz",
+                "onset": 2.02,
+                "sample": null
+              },
+              {
+                "group": "eeg_10hz",
+                "onset": 3.25,
+                "sample": 33
+              }
+            ]
+          }
+        }
+      },
+      "files": {
+        "eeg_10hz/0/c/0/0": "4c04002fae3471151fb5e67d0c7cd6e8843c3e8ac37ffc32a12b432f4c17d90a",
+        "eeg_10hz/0/c/0/1": "1e8ed940318ca39b2aeadb721f7892fe71b036c1d3f7ca96789aa99e07197c8d",
+        "eeg_10hz/0/c/0/2": "4a572dc00d60bd9fd873e05369ba1e297b62d6b5437552cb72c2ed6a79aa8ac0",
+        "eeg_10hz/0/zarr.json": "b89cc2cd414804224a4e6618cf5717a097b5af86d0a0aebceb911c26a73a0014",
+        "eeg_10hz/view/1/c/0/0/0": "89e41d0e21a585c1150c231a42cd19d20cb8979be4a8faddf2b24b3326ae6615",
+        "eeg_10hz/view/1/zarr.json": "029c6ab32da7e8d4cf69a8e424dd613f4fde63035ffcb15f90c68e350e6f9750",
+        "eeg_10hz/view/2/c/0/0/0": "cb14ce7da4b768e7ae491ebe46e8c8acc1e01cb7f8f0bb88749ace425cdc0d85",
+        "eeg_10hz/view/2/zarr.json": "512a76327fee8bc58efb7146db392640d2ce311508c2e69664952431f41c0eae",
+        "eeg_10hz/view/zarr.json": "36615682d5be9646729635067a75185212eb0c48d708ef06ad34c1f58dd587d2",
+        "eeg_10hz/zarr.json": "ef019b4b1ff287d78c1496abc3f6d0c13b15c173f829eba375b27ccc851bed25",
+        "events/code/zarr.json": "510ee22a0484c2ca5e784dcbb28b5c2fb967cc3744c6b329e1745acb66c15044",
+        "events/duration/zarr.json": "6543c30b509200acf42d004130aef9fbe46f4eb00d52b85b90be7a7b5b49b307",
+        "events/onset/c/0": "57d3815e1d27db5de9114569c4ec74583f4e887f295f5a906ede5a0bb2df1b6f",
+        "events/onset/zarr.json": "6543c30b509200acf42d004130aef9fbe46f4eb00d52b85b90be7a7b5b49b307",
+        "events/zarr.json": "f72be88aa1a335c8efc8cfce509fd8ba336643b4e7d87b7a3a325f6a92a29be9",
+        "zarr.json": "88c46e77dcfaa69a25ca2cbdd834f70aadf29e4c3606f1da6809822de7a11354"
+      }
+    },
+    {
+      "id": "v3-start-time",
+      "path": "stores/v3/v3-start-time.zarr",
+      "format_version": 3,
+      "class": "valid",
+      "layer": 4,
+      "rule": "recording-timeline",
+      "description": "v3-continuous with the group starting 1.5 s into the recording timeline. A reader that does not implement start_time MUST refuse it, naming start_time.",
+      "derived_from": "v3-continuous",
+      "alteration": {
+        "document": "eeg_100hz/zarr.json",
+        "patch": [
+          {
+            "op": "replace",
+            "path": "/attributes/start_time",
+            "value": 1.5
+          },
+          {
+            "op": "replace",
+            "path": "/attributes/valid_intervals/0/source_time",
+            "value": 1.5
+          }
+        ]
+      },
+      "expect": {
+        "3": {
+          "outcome": "accept",
+          "goldens": "goldens/v3-continuous.json",
+          "uniform_groups": ["eeg_100hz"],
+          "timestamped_groups": [],
+          "groups": {
+            "eeg_100hz": {
+              "start_time": 1.5,
+              "valid_intervals": [
+                {
+                  "start": 0,
+                  "stop": 1000,
+                  "source_time": 1.5
+                }
+              ],
+              "missing_value": -32768,
+              "refuse_without": ["start_time", "missing_value"],
+              "view_empty_columns": {
+                "1": []
+              }
+            }
+          },
+          "events": {
+            "onset_source_basis": "timeline",
+            "samples": [
+              {
+                "group": "eeg_100hz",
+                "onset": 1.0,
+                "sample": null
+              },
+              {
+                "group": "eeg_100hz",
+                "onset": 2.0,
+                "sample": 50
+              },
+              {
+                "group": "eeg_100hz",
+                "onset": 9.5,
+                "sample": 800
+              },
+              {
+                "group": "eeg_100hz",
+                "onset": 11.0,
+                "sample": 950
+              }
+            ]
+          }
+        }
+      },
+      "files": {
+        "eeg_100hz/0/c/0/0": "88e8ec70d2b0a7619eea94f8f4373895949694d508d6ee94fc5a51f080a5c540",
+        "eeg_100hz/0/zarr.json": "73803a97b8ad326999cdd5d9ca1673f4f0db7dd62d5ab047631ff033ba64c407",
+        "eeg_100hz/view/1/c/0/0/0": "23c0cc9e922c671d3f4411f73d3886b19caea7799289839b06913e9245cd9ae3",
+        "eeg_100hz/view/1/zarr.json": "7658af4081ed1299e6f883e5a2a26b9a2927213afb662136d80cf5fd4b11c0f7",
+        "eeg_100hz/view/zarr.json": "36615682d5be9646729635067a75185212eb0c48d708ef06ad34c1f58dd587d2",
+        "eeg_100hz/zarr.json": "f342522903fd45ed82968e17aea34e62f53792ff228ac62a4d150389b3f92d96",
+        "events/code/zarr.json": "510ee22a0484c2ca5e784dcbb28b5c2fb967cc3744c6b329e1745acb66c15044",
+        "events/duration/zarr.json": "6543c30b509200acf42d004130aef9fbe46f4eb00d52b85b90be7a7b5b49b307",
+        "events/onset/c/0": "50c7b22d063eed8d5a2391d3c7396b5339bf9ab9c6d328c90407d79875a17b29",
+        "events/onset/zarr.json": "6543c30b509200acf42d004130aef9fbe46f4eb00d52b85b90be7a7b5b49b307",
+        "events/zarr.json": "f72be88aa1a335c8efc8cfce509fd8ba336643b4e7d87b7a3a325f6a92a29be9",
+        "zarr.json": "a458b9715bf0305a0dfb7cb07618c2a2b92812b00443fe6ab98fa3f75b48116a"
+      }
+    },
+    {
+      "id": "v3-timestamped",
+      "path": "stores/v3/v3-timestamped.zarr",
+      "format_version": 3,
+      "class": "valid",
+      "layer": 3,
+      "rule": "reader-safety",
+      "description": "A uniform group and a timestamped group whose time holds the source's own sample times. A reader navigating by channel_groups reaches only the uniform group. zarr_conventions also holds an entry for a convention no reader knows.",
+      "expect": {
+        "3": {
+          "outcome": "accept",
+          "goldens": "goldens/v3-timestamped.json",
+          "uniform_groups": ["eeg_100hz"],
+          "timestamped_groups": ["misc_timestamped"],
+          "groups": {
+            "eeg_100hz": {
+              "start_time": 0.0,
+              "valid_intervals": [
+                {
+                  "start": 0,
+                  "stop": 1000,
+                  "source_time": 0.0
+                }
+              ],
+              "missing_value": -32768,
+              "refuse_without": ["missing_value"],
+              "view_empty_columns": {
+                "1": []
+              }
+            }
+          },
+          "events": {
+            "onset_source_basis": "timeline",
+            "samples": [
+              {
+                "group": "eeg_100hz",
+                "onset": 1.0,
+                "sample": 100
+              },
+              {
+                "group": "eeg_100hz",
+                "onset": 2.0,
+                "sample": 200
+              },
+              {
+                "group": "eeg_100hz",
+                "onset": 9.5,
+                "sample": 950
+              },
+              {
+                "group": "eeg_100hz",
+                "onset": 11.0,
+                "sample": null
+              },
+              {
+                "group": "misc_timestamped",
+                "onset": 1.0,
+                "sample": 100
+              },
+              {
+                "group": "misc_timestamped",
+                "onset": 2.0,
+                "sample": 200
+              },
+              {
+                "group": "misc_timestamped",
+                "onset": 9.5,
+                "sample": 950
+              },
+              {
+                "group": "misc_timestamped",
+                "onset": 11.0,
+                "sample": null
+              }
+            ]
+          }
+        }
+      },
+      "files": {
+        "eeg_100hz/0/c/0/0": "88e8ec70d2b0a7619eea94f8f4373895949694d508d6ee94fc5a51f080a5c540",
+        "eeg_100hz/0/zarr.json": "73803a97b8ad326999cdd5d9ca1673f4f0db7dd62d5ab047631ff033ba64c407",
+        "eeg_100hz/view/1/c/0/0/0": "23c0cc9e922c671d3f4411f73d3886b19caea7799289839b06913e9245cd9ae3",
+        "eeg_100hz/view/1/zarr.json": "7658af4081ed1299e6f883e5a2a26b9a2927213afb662136d80cf5fd4b11c0f7",
+        "eeg_100hz/view/zarr.json": "36615682d5be9646729635067a75185212eb0c48d708ef06ad34c1f58dd587d2",
+        "eeg_100hz/zarr.json": "fe76c235932e89f6b0973847d006715656855e971a44d819b63ddacceafc78c7",
+        "events/code/zarr.json": "510ee22a0484c2ca5e784dcbb28b5c2fb967cc3744c6b329e1745acb66c15044",
+        "events/duration/zarr.json": "6543c30b509200acf42d004130aef9fbe46f4eb00d52b85b90be7a7b5b49b307",
+        "events/onset/c/0": "50c7b22d063eed8d5a2391d3c7396b5339bf9ab9c6d328c90407d79875a17b29",
+        "events/onset/zarr.json": "6543c30b509200acf42d004130aef9fbe46f4eb00d52b85b90be7a7b5b49b307",
+        "events/zarr.json": "f72be88aa1a335c8efc8cfce509fd8ba336643b4e7d87b7a3a325f6a92a29be9",
+        "misc_timestamped/time/c/0": "3b527412760faa00ccbd43e8c39ea5d01189af40998a046f8a8d0a1ce7861d06",
+        "misc_timestamped/time/zarr.json": "b4554c2784ba06a9be656c7f6ac378b90db1e6bc35013d10ffbd561e5fd40540",
+        "misc_timestamped/time_index/c/0": "f139439a0268787c06443520fe1f5da3afbcae55d0971738fd7970c536221e9d",
+        "misc_timestamped/time_index/zarr.json": "9ab3ddc964dd6fb092a5414b290dcb2cbc0f62c301c20e83737d5d4c14310d20",
+        "misc_timestamped/values/c/0/0": "79c0357e80faae85143e3a82d533475d7c702bd987ea28ccec9db7e0e31cab54",
+        "misc_timestamped/values/zarr.json": "d16f1053c0afc78f5071feddab61d87d37821b11a070641979e9173e5c37bef4",
+        "misc_timestamped/zarr.json": "a43f1bd7d9c7da7685f54fcb884ac536286f1c2d11dbb6851144d5c2be53078f",
+        "zarr.json": "e64ae91c82ea49f6abf428c78ccedf8bc96d8a891ef25d7ab8089229d44c16f9"
+      }
+    },
+    {
+      "id": "v3-version-4",
+      "path": "stores/v3/v3-version-4.zarr",
+      "format_version": 3,
+      "class": "invalid",
+      "layer": 1,
+      "rule": "format-version",
+      "derived_from": "v3-continuous",
+      "alteration": {
+        "document": "zarr.json",
+        "patch": [
+          {
+            "op": "replace",
+            "path": "/attributes/format_version",
+            "value": 4
+          }
+        ]
+      },
+      "expect": {
+        "3": {
+          "outcome": "refuse",
+          "refusal": {
+            "layer": 1,
+            "rule": "format-version",
+            "subject": "format_version"
+          },
+          "schema_failure": {
+            "schema": "https://w3id.org/biosig-zarr/schemas/v3/root.schema.json",
+            "document": "zarr.json",
+            "instance_path": "/attributes/format_version",
+            "keyword": "const"
+          }
+        }
+      },
+      "files": {
+        "eeg_100hz/0/c/0/0": "88e8ec70d2b0a7619eea94f8f4373895949694d508d6ee94fc5a51f080a5c540",
+        "eeg_100hz/0/zarr.json": "73803a97b8ad326999cdd5d9ca1673f4f0db7dd62d5ab047631ff033ba64c407",
+        "eeg_100hz/view/1/c/0/0/0": "23c0cc9e922c671d3f4411f73d3886b19caea7799289839b06913e9245cd9ae3",
+        "eeg_100hz/view/1/zarr.json": "7658af4081ed1299e6f883e5a2a26b9a2927213afb662136d80cf5fd4b11c0f7",
+        "eeg_100hz/view/zarr.json": "36615682d5be9646729635067a75185212eb0c48d708ef06ad34c1f58dd587d2",
+        "eeg_100hz/zarr.json": "fe76c235932e89f6b0973847d006715656855e971a44d819b63ddacceafc78c7",
+        "events/code/zarr.json": "510ee22a0484c2ca5e784dcbb28b5c2fb967cc3744c6b329e1745acb66c15044",
+        "events/duration/zarr.json": "6543c30b509200acf42d004130aef9fbe46f4eb00d52b85b90be7a7b5b49b307",
+        "events/onset/c/0": "50c7b22d063eed8d5a2391d3c7396b5339bf9ab9c6d328c90407d79875a17b29",
+        "events/onset/zarr.json": "6543c30b509200acf42d004130aef9fbe46f4eb00d52b85b90be7a7b5b49b307",
+        "events/zarr.json": "f72be88aa1a335c8efc8cfce509fd8ba336643b4e7d87b7a3a325f6a92a29be9",
+        "zarr.json": "7b98b530563858f20459bf004fe21a53d8aef92804857ff024339bdfa3a22be5"
+      }
+    },
+    {
+      "id": "v3-unknown-format",
+      "path": "stores/v3/v3-unknown-format.zarr",
+      "format_version": 3,
+      "class": "invalid",
+      "layer": null,
+      "rule": "format-name",
+      "derived_from": "v3-continuous",
+      "alteration": {
+        "document": "zarr.json",
+        "patch": [
+          {
+            "op": "replace",
+            "path": "/attributes/format",
+            "value": "example-zarr"
+          }
+        ]
+      },
+      "expect": {
+        "3": {
+          "outcome": "refuse",
+          "refusal": {
+            "layer": null,
+            "rule": "format-name",
+            "subject": "format"
+          },
+          "schema_failure": {
+            "schema": "https://w3id.org/biosig-zarr/schemas/v3/root.schema.json",
+            "document": "zarr.json",
+            "instance_path": "/attributes/format",
+            "keyword": "const"
+          }
+        }
+      },
+      "files": {
+        "eeg_100hz/0/c/0/0": "88e8ec70d2b0a7619eea94f8f4373895949694d508d6ee94fc5a51f080a5c540",
+        "eeg_100hz/0/zarr.json": "73803a97b8ad326999cdd5d9ca1673f4f0db7dd62d5ab047631ff033ba64c407",
+        "eeg_100hz/view/1/c/0/0/0": "23c0cc9e922c671d3f4411f73d3886b19caea7799289839b06913e9245cd9ae3",
+        "eeg_100hz/view/1/zarr.json": "7658af4081ed1299e6f883e5a2a26b9a2927213afb662136d80cf5fd4b11c0f7",
+        "eeg_100hz/view/zarr.json": "36615682d5be9646729635067a75185212eb0c48d708ef06ad34c1f58dd587d2",
+        "eeg_100hz/zarr.json": "fe76c235932e89f6b0973847d006715656855e971a44d819b63ddacceafc78c7",
+        "events/code/zarr.json": "510ee22a0484c2ca5e784dcbb28b5c2fb967cc3744c6b329e1745acb66c15044",
+        "events/duration/zarr.json": "6543c30b509200acf42d004130aef9fbe46f4eb00d52b85b90be7a7b5b49b307",
+        "events/onset/c/0": "50c7b22d063eed8d5a2391d3c7396b5339bf9ab9c6d328c90407d79875a17b29",
+        "events/onset/zarr.json": "6543c30b509200acf42d004130aef9fbe46f4eb00d52b85b90be7a7b5b49b307",
+        "events/zarr.json": "f72be88aa1a335c8efc8cfce509fd8ba336643b4e7d87b7a3a325f6a92a29be9",
+        "zarr.json": "78f0565821cc91a32c95bb8e2dc09970e9b8388759971dfc17c2f2a2d5ea67d6"
+      }
+    },
+    {
+      "id": "v3-no-kind",
+      "path": "stores/v3/v3-no-kind.zarr",
+      "format_version": 3,
+      "class": "invalid",
+      "layer": 2,
+      "rule": "reader-safety",
+      "derived_from": "v3-continuous",
+      "alteration": {
+        "document": "eeg_100hz/zarr.json",
+        "patch": [
+          {
+            "op": "remove",
+            "path": "/attributes/kind"
+          }
+        ]
+      },
+      "expect": {
+        "3": {
+          "outcome": "refuse",
+          "refusal": {
+            "layer": 2,
+            "rule": "reader-safety",
+            "subject": "eeg_100hz"
+          },
+          "schema_failure": {
+            "schema": "https://w3id.org/biosig-zarr/schemas/v3/uniform-group.schema.json",
+            "document": "eeg_100hz/zarr.json",
+            "instance_path": "/attributes",
+            "keyword": "required"
+          }
+        }
+      },
+      "files": {
+        "eeg_100hz/0/c/0/0": "88e8ec70d2b0a7619eea94f8f4373895949694d508d6ee94fc5a51f080a5c540",
+        "eeg_100hz/0/zarr.json": "73803a97b8ad326999cdd5d9ca1673f4f0db7dd62d5ab047631ff033ba64c407",
+        "eeg_100hz/view/1/c/0/0/0": "23c0cc9e922c671d3f4411f73d3886b19caea7799289839b06913e9245cd9ae3",
+        "eeg_100hz/view/1/zarr.json": "7658af4081ed1299e6f883e5a2a26b9a2927213afb662136d80cf5fd4b11c0f7",
+        "eeg_100hz/view/zarr.json": "36615682d5be9646729635067a75185212eb0c48d708ef06ad34c1f58dd587d2",
+        "eeg_100hz/zarr.json": "26976b66fb94d8a765f05f93d0a6f5eb39576f10ddb8a4c67d8e94ac14969333",
+        "events/code/zarr.json": "510ee22a0484c2ca5e784dcbb28b5c2fb967cc3744c6b329e1745acb66c15044",
+        "events/duration/zarr.json": "6543c30b509200acf42d004130aef9fbe46f4eb00d52b85b90be7a7b5b49b307",
+        "events/onset/c/0": "50c7b22d063eed8d5a2391d3c7396b5339bf9ab9c6d328c90407d79875a17b29",
+        "events/onset/zarr.json": "6543c30b509200acf42d004130aef9fbe46f4eb00d52b85b90be7a7b5b49b307",
+        "events/zarr.json": "f72be88aa1a335c8efc8cfce509fd8ba336643b4e7d87b7a3a325f6a92a29be9",
+        "zarr.json": "a458b9715bf0305a0dfb7cb07618c2a2b92812b00443fe6ab98fa3f75b48116a"
+      }
+    },
+    {
+      "id": "v3-unknown-kind",
+      "path": "stores/v3/v3-unknown-kind.zarr",
+      "format_version": 3,
+      "class": "invalid",
+      "layer": 2,
+      "rule": "reader-safety",
+      "derived_from": "v3-continuous",
+      "alteration": {
+        "document": "eeg_100hz/zarr.json",
+        "patch": [
+          {
+            "op": "replace",
+            "path": "/attributes/kind",
+            "value": "sparse"
+          }
+        ]
+      },
+      "expect": {
+        "3": {
+          "outcome": "refuse",
+          "refusal": {
+            "layer": 2,
+            "rule": "reader-safety",
+            "subject": "eeg_100hz"
+          },
+          "schema_failure": {
+            "schema": "https://w3id.org/biosig-zarr/schemas/v3/uniform-group.schema.json",
+            "document": "eeg_100hz/zarr.json",
+            "instance_path": "/attributes/kind",
+            "keyword": "const"
+          }
+        }
+      },
+      "files": {
+        "eeg_100hz/0/c/0/0": "88e8ec70d2b0a7619eea94f8f4373895949694d508d6ee94fc5a51f080a5c540",
+        "eeg_100hz/0/zarr.json": "73803a97b8ad326999cdd5d9ca1673f4f0db7dd62d5ab047631ff033ba64c407",
+        "eeg_100hz/view/1/c/0/0/0": "23c0cc9e922c671d3f4411f73d3886b19caea7799289839b06913e9245cd9ae3",
+        "eeg_100hz/view/1/zarr.json": "7658af4081ed1299e6f883e5a2a26b9a2927213afb662136d80cf5fd4b11c0f7",
+        "eeg_100hz/view/zarr.json": "36615682d5be9646729635067a75185212eb0c48d708ef06ad34c1f58dd587d2",
+        "eeg_100hz/zarr.json": "698b58d7baa49b5c78c502f9ef42d665fc011e031683e9a1aeedcafb38581d5a",
+        "events/code/zarr.json": "510ee22a0484c2ca5e784dcbb28b5c2fb967cc3744c6b329e1745acb66c15044",
+        "events/duration/zarr.json": "6543c30b509200acf42d004130aef9fbe46f4eb00d52b85b90be7a7b5b49b307",
+        "events/onset/c/0": "50c7b22d063eed8d5a2391d3c7396b5339bf9ab9c6d328c90407d79875a17b29",
+        "events/onset/zarr.json": "6543c30b509200acf42d004130aef9fbe46f4eb00d52b85b90be7a7b5b49b307",
+        "events/zarr.json": "f72be88aa1a335c8efc8cfce509fd8ba336643b4e7d87b7a3a325f6a92a29be9",
+        "zarr.json": "a458b9715bf0305a0dfb7cb07618c2a2b92812b00443fe6ab98fa3f75b48116a"
+      }
+    },
+    {
+      "id": "v3-timestamped-listed",
+      "path": "stores/v3/v3-timestamped-listed.zarr",
+      "format_version": 3,
+      "class": "invalid",
+      "layer": 3,
+      "rule": "reader-safety",
+      "description": "Invalid because a name MUST NOT appear in both channel_groups and timestamped_groups, and channel_groups names only uniform groups; a JSON Schema cannot express a rule between two arrays, so no schema failure is cited.",
+      "derived_from": "v3-timestamped",
+      "alteration": {
+        "document": "zarr.json",
+        "patch": [
+          {
+            "op": "replace",
+            "path": "/attributes/channel_groups",
+            "value": ["eeg_100hz", "misc_timestamped"]
+          }
+        ]
+      },
+      "expect": {
+        "3": {
+          "outcome": "refuse",
+          "refusal": {
+            "layer": 3,
+            "rule": "reader-safety",
+            "subject": "misc_timestamped"
+          }
+        }
+      },
+      "files": {
+        "eeg_100hz/0/c/0/0": "88e8ec70d2b0a7619eea94f8f4373895949694d508d6ee94fc5a51f080a5c540",
+        "eeg_100hz/0/zarr.json": "73803a97b8ad326999cdd5d9ca1673f4f0db7dd62d5ab047631ff033ba64c407",
+        "eeg_100hz/view/1/c/0/0/0": "23c0cc9e922c671d3f4411f73d3886b19caea7799289839b06913e9245cd9ae3",
+        "eeg_100hz/view/1/zarr.json": "7658af4081ed1299e6f883e5a2a26b9a2927213afb662136d80cf5fd4b11c0f7",
+        "eeg_100hz/view/zarr.json": "36615682d5be9646729635067a75185212eb0c48d708ef06ad34c1f58dd587d2",
+        "eeg_100hz/zarr.json": "fe76c235932e89f6b0973847d006715656855e971a44d819b63ddacceafc78c7",
+        "events/code/zarr.json": "510ee22a0484c2ca5e784dcbb28b5c2fb967cc3744c6b329e1745acb66c15044",
+        "events/duration/zarr.json": "6543c30b509200acf42d004130aef9fbe46f4eb00d52b85b90be7a7b5b49b307",
+        "events/onset/c/0": "50c7b22d063eed8d5a2391d3c7396b5339bf9ab9c6d328c90407d79875a17b29",
+        "events/onset/zarr.json": "6543c30b509200acf42d004130aef9fbe46f4eb00d52b85b90be7a7b5b49b307",
+        "events/zarr.json": "f72be88aa1a335c8efc8cfce509fd8ba336643b4e7d87b7a3a325f6a92a29be9",
+        "misc_timestamped/time/c/0": "3b527412760faa00ccbd43e8c39ea5d01189af40998a046f8a8d0a1ce7861d06",
+        "misc_timestamped/time/zarr.json": "b4554c2784ba06a9be656c7f6ac378b90db1e6bc35013d10ffbd561e5fd40540",
+        "misc_timestamped/time_index/c/0": "f139439a0268787c06443520fe1f5da3afbcae55d0971738fd7970c536221e9d",
+        "misc_timestamped/time_index/zarr.json": "9ab3ddc964dd6fb092a5414b290dcb2cbc0f62c301c20e83737d5d4c14310d20",
+        "misc_timestamped/values/c/0/0": "79c0357e80faae85143e3a82d533475d7c702bd987ea28ccec9db7e0e31cab54",
+        "misc_timestamped/values/zarr.json": "d16f1053c0afc78f5071feddab61d87d37821b11a070641979e9173e5c37bef4",
+        "misc_timestamped/zarr.json": "a43f1bd7d9c7da7685f54fcb884ac536286f1c2d11dbb6851144d5c2be53078f",
+        "zarr.json": "004fa260982b745812dd6a28e5df84f58c32f62f2d884e72c9cc2fe9c0cbc560"
+      }
+    },
+    {
+      "id": "v3-bad-intervals",
+      "path": "stores/v3/v3-bad-intervals.zarr",
+      "format_version": 3,
+      "class": "invalid",
+      "layer": null,
+      "rule": "reading-untrusted-stores",
+      "description": "v3-gap-10hz with overlapping valid intervals, [0, 30) and [24, 40). A JSON Schema cannot compare two intervals, so no schema failure is cited.",
+      "derived_from": "v3-gap-10hz",
+      "alteration": {
+        "document": "eeg_10hz/zarr.json",
+        "patch": [
+          {
+            "op": "replace",
+            "path": "/attributes/valid_intervals/0/stop",
+            "value": 30
+          }
+        ]
+      },
+      "expect": {
+        "3": {
+          "outcome": "refuse",
+          "refusal": {
+            "layer": null,
+            "rule": "reading-untrusted-stores",
+            "subject": "eeg_10hz"
+          }
+        }
+      },
+      "files": {
+        "eeg_10hz/0/c/0/0": "4c04002fae3471151fb5e67d0c7cd6e8843c3e8ac37ffc32a12b432f4c17d90a",
+        "eeg_10hz/0/c/0/1": "1e8ed940318ca39b2aeadb721f7892fe71b036c1d3f7ca96789aa99e07197c8d",
+        "eeg_10hz/0/c/0/2": "4a572dc00d60bd9fd873e05369ba1e297b62d6b5437552cb72c2ed6a79aa8ac0",
+        "eeg_10hz/0/zarr.json": "b89cc2cd414804224a4e6618cf5717a097b5af86d0a0aebceb911c26a73a0014",
+        "eeg_10hz/view/1/c/0/0/0": "89e41d0e21a585c1150c231a42cd19d20cb8979be4a8faddf2b24b3326ae6615",
+        "eeg_10hz/view/1/zarr.json": "029c6ab32da7e8d4cf69a8e424dd613f4fde63035ffcb15f90c68e350e6f9750",
+        "eeg_10hz/view/2/c/0/0/0": "cb14ce7da4b768e7ae491ebe46e8c8acc1e01cb7f8f0bb88749ace425cdc0d85",
+        "eeg_10hz/view/2/zarr.json": "512a76327fee8bc58efb7146db392640d2ce311508c2e69664952431f41c0eae",
+        "eeg_10hz/view/zarr.json": "36615682d5be9646729635067a75185212eb0c48d708ef06ad34c1f58dd587d2",
+        "eeg_10hz/zarr.json": "cbb6bce082e71384782ae1e5acf1a0f89e276de1fefe264a63c21e6ceed10a1c",
+        "events/code/zarr.json": "510ee22a0484c2ca5e784dcbb28b5c2fb967cc3744c6b329e1745acb66c15044",
+        "events/duration/zarr.json": "6543c30b509200acf42d004130aef9fbe46f4eb00d52b85b90be7a7b5b49b307",
+        "events/onset/c/0": "57d3815e1d27db5de9114569c4ec74583f4e887f295f5a906ede5a0bb2df1b6f",
+        "events/onset/zarr.json": "6543c30b509200acf42d004130aef9fbe46f4eb00d52b85b90be7a7b5b49b307",
+        "events/zarr.json": "f72be88aa1a335c8efc8cfce509fd8ba336643b4e7d87b7a3a325f6a92a29be9",
+        "zarr.json": "88c46e77dcfaa69a25ca2cbdd834f70aadf29e4c3606f1da6809822de7a11354"
+      }
+    },
+    {
+      "id": "v3-no-conventions",
+      "path": "stores/v3/v3-no-conventions.zarr",
+      "format_version": 3,
+      "class": "invalid",
+      "layer": null,
+      "rule": "zarr-convention",
+      "description": "Fails writer conformance: zarr_conventions is REQUIRED (Proposed). A reader MUST NOT require it, so a reader reads the store.",
+      "derived_from": "v3-continuous",
+      "alteration": {
+        "document": "zarr.json",
+        "patch": [
+          {
+            "op": "remove",
+            "path": "/attributes/zarr_conventions"
+          }
+        ]
+      },
+      "expect": {
+        "3": {
+          "outcome": "schema-invalid",
+          "goldens": "goldens/v3-continuous.json",
+          "uniform_groups": ["eeg_100hz"],
+          "timestamped_groups": [],
+          "groups": {
+            "eeg_100hz": {
+              "start_time": 0.0,
+              "valid_intervals": [
+                {
+                  "start": 0,
+                  "stop": 1000,
+                  "source_time": 0.0
+                }
+              ],
+              "missing_value": -32768,
+              "refuse_without": ["missing_value"],
+              "view_empty_columns": {
+                "1": []
+              }
+            }
+          },
+          "events": {
+            "onset_source_basis": "timeline",
+            "samples": [
+              {
+                "group": "eeg_100hz",
+                "onset": 1.0,
+                "sample": 100
+              },
+              {
+                "group": "eeg_100hz",
+                "onset": 2.0,
+                "sample": 200
+              },
+              {
+                "group": "eeg_100hz",
+                "onset": 9.5,
+                "sample": 950
+              },
+              {
+                "group": "eeg_100hz",
+                "onset": 11.0,
+                "sample": null
+              }
+            ]
+          },
+          "reader": "accept",
+          "schema_failure": {
+            "schema": "https://w3id.org/biosig-zarr/schemas/v3/root.schema.json",
+            "document": "zarr.json",
+            "instance_path": "/attributes",
+            "keyword": "required"
+          }
+        }
+      },
+      "files": {
+        "eeg_100hz/0/c/0/0": "88e8ec70d2b0a7619eea94f8f4373895949694d508d6ee94fc5a51f080a5c540",
+        "eeg_100hz/0/zarr.json": "73803a97b8ad326999cdd5d9ca1673f4f0db7dd62d5ab047631ff033ba64c407",
+        "eeg_100hz/view/1/c/0/0/0": "23c0cc9e922c671d3f4411f73d3886b19caea7799289839b06913e9245cd9ae3",
+        "eeg_100hz/view/1/zarr.json": "7658af4081ed1299e6f883e5a2a26b9a2927213afb662136d80cf5fd4b11c0f7",
+        "eeg_100hz/view/zarr.json": "36615682d5be9646729635067a75185212eb0c48d708ef06ad34c1f58dd587d2",
+        "eeg_100hz/zarr.json": "fe76c235932e89f6b0973847d006715656855e971a44d819b63ddacceafc78c7",
+        "events/code/zarr.json": "510ee22a0484c2ca5e784dcbb28b5c2fb967cc3744c6b329e1745acb66c15044",
+        "events/duration/zarr.json": "6543c30b509200acf42d004130aef9fbe46f4eb00d52b85b90be7a7b5b49b307",
+        "events/onset/c/0": "50c7b22d063eed8d5a2391d3c7396b5339bf9ab9c6d328c90407d79875a17b29",
+        "events/onset/zarr.json": "6543c30b509200acf42d004130aef9fbe46f4eb00d52b85b90be7a7b5b49b307",
+        "events/zarr.json": "f72be88aa1a335c8efc8cfce509fd8ba336643b4e7d87b7a3a325f6a92a29be9",
+        "zarr.json": "4590d79f404001d2c97a5d65655218511726cbdaefe29babde82368eb321422f"
+      }
+    },
+    {
+      "id": "v3-conventions-extra-member",
+      "path": "stores/v3/v3-conventions-extra-member.zarr",
+      "format_version": 3,
+      "class": "invalid",
+      "layer": null,
+      "rule": "zarr-convention",
+      "description": "Fails writer conformance: the biosig-zarr entry of zarr_conventions MUST NOT have members other than uuid, name, spec_url, schema_url and description. A reader identifies a store by format and format_version, so a reader reads the store.",
+      "derived_from": "v3-continuous",
+      "alteration": {
+        "document": "zarr.json",
+        "patch": [
+          {
+            "op": "add",
+            "path": "/attributes/zarr_conventions/0/version",
+            "value": "3"
+          }
+        ]
+      },
+      "expect": {
+        "3": {
+          "outcome": "schema-invalid",
+          "goldens": "goldens/v3-continuous.json",
+          "uniform_groups": ["eeg_100hz"],
+          "timestamped_groups": [],
+          "groups": {
+            "eeg_100hz": {
+              "start_time": 0.0,
+              "valid_intervals": [
+                {
+                  "start": 0,
+                  "stop": 1000,
+                  "source_time": 0.0
+                }
+              ],
+              "missing_value": -32768,
+              "refuse_without": ["missing_value"],
+              "view_empty_columns": {
+                "1": []
+              }
+            }
+          },
+          "events": {
+            "onset_source_basis": "timeline",
+            "samples": [
+              {
+                "group": "eeg_100hz",
+                "onset": 1.0,
+                "sample": 100
+              },
+              {
+                "group": "eeg_100hz",
+                "onset": 2.0,
+                "sample": 200
+              },
+              {
+                "group": "eeg_100hz",
+                "onset": 9.5,
+                "sample": 950
+              },
+              {
+                "group": "eeg_100hz",
+                "onset": 11.0,
+                "sample": null
+              }
+            ]
+          },
+          "reader": "accept",
+          "schema_failure": {
+            "schema": "https://w3id.org/biosig-zarr/schemas/v3/root.schema.json",
+            "document": "zarr.json",
+            "instance_path": "/attributes/zarr_conventions/0",
+            "keyword": "additionalProperties"
+          }
+        }
+      },
+      "files": {
+        "eeg_100hz/0/c/0/0": "88e8ec70d2b0a7619eea94f8f4373895949694d508d6ee94fc5a51f080a5c540",
+        "eeg_100hz/0/zarr.json": "73803a97b8ad326999cdd5d9ca1673f4f0db7dd62d5ab047631ff033ba64c407",
+        "eeg_100hz/view/1/c/0/0/0": "23c0cc9e922c671d3f4411f73d3886b19caea7799289839b06913e9245cd9ae3",
+        "eeg_100hz/view/1/zarr.json": "7658af4081ed1299e6f883e5a2a26b9a2927213afb662136d80cf5fd4b11c0f7",
+        "eeg_100hz/view/zarr.json": "36615682d5be9646729635067a75185212eb0c48d708ef06ad34c1f58dd587d2",
+        "eeg_100hz/zarr.json": "fe76c235932e89f6b0973847d006715656855e971a44d819b63ddacceafc78c7",
+        "events/code/zarr.json": "510ee22a0484c2ca5e784dcbb28b5c2fb967cc3744c6b329e1745acb66c15044",
+        "events/duration/zarr.json": "6543c30b509200acf42d004130aef9fbe46f4eb00d52b85b90be7a7b5b49b307",
+        "events/onset/c/0": "50c7b22d063eed8d5a2391d3c7396b5339bf9ab9c6d328c90407d79875a17b29",
+        "events/onset/zarr.json": "6543c30b509200acf42d004130aef9fbe46f4eb00d52b85b90be7a7b5b49b307",
+        "events/zarr.json": "f72be88aa1a335c8efc8cfce509fd8ba336643b4e7d87b7a3a325f6a92a29be9",
+        "zarr.json": "a89a396ddd6b45bddbe7b4be68196618d31598537cee0312e3b479314f9f2acb"
       }
     }
   ]
