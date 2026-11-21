@@ -50,7 +50,7 @@ Its member `vectors` is an array, with one object per vector:
 | `path` | The store, relative to this directory. Its directory, `stores/v<N>/`, is the version the store was written for before any alteration, and `check:schemas` checks it against `schemas/v<N>/` when that directory exists. |
 | `format_version` | The major version of the text whose rule the vector was made for. It is not necessarily the `format_version` the store claims: `v2-version-3` was made for the version 2 text, and `v1-no-format-version` for the version 3 text, which requires a reader to refuse it. |
 | `class` | For a reader of the version in `format_version`: `valid`, the store conforms to the text, and a reader of that version accepts it; `invalid`, the store does not conform, or a reader of that version must refuse it. `v2-version-3` is invalid because a version 2 reader refuses it ("Format version"), not because it breaks another version 2 rule. |
-| `layer` | The reader-safety layer, 1 to 4, that the vector tests for the newest reader the manifest has outcomes for, a reader of the version 3 text, or `null`. Every entry was `null` at `2.0.1`, for a version 2 reader, which has no layers; `v2-version-3` now has `2`, because a version 3 reader refuses it at layer 2. |
+| `layer` | The reader-safety layer, 1 to 4, that the vector tests under the text of its own `format_version`, or `null`. The version 2 text has no layers, so every version 2 entry is `null`; the layer at which a reader of the version 3 text refuses a version 2 store is in that store's `expect["3"].refusal`. |
 | `rule` | The anchor of the heading in `spec/index.md` whose rule the vector tests, such as `format-name`. |
 | `description` | Optional free text for a human reader, such as why a vector has its class. |
 | `derived_from` | For a vector made by altering another: the `id` of the base vector. |
@@ -77,7 +77,7 @@ An outcome for a reader of the version 3 text also has:
   `timestamped_groups`, the timestamped groups;
   `groups`, for each uniform group, the `start_time`, `valid_intervals` and `missing_value` a reader reads, with the defaults of "Reading earlier versions" for a version 2 store,
   `refuse_without`, the attributes of layer 4 in effect, which a reader that does not implement them must refuse, naming each,
-  and `view_empty_columns`, by view level, the columns the mask rule excludes;
+  `view_empty_columns`, by view level, the columns the mask rule excludes;
   and `events`, with the `onset_source_basis` a reader reads and, in `samples`, the sample of each event onset in each group, or `null` for an event with no sample.
 
 `check:schemas` checks that `class` and the outcome for the version in `format_version` agree:
@@ -86,9 +86,10 @@ an `invalid` vector has the outcome `refuse` or `schema-invalid`, a `schema-inva
 
 ## Which uses of `round` the vectors cover
 
-The text uses `round` in four places, and only the onset rule ("From an onset to a sample") is a computation a reader makes on its own to return a result, so the onset ties of `v3-gap-10hz` are the vectors for the `round` ties:
+The text uses `round` in four places, and only the onset rule ("From an onset to a sample") is a computation a reader makes on its own to return a result, so the onset ties are the vectors for the `round` ties, three in `v3-gap-10hz` and a negative one, at -0.5, in `v3-gap-exact-copy`:
 the quantization formula ("Dequantization") is informative guidance that another writer may replace,
 and the start of an interval ("Valid intervals") and the stored-to-source sample mapping ("Missing values") are writer obligations whose results a reader reads from the store rather than recomputes.
+A reader does check the start of an interval when it checks the rules of valid intervals ("Reading untrusted stores"), so `v3-gap-exact-copy` also places an interval at an exact tie, 239.5.
 
 ## The version 3 suite
 
@@ -102,6 +103,7 @@ A reader of the version 3 text reads version 2 stores, so the version 2 vectors 
 | `v2-unknown-format`, `v2-no-channel-groups` | As a version 2 reader does. |
 | `v3-continuous` | Read one uniform `int16` group with its declared missing value; without support for `missing_value`, refuse it and name it (layer 4). |
 | `v3-gap-10hz` | The gap case: at 10 hertz (Hz), with valid intervals `[0, 20)` and `[24, 40)`, the event at 2.02 seconds has no sample, and the ties at 0.25, 1.25 and 3.25 seconds give samples 3, 13 and 33 (a reader that rounds halves to even gives 2, 12 and 32); column 5 of the view level with factor 4 is empty by the mask rule, and column 1 of factor 16 is not; one sample inside an interval is missing; without support for `valid_intervals`, refuse it and name it (layer 4). |
+| `v3-gap-exact-copy` | The mask rule where it alone decides: an exact copy of the source codes at 100 Hz declares no missing value, so its gaps and the empty view columns hold the fill value 0, a possible data value; the columns 50 to 59 of factor 4 and 13 and 14 of factor 16 are empty only by the mask rule. The onset 0.0, at -0.5 with `start_time` 0.005, gives sample 0, where rounding halves away from zero gives -1; the second interval starts at the tie 239.5, so at 240. Without support for `start_time` or `valid_intervals`, refuse it and name each (layer 4). |
 | `v3-start-time` | Map onsets with `start_time` 1.5, so an event before the group starts has no sample; without support for `start_time`, refuse it and name it (layer 4). |
 | `v3-timestamped` | Reach only the uniform group through `channel_groups` (layer 3), and read the timestamped group's own sample times; do not refuse an unknown entry of `zarr_conventions`. |
 | `v3-version-4` | Refuse `format_version` 4 (layer 1). |

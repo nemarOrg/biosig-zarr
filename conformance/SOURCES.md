@@ -108,7 +108,8 @@ It is a one-purpose vector builder, not a writer: it exports nothing, and nothin
 4. **Quantization**: each channel separately, with the text's informative formula ("Dequantization"), over its acquired, finite samples, onto the codes `-32767` to `32767`;
    every sample outside a valid interval, and every missing sample, is stored as the missing value `-32768`, which is also each signal array's fill value.
    The step is not the source's, so every channel's `derivation` includes `requantized`.
-5. **View levels**: `view_downsample` 4, adding levels until one has at most 512 columns (2 in `v3-gap-10hz`, so that it has levels with factors 4 and 16), a parameter of the builder, as of any writer;
+   `v3-gap-exact-copy` is not quantized: it copies the source codes.
+5. **View levels**: `view_downsample` 4, adding levels until one has at most 512 columns (2 in `v3-gap-10hz` and 25 in `v3-gap-exact-copy`, so that they have levels with factors 4 and 16), a parameter of the builder, as of any writer;
    each column holds the minimum and maximum of the acquired, non-missing level-0 samples it covers, and the missing value when there are none.
 6. **Chunks**: inner chunks of 400 samples in shards of 1200 in `v3-continuous` and `v3-timestamped`, and of 4 in shards of 16 in `v3-gap-10hz`.
    zarr-python writes no chunk that holds only the fill value, so the inner chunk of samples 20 to 23 of `v3-gap-10hz`, which lies wholly in the gap, is absent from its shard's index,
@@ -130,6 +131,14 @@ It is a one-purpose vector builder, not a writer: it exports nothing, and nothin
   Stored sample 30 of `O1-A1` has the non-finite value as its nearest source sample, so it is missing:
   that channel has `nonfinite_samples` 1, `usable_for_inference` `false`, and `derivation` `["resampled", "nonfinite_to_missing", "requantized"]`;
   the other channels have `["resampled", "requantized"]`.
+- **`v3-gap-exact-copy`**: the group `eeg_100hz`, from the same 400 source samples as `v3-gap-10hz`, with source samples 200 to 239 removed, and no other change to a value.
+  The codes are copied unchanged, as "Exact copies" allows: no resampling, `scale` and `offset` equal to `source_step` and `source_offset`, and an empty `derivation`.
+  The source's digital range includes `-32768`, so every signal array declares `missing_value` `null`, and its fill value is 0, a code that also occurs as data.
+  Two times are altered, and recorded here: the group starts at 0.005 seconds on the recording timeline, so its first interval has `source_time` 0.005,
+  and the second segment is dated 2.4 seconds, so it is placed at `round((2.4 - 0.005) * 100)`, the exact tie 239.5, which gives 240.
+  The valid intervals are `[0, 200)` and `[240, 400)`, and the view levels have factors 4 and 16 (the builder stops after a level of at most 25 columns).
+  Inner chunks are 40 samples, in shards of 160; the inner chunk of samples 200 to 239 lies wholly in the gap and is absent.
+  The events are at 0.0, 1.0, 2.2 and 3.0 seconds; 0.0 is at `(0.0 - 0.005) * 100`, which is -0.5 exactly in 64-bit floating point.
 - **`v3-timestamped`**: `eeg_100hz` as in `v3-continuous`, and the timestamped group `misc_timestamped`, which holds `Add_lead1` at the source's own sample times:
   the sample `s` of data record `r` is at `r * duration + s * duration / n`, with the record duration and the number of samples per record `n` from the EDF header, so its `time` has an empty `derivation`.
   Its `nominal_rate` is the source rate, 100 Hz, and its `continuity` is `continuous`.
