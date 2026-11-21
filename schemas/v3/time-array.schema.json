@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://w3id.org/biosig-zarr/schemas/v3/time-array.schema.json",
+  "title": "biosig-zarr format version 3: time array metadata document",
+  "description": "The zarr.json of the time array of a timestamped group in a format version 3 store, transcribed from spec/index.md on the branch draft/3.0.0, which is the definition. Rules that relate two documents, such as the chunk length of time and of values and the group's chunk_samples, and the rules on the values (finite, not decreasing), are not expressed. Unknown attributes are allowed.",
+  "type": "object",
+  "$comment": "Timestamped groups: a timestamped group holds the array time, float64, shape [n_samples], sharded.",
+  "required": ["zarr_format", "node_type", "data_type", "shape", "codecs", "attributes"],
+  "properties": {
+    "zarr_format": { "$ref": "defs.schema.json#/$defs/zarrFormat" },
+    "node_type": { "$comment": "Timestamped groups: time is an array.", "const": "array" },
+    "data_type": {
+      "type": "string",
+      "$comment": "Timestamped groups: time holds seconds on the recording timeline, as float64.",
+      "const": "float64"
+    },
+    "shape": {
+      "type": "array",
+      "description": "Timestamped groups: shape [n_samples].",
+      "prefixItems": [{ "type": "integer" }],
+      "minItems": 1,
+      "items": false
+    },
+    "codecs": {
+      "type": "array",
+      "$comment": "Timestamped groups: time is chunked with the sharding_indexed codec, with the inner codec chain and shard index of level 0.",
+      "contains": { "$ref": "defs.schema.json#/$defs/shardingIndexed" }
+    },
+    "attributes": { "$ref": "#/$defs/attributes" }
+  },
+  "$defs": {
+    "attributes": {
+      "type": "object",
+      "$comment": "Timestamped groups: the attributes of time are kind, unit, and derivation, all REQUIRED.",
+      "required": ["kind", "unit", "derivation"],
+      "properties": {
+        "kind": { "type": "string", "$comment": "Timestamped groups: time.", "const": "time" },
+        "unit": { "type": "string", "$comment": "Timestamped groups: s.", "const": "s" },
+        "derivation": { "$ref": "defs.schema.json#/$defs/timestampDerivation" }
+      }
+    }
+  }
+}

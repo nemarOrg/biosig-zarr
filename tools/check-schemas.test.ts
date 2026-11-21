@@ -2,7 +2,7 @@
 // and confirm it passes the first and fails each copy.
 
 import { expect, test } from "bun:test";
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -67,4 +67,26 @@ test("a cited failure that the store does not have fails", () => {
   );
   expect(result.code).toBe(1);
   expect(result.stderr).toContain("v2-unknown-format/zarr.json: fails, but not at /node_type");
+});
+
+test("a version 3 constraint without a $comment fails", () => {
+  const dir = mkdtempSync(join(tmpdir(), "check-schemas-"));
+  cpSync(join(ROOT, "schemas"), join(dir, "schemas"), { recursive: true });
+  const synthetic = {
+    $schema: "https://json-schema.org/draft/2020-12/schema",
+    $id: "https://w3id.org/biosig-zarr/schemas/v3/synthetic.schema.json",
+    type: "object",
+    properties: { kind: { const: "uniform" } },
+  };
+  writeFileSync(join(dir, "schemas", "v3", "synthetic.schema.json"), JSON.stringify(synthetic));
+  const result = Bun.spawnSync(["bun", "run", SCRIPT, "--schemas", join(dir, "schemas")], {
+    cwd: ROOT,
+    stderr: "pipe",
+    stdout: "pipe",
+  });
+  rmSync(dir, { recursive: true });
+  expect(result.exitCode).toBe(1);
+  expect(result.stderr.toString()).toContain(
+    "synthetic.schema.json/properties/kind: a constraint without a $comment",
+  );
 });

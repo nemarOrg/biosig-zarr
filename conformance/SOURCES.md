@@ -68,3 +68,94 @@ The document is written again the way zarr-python 3.4.2 writes it (`json.dumps` 
 | `v2-version-3` | `format_version` replaced by `3` |
 | `v2-unknown-format` | `format` replaced by `"example-zarr"` |
 | `v2-no-channel-groups` | `channel_groups` removed |
+
+## The version 1 vector
+
+`v1-no-format-version` is `v2-legacy-name` with one change to its root `zarr.json`, in `stores/v1/`:
+`format_version` removed, and `recording_metadata` replaced by a string holding its JSON text, written by `json.dumps` with its default separators.
+That is the one way a version 1 store differs from a version 2 store ("Format version").
+It is made the same way as the other derived vectors, and its patch is in `manifest.json`.
+
+## Format version 3
+
+No writer of format version 3 exists, so [`tools/vectors/build.py`](../tools/vectors/build.py) writes these stores itself, from the same crop,
+with zarr-python 3.4.2 and NumPy 2.5.5, and no other library.
+It writes the metadata documents the text specifies, and the arrays with the codec chains it names,
+and it names itself first in each store's `generated_by`, as the software that wrote the hierarchy, followed by zarr-python and NumPy.
+It is a one-purpose vector builder, not a writer: it exports nothing, and nothing outside `tools/` imports it.
+
+### What was kept
+
+- **Channels**: the four EEG channels in uniform groups, and `Add_lead1` in the timestamped group of `v3-timestamped`.
+  The channel types and units come from the cropped channels table; its unit `µV` replaces the EDF file's `uV`, which is the same unit, so `channels_tsv_units` counts every channel as relabelled and none as converted.
+- **The source fields**: `source_sample_type` `int16`, the type of an EDF sample;
+  `source_adc_bits` `null`, because EDF does not state the converter's bit depth;
+  and for each channel, from its EDF header, `source_step` `(physical maximum - physical minimum) / (digital maximum - digital minimum)`,
+  `source_offset` `physical minimum - digital minimum * source_step`,
+  and `source_digital_range` `[digital minimum, digital maximum]`, which is `[-32768, 32767]` for every channel here.
+
+### Steps
+
+1. **Source values.**
+   Each source sample's physical value is `source_code * source_step + source_offset`, in 64-bit floating point, as "The derivation list" defines it.
+2. **Resampling**, in `v3-gap-10hz` only:
+   a windowed-sinc low-pass finite impulse response filter of 41 taps, with a Hamming window and its cutoff at half the served rate, in NumPy,
+   is applied to each run of finite source samples of each valid interval on its own, with reflected edges;
+   stored sample `i` of interval `k` then takes the filtered value at its nearest source sample, `round((i - start_k) * source rate / rate)`,
+   and is missing when that source sample is not finite ("Missing values").
+   The root `anti_alias_filter` says the same.
+3. **Placing the intervals** on the grid by the rules of "Channel groups" and "Valid intervals", with `start_time` 0.
+4. **Quantization**: each channel separately, with the text's informative formula ("Dequantization"), over its acquired, finite samples, onto the codes `-32767` to `32767`;
+   every sample outside a valid interval, and every missing sample, is stored as the missing value `-32768`, which is also each signal array's fill value.
+   The step is not the source's, so every channel's `derivation` includes `requantized`.
+   `v3-gap-exact-copy` is not quantized: it copies the source codes.
+5. **View levels**: `view_downsample` 4, adding levels until one has at most 512 columns (2 in `v3-gap-10hz` and 25 in `v3-gap-exact-copy`, so that they have levels with factors 4 and 16), a parameter of the builder, as of any writer;
+   each column holds the minimum and maximum of the acquired, non-missing level-0 samples it covers, and the missing value when there are none.
+6. **Chunks**: inner chunks of 400 samples in shards of 1200 in `v3-continuous` and `v3-timestamped`, and of 4 in shards of 16 in `v3-gap-10hz`.
+   zarr-python writes no chunk that holds only the fill value, so the inner chunk of samples 20 to 23 of `v3-gap-10hz`, which lies wholly in the gap, is absent from its shard's index,
+   and so are the chunks of the `duration` and `code` event arrays, whose values all equal the fill value 0.
+7. **Events**: the recording has no annotations, so each vector carries events the builder adds at chosen onsets, an alteration recorded here:
+   duration 0 and code 0, labeled `conformance marker`, with `onset_source_basis` `timeline`.
+   `v3-continuous` and `v3-timestamped` have onsets 1.0, 2.0, 9.5 and 11.0 seconds; `v3-gap-10hz` has 0.25, 1.25, 2.02 and 3.25 seconds.
+   0.25, 1.25 and 3.25 seconds at 10 Hz are 2.5, 12.5 and 32.5 exactly in 64-bit floating point, which the builder and the tests check.
+8. **Time of writing**: `created_utc` is `2026-11-21T02:11:15Z`, when the vectors were first written; a rebuild keeps it, so a rebuild reproduces every file byte for byte.
+
+### The vectors written
+
+- **`v3-continuous`**: the group `eeg_100hz`, the four EEG channels at their source rate of 100 Hz for the 10 seconds of the crop, 1,000 samples, in one valid interval with `source_time` 0.0; nothing is resampled.
+- **`v3-gap-10hz`**: the group `eeg_10hz`, from the first 4 seconds of the four EEG channels, 400 source samples, altered in two recorded ways:
+  - source samples 200 to 239 are removed, as if the recorder had paused for 0.4 seconds, so the source has two segments, starting at 0.0 and 2.4 seconds;
+  - source sample 300 of `O1-A1` is replaced by not a number (NaN), as if one sample had been dropped.
+
+  The rate cap for `EEG` in `modality_rates` is 10 Hz, so each segment is resampled to 10 Hz, giving the valid intervals `[0, 20)` with `source_time` 0.0 and `[24, 40)` with `source_time` 2.4, and `n_samples` 40.
+  Stored sample 30 of `O1-A1` has the non-finite value as its nearest source sample, so it is missing:
+  that channel has `nonfinite_samples` 1, `usable_for_inference` `false`, and `derivation` `["resampled", "nonfinite_to_missing", "requantized"]`;
+  the other channels have `["resampled", "requantized"]`.
+- **`v3-gap-exact-copy`**: the group `eeg_100hz`, from the same 400 source samples as `v3-gap-10hz`, with source samples 200 to 239 removed, and no other change to a value.
+  The codes are copied unchanged, as "Exact copies" allows: no resampling, `scale` and `offset` equal to `source_step` and `source_offset`, and an empty `derivation`.
+  The source's digital range includes `-32768`, so every signal array declares `missing_value` `null`, and its fill value is 0, a code that also occurs as data.
+  Two times are altered, and recorded here: the group starts at 0.005 seconds on the recording timeline, so its first interval has `source_time` 0.005,
+  and the second segment is dated 2.4 seconds, so it is placed at `round((2.4 - 0.005) * 100)`, the exact tie 239.5, which gives 240.
+  The valid intervals are `[0, 200)` and `[240, 400)`, and the view levels have factors 4 and 16 (the builder stops after a level of at most 25 columns).
+  Inner chunks are 40 samples, in shards of 160; the inner chunk of samples 200 to 239 lies wholly in the gap and is absent.
+  The events are at 0.0, 1.0, 2.2 and 3.0 seconds; 0.0 is at `(0.0 - 0.005) * 100`, which is -0.5 exactly in 64-bit floating point.
+- **`v3-timestamped`**: `eeg_100hz` as in `v3-continuous`, and the timestamped group `misc_timestamped`, which holds `Add_lead1` at the source's own sample times:
+  the sample `s` of data record `r` is at `r * duration + s * duration / n`, with the record duration and the number of samples per record `n` from the EDF header, so its `time` has an empty `derivation`.
+  Its `nominal_rate` is the source rate, 100 Hz, and its `continuity` is `continuous`.
+  `zarr_conventions` also holds an entry with the `uuid` `7172d401-2def-4e11-b5b7-db7f6673c195`, minted for this vector, which names no convention.
+
+### Alterations
+
+Each derived version 3 vector is its base with one JSON Patch applied to one metadata document, and every other file byte-identical, as for version 2.
+
+| Vector | Base | Document | Change to the attributes |
+| --- | --- | --- | --- |
+| `v3-start-time` | `v3-continuous` | `eeg_100hz/zarr.json` | `start_time` replaced by `1.5`, and the interval's `source_time` with it |
+| `v3-version-4` | `v3-continuous` | `zarr.json` | `format_version` replaced by `4` |
+| `v3-unknown-format` | `v3-continuous` | `zarr.json` | `format` replaced by `"example-zarr"` |
+| `v3-no-kind` | `v3-continuous` | `eeg_100hz/zarr.json` | `kind` removed |
+| `v3-unknown-kind` | `v3-continuous` | `eeg_100hz/zarr.json` | `kind` replaced by `"sparse"` |
+| `v3-timestamped-listed` | `v3-timestamped` | `zarr.json` | `misc_timestamped` added to `channel_groups` |
+| `v3-bad-intervals` | `v3-gap-10hz` | `eeg_10hz/zarr.json` | the first interval's `stop` replaced by `30`, so it overlaps the second |
+| `v3-no-conventions` | `v3-continuous` | `zarr.json` | `zarr_conventions` removed |
+| `v3-conventions-extra-member` | `v3-continuous` | `zarr.json` | the member `version` added to the biosig-zarr entry of `zarr_conventions` |
