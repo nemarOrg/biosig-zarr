@@ -40,7 +40,7 @@ Five parts of this document also run ahead of any implementation, and each is ma
 - **The `zarr_conventions` attribute.**
   No writer produces it yet.
 - **The conformance classes.**
-  No test suite or validator exists yet.
+  The first schemas and conformance vectors are in this repository, in [`schemas/`](../schemas/) and [`conformance/`](../conformance/); no validator of whole stores exists yet.
 
 RFC-0001 puts parts of this text up for comment.
 Each such place is marked **Open for comment** with the number of the RFC question that asks about it.
@@ -1191,9 +1191,10 @@ It holds nothing from outside the store: a publisher's collection-level files, s
 
 **Proposed.**
 These classes exist so that an implementation can say precisely what it supports.
-There is no test suite yet.
-Its first schemas and conformance vectors arrive in this repository before RFC-0001 opens for comment, with at least one failing case for each layer of [Reader safety](#reader-safety),
+The first test suite is in this repository: JSON Schemas for the metadata documents in [`schemas/`](../schemas/), and conformance vectors in [`conformance/`](../conformance/),
+with at least one failing case for each layer of [Reader safety](#reader-safety),
 and with vectors for the `round` ties, the gap example of the [`events` group](#events-group), and the mask rule of the [View pyramid](#view-pyramid).
+[`conformance/README.md`](../conformance/README.md) says which vector tests which rule.
 
 ### Writers
 
@@ -1401,9 +1402,12 @@ The numbers are kept from the version 2 text, so that links to them stay valid.
 
 **Specification machinery**
 
-31. There is no JSON Schema for any attribute object.
-32. There are no published example stores, test vectors, or validator.
-    The conformance test files are to be kept in this repository, and the first ones arrive before RFC-0001 opens for comment.
+31. Closed in version 3.
+    There was no JSON Schema for any attribute object.
+    [`schemas/`](../schemas/) now holds one for each metadata document, for versions 2 and 3.
+32. Closed in version 3.
+    There were no published example stores, test vectors, or validator.
+    [`conformance/`](../conformance/) now holds example stores cut from a recording dedicated to the public domain, with the outcome a reader must reach for each, and [`tools/`](../tools/) the checks that run them.
 33. Closed.
     The change process, the license and the home are decided.
     A normative change needs an accepted RFC in nemarOrg/rfcs, as `GOVERNANCE.md` in this repository says.
