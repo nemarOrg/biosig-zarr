@@ -1,7 +1,7 @@
 # Contributing
 
 Thank you for helping with the biosig-zarr specification.
-The organization's code of conduct and security policy apply here; they are inherited from the nemarOrg organization.
+The organization's code of conduct and security policy apply here; they are inherited from the nemarOrg organization, which hosts this repository.
 
 ## What to send, and where
 

@@ -4,7 +4,8 @@ biosig-zarr is a Zarr version 3 layout for one biosignal recording, and `.bzx` i
 This repository holds the specification: the normative text, the JavaScript Object Notation (JSON) Schemas, and the conformance vectors.
 It holds no reader or writer library, so the text stays the definition and no program becomes it.
 
-The format is developed by the Neuroelectromagnetic Data Archive and Tools Resource (NEMAR), whose archive serves its stores today as `format_version` 2.
+The format was first written for the Neuroelectromagnetic Data Archive and Tools Resource (NEMAR), its first implementer, whose archive serves stores written by biosigIO as `format_version` 2.
+The specification is independent of NEMAR; [`GOVERNANCE.md`](GOVERNANCE.md) says who decides.
 
 ## Status
 
@@ -16,7 +17,7 @@ The schemas and conformance vectors follow later.
 Two identifiers are planned and neither is live:
 
 - A permanent address, `w3id.org/biosig-zarr`, is being registered; it will redirect to this repository.
-- Each specification release is to receive a Digital Object Identifier (DOI) from NEMAR's DOI registry, which is still being built.
+- Each specification release is to receive a Digital Object Identifier (DOI) issued through nemar-doi, the planned DOI service of the NEMAR archive, which registers it and does not own it; the DOI names the authors in `CITATION.cff`.
 
 ## What is here
 
@@ -39,6 +40,12 @@ The first, RFC-0001, covers the whole format and its single-file form.
 Comment on an open RFC in its Discussion thread there.
 
 A typo, an unclear sentence, or an error in the text is an issue here; see [`CONTRIBUTING.md`](CONTRIBUTING.md).
+
+## Hosting and continuity
+
+NEMAR hosts this repository and offers its hosting and its DOI registration, nemar-doi, as a service, not as ownership.
+The specification is meant to be as independent as possible, and NEMAR is ready to hand it off once it matures.
+Until then, NEMAR backstops the specification and guarantees that it continues; decisions stay with the editor, through RFCs, as [Who decides](GOVERNANCE.md#who-decides) says.
 
 ## License
 
