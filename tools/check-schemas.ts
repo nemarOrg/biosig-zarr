@@ -22,7 +22,8 @@
 // It also checks that each vector's class agrees with its expected outcome: a valid vector is
 // accepted and cites no schema failure; an invalid vector is refused or schema-invalid.
 //
-// Usage: bun run check:schemas [manifest.json]
+// Usage: bun run check:schemas [manifest.json] [--schemas <directory>]
+// --schemas reads the schemas from another directory laid out as schemas/ is; the tests use it.
 // The manifest defaults to conformance/manifest.json; its store paths resolve from conformance/.
 
 import { readdirSync, readFileSync, statSync } from "node:fs";
@@ -30,7 +31,11 @@ import { join, relative, sep } from "node:path";
 import Ajv2020, { type ErrorObject, type ValidateFunction } from "ajv/dist/2020.js";
 
 const ROOT = new URL("..", import.meta.url).pathname;
-const SCHEMAS = join(ROOT, "schemas");
+const args = process.argv.slice(2);
+const schemasFlag = args.indexOf("--schemas");
+const SCHEMAS = schemasFlag >= 0 ? args[schemasFlag + 1] : join(ROOT, "schemas");
+const positional =
+  schemasFlag >= 0 ? args.filter((_, i) => i < schemasFlag || i > schemasFlag + 1) : args;
 const CONFORMANCE = join(ROOT, "conformance");
 const ID_BASE = "https://w3id.org/biosig-zarr/";
 
@@ -63,7 +68,7 @@ const ajv = new Ajv2020({ strict: true, allErrors: true });
 const schemaFiles = walk(SCHEMAS).filter((path) => path.endsWith(".schema.json"));
 for (const file of schemaFiles) {
   const schema = readJson(file) as { $id?: string };
-  const expected = ID_BASE + relative(ROOT, file).split(sep).join("/");
+  const expected = `${ID_BASE}schemas/${relative(SCHEMAS, file).split(sep).join("/")}`;
   if (schema.$id !== expected) problems.push(`${relative(ROOT, file)}: $id is not ${expected}`);
   ajv.addSchema(schema);
 }
@@ -136,7 +141,7 @@ function describe(errors: ErrorObject[] | null | undefined): string {
 }
 
 // 3 and 4: validate the vectors.
-const manifestPath = process.argv[2] ?? join(CONFORMANCE, "manifest.json");
+const manifestPath = positional[0] ?? join(CONFORMANCE, "manifest.json");
 const manifest = readJson(manifestPath) as { vectors: Vector[] };
 let documents = 0;
 for (const vector of manifest.vectors) {
