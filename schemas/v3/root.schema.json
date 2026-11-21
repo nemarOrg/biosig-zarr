@@ -69,7 +69,12 @@
         "modality_rates": {
           "type": "object",
           "description": "Root attributes: the rate caps the writer applied, in hertz, keyed by uppercase modality name.",
-          "additionalProperties": { "type": "number" }
+          "additionalProperties": { "type": "number" },
+          "propertyNames": {
+            "type": "string",
+            "$comment": "Root attributes: keyed by uppercase modality name; the pattern allows no lowercase letter.",
+            "pattern": "^[^a-z]*$"
+          }
         },
         "anti_alias_filter": { "type": "string" },
         "view_downsample": { "type": "integer" },

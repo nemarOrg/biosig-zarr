@@ -23,7 +23,7 @@
           "description": "Events group: a map from an event code, written as a decimal string, to its description.",
           "propertyNames": {
             "type": "string",
-            "$comment": "Events group: an event code, written as a decimal string. The pattern checks the decimal form only; whether the value fits the int32 code array is not checked.",
+            "$comment": "Events group: an event code, written as a decimal string. The text says only decimal; that a minus sign is allowed and that leading zeros are allowed are inferences of this schema, not statements of the text. Whether the value fits the int32 code array is not checked.",
             "pattern": "^-?[0-9]+$"
           },
           "additionalProperties": {

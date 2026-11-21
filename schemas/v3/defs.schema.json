@@ -374,8 +374,16 @@
           "$comment": "Channel groups: the row_index values of a group MUST be the integers 0 to n_channels - 1.",
           "minimum": 0
         },
-        "channel_type": { "type": "string" },
-        "modality": { "type": "string" },
+        "channel_type": {
+          "type": "string",
+          "$comment": "Channel groups: the channel type, in uppercase, such as EEG or TRIG; the pattern allows no lowercase letter.",
+          "pattern": "^[^a-z]*$"
+        },
+        "modality": {
+          "type": "string",
+          "$comment": "Channel groups: the modality of the group, which the group attributes give in uppercase; the pattern allows no lowercase letter.",
+          "pattern": "^[^a-z]*$"
+        },
         "unit": { "type": "string" },
         "prefilter": { "type": "string" },
         "usable_for_inference": { "type": "boolean" },
@@ -443,6 +451,26 @@
             "properties": {
               "usable_for_inference": {
                 "$comment": "Missing values and Channel groups: a channel with any non-finite source sample stored as missing has usable_for_inference false.",
+                "const": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "$comment": "Channel groups: the condition, a discrete channel, whose channel_type is TRIG, SYSCLOCK, or CTRL (Channel groups, Resampling).",
+            "required": ["channel_type"],
+            "properties": {
+              "channel_type": {
+                "$comment": "Channel groups: the discrete channel types.",
+                "enum": ["TRIG", "SYSCLOCK", "CTRL"]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "usable_for_inference": {
+                "$comment": "Channel groups: usable_for_inference is false for a discrete channel.",
                 "const": false
               }
             }

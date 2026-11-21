@@ -39,7 +39,11 @@
           "$comment": "Channel groups: every channel group carries kind, uniform or timestamped; this is a uniform group.",
           "const": "uniform"
         },
-        "modality": { "type": "string" },
+        "modality": {
+          "type": "string",
+          "$comment": "Channel groups: the modality of the group, in uppercase, such as EEG; the pattern allows no lowercase letter.",
+          "pattern": "^[^a-z]*$"
+        },
         "n_channels": { "type": "integer" },
         "n_samples": { "type": "integer" },
         "channels": { "type": "array", "items": { "$ref": "#/$defs/channel" } },
@@ -60,20 +64,64 @@
         "chunk_seconds": { "type": "number" },
         "shard_seconds": { "type": "number" }
       },
-      "if": {
-        "$comment": "Channel groups: the condition, n_view_levels 0.",
-        "required": ["n_view_levels"],
-        "properties": { "n_view_levels": { "$comment": "Channel groups: 0.", "const": 0 } }
-      },
-      "then": {
-        "properties": {
-          "view_levels": {
-            "type": "array",
-            "description": "Channel groups: view_levels is empty when n_view_levels is 0.",
-            "maxItems": 0
+      "allOf": [
+        {
+          "if": {
+            "$comment": "Channel groups: the condition, n_view_levels 0.",
+            "required": ["n_view_levels"],
+            "properties": { "n_view_levels": { "$comment": "Channel groups: 0.", "const": 0 } }
+          },
+          "then": {
+            "properties": {
+              "view_levels": {
+                "type": "array",
+                "description": "Channel groups: view_levels is empty when n_view_levels is 0.",
+                "maxItems": 0
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "$comment": "Time regularization: the condition, method interpolated.",
+            "required": ["time_regularization"],
+            "properties": {
+              "time_regularization": {
+                "type": "object",
+                "$comment": "Time regularization: method interpolated.",
+                "required": ["method"],
+                "properties": {
+                  "method": {
+                    "$comment": "Time regularization: interpolated.",
+                    "const": "interpolated"
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "channels": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "$comment": "Time regularization: with interpolated, every channel's derivation includes time_interpolated.",
+                  "required": ["derivation"],
+                  "properties": {
+                    "derivation": {
+                      "type": "array",
+                      "contains": {
+                        "$comment": "Time regularization: time_interpolated.",
+                        "const": "time_interpolated"
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         }
-      }
+      ]
     },
     "channel": {
       "type": "object",

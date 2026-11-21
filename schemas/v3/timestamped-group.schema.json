@@ -33,7 +33,11 @@
           "$comment": "Channel groups: every channel group carries kind, uniform or timestamped; this is a timestamped group.",
           "const": "timestamped"
         },
-        "modality": { "type": "string" },
+        "modality": {
+          "type": "string",
+          "$comment": "Channel groups: the modality of the group, in uppercase, such as EEG; the pattern allows no lowercase letter.",
+          "pattern": "^[^a-z]*$"
+        },
         "n_channels": { "type": "integer" },
         "n_samples": {
           "type": "integer",
