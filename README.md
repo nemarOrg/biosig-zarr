@@ -11,8 +11,8 @@ The specification is independent of NEMAR; [`GOVERNANCE.md`](GOVERNANCE.md) says
 
 The specification text is in [`spec/index.md`](spec/index.md).
 It was first published on docs.nemar.org and was moved here with no normative change; it is still pre-beta.
-The first release, `2.0.0`, is a Git tag made by the owner; until it exists, nothing in this repository is a published version of the specification.
-The schemas and conformance vectors follow later.
+Releases are Git tags made by the editor; the first was `2.0.0`, and [`CHANGELOG.md`](CHANGELOG.md) records each one.
+Since `2.0.1`, the repository also holds the JSON Schemas and the conformance vectors for format version 2, in [`schemas/v2/`](schemas/v2/) and [`conformance/`](conformance/README.md).
 
 Two identifiers are planned and neither is live:
 
@@ -24,8 +24,8 @@ Two identifiers are planned and neither is live:
 | Path | What it holds |
 | --- | --- |
 | [`spec/`](spec/index.md) | The normative text of the format and of the `.bzx` form |
-| `schemas/` | JSON Schemas for the metadata objects (arrives after the text) |
-| `conformance/` | Conformance vectors cut from real recordings (arrives after the schemas) |
+| [`schemas/`](schemas/v2/) | JSON Schemas for the metadata objects of format version 2, since `2.0.1` |
+| [`conformance/`](conformance/README.md) | Conformance vectors for format version 2, cut from a real recording, since `2.0.1` |
 | [`GOVERNANCE.md`](GOVERNANCE.md) | Who decides, how a change is made, and how releases are tagged |
 | [`CONTRIBUTING.md`](CONTRIBUTING.md) | How to report a defect, propose a change, and sign off a contribution |
 | [`LICENSE.md`](LICENSE.md) | The three license parts: text, software and schemas, contributions |
