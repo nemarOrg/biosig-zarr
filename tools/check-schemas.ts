@@ -12,7 +12,11 @@
 // <group>/view/<level>/zarr.json. The view group and the event arrays have no schema.
 // The check lists directories because it reads local files; a reader navigates by attributes.
 //
-// Usage: bun run check:schemas
+// It also checks that each vector's class agrees with its expected outcome: a valid vector is
+// accepted and cites no schema failure; an invalid vector is refused or schema-invalid.
+//
+// Usage: bun run check:schemas [manifest.json]
+// The manifest defaults to conformance/manifest.json; its store paths resolve from conformance/.
 
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative, sep } from "node:path";
@@ -84,14 +88,29 @@ function describe(errors: ErrorObject[] | null | undefined): string {
 }
 
 // 3 and 4: validate the vectors.
-const manifest = readJson(join(CONFORMANCE, "manifest.json")) as { vectors: Vector[] };
+const manifestPath = process.argv[2] ?? join(CONFORMANCE, "manifest.json");
+const manifest = readJson(manifestPath) as { vectors: Vector[] };
 let documents = 0;
 for (const vector of manifest.vectors) {
   const store = join(CONFORMANCE, vector.path);
   const expect = vector.expect[String(vector.format_version)];
   const failure = expect?.schema_failure;
-  if (vector.class === "invalid" && expect?.outcome === "schema-invalid" && !failure) {
-    problems.push(`${vector.id}: schema-invalid, but no schema_failure is cited`);
+  if (!expect) {
+    problems.push(`${vector.id}: no outcome for a version ${vector.format_version} reader`);
+  } else if (vector.class === "valid") {
+    if (expect.outcome !== "accept") {
+      problems.push(`${vector.id}: class valid, but the outcome is ${expect.outcome}`);
+    }
+    if (failure) problems.push(`${vector.id}: class valid, but a schema_failure is cited`);
+  } else if (vector.class === "invalid") {
+    if (expect.outcome !== "refuse" && expect.outcome !== "schema-invalid") {
+      problems.push(`${vector.id}: class invalid, but the outcome is ${expect.outcome}`);
+    }
+    if (expect.outcome === "schema-invalid" && !failure) {
+      problems.push(`${vector.id}: schema-invalid, but no schema_failure is cited`);
+    }
+  } else {
+    problems.push(`${vector.id}: class is neither valid nor invalid`);
   }
   let failureSeen = false;
   for (const file of walk(store).filter((path) => path.endsWith("zarr.json"))) {
