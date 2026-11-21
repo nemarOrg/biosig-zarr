@@ -1,11 +1,11 @@
 # biosig-zarr Format (pre-beta)
 
 > **Caution. Draft text, proposed and not accepted.**
-> This document is the text that the Neuroelectromagnetic Data Archive and Tools Resource (NEMAR) proposes in its first Request for Comments (RFC), RFC-0001, in [nemarOrg/rfcs](https://github.com/nemarOrg/rfcs).
+> This document is the text proposed by the Request for Comments (RFC) RFC-0001, in [nemarOrg/rfcs](https://github.com/nemarOrg/rfcs).
 > It specifies `format_version` 3, which no implementation writes or reads yet.
 > The accepted text is release `2.0.0`, for `format_version` 2.
 > This draft is pre-beta: it can change without notice, and nothing in it is a compatibility promise yet.
-> For stores served by NEMAR,
+> For stores served by the Neuroelectromagnetic Data Archive and Tools Resource (NEMAR),
 > the [Store Contract](https://docs.nemar.org/platform/zarr/store-contract/) and the [Format Stability Policy](https://docs.nemar.org/platform/zarr/format-stability/) remain the binding documents.
 > Where this document disagrees with them, those pages govern NEMAR's stores until this specification reaches beta.
 
@@ -48,7 +48,7 @@ Anything no implementation does today, and that version 3 does not specify, is l
 
 The key words MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, RECOMMENDED, MAY, and OPTIONAL are to be interpreted as described in RFC 2119 and RFC 8174,
 when, and only when, they appear in all capitals.
-RFC 2119 and RFC 8174 are documents of the Internet Engineering Task Force (IETF), separate from NEMAR's RFC process.
+RFC 2119 and RFC 8174 are documents of the Internet Engineering Task Force (IETF), separate from the Requests for Comments in nemarOrg/rfcs.
 In the attribute tables, CONDITIONAL means the attribute MUST be present when its stated condition holds and MUST be absent otherwise.
 In formulas, `round(x)` means `floor(x + 0.5)`, evaluated in 64-bit floating point: a value exactly halfway between two integers rounds up.
 Many libraries round halves to the even integer instead, so a writer or reader MUST use this definition wherever this document says `round`.
@@ -1147,7 +1147,7 @@ No tool implements them yet, and details can change before the first implementat
 
 A directory-form store has thousands of small objects.
 The packaged form holds the same store in one file.
-The packing rules are NEMAR's own.
+The packing rules are this specification's own.
 The Open Microscopy Environment (OME) proposal for zipped OME-Zarr, [RFC-9](https://ngff.openmicroscopy.org/rfc/9/), is prior art for them, not a dependency:
 later changes to RFC-9 do not change these rules, and a change to them is made through this specification's own process.
 RFC-9 was still under review when this text was written, and it phrases most of its rules as recommendations;
